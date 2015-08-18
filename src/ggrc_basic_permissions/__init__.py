@@ -296,6 +296,7 @@ def load_permissions_for(user):
   # Gather all roles required by context implications
   implied_context_to_implied_roles = {}
   all_implied_roles_set = set()
+
   for context_implication in all_context_implications:
     for rolename in source_contexts_to_rolenames.get(
         context_implication.source_context_id, []):
@@ -307,6 +308,7 @@ def load_permissions_for(user):
       implied_role_names_list.extend(implied_role_names)
   # If some roles are required, query for them in bulk
   all_implied_roles_by_name = {}
+
   if implied_context_to_implied_roles and all_implied_roles_set:
     implied_roles = db.session.query(Role)\
         .filter(Role.name.in_(all_implied_roles_set))\
@@ -315,10 +317,13 @@ def load_permissions_for(user):
     for implied_role in implied_roles:
       all_implied_roles_by_name[implied_role.name] = implied_role
   # Now aggregate permissions resulting from these roles
+
   for implied_context_id, implied_rolenames \
       in implied_context_to_implied_roles.items():
     for implied_rolename in implied_rolenames:
       implied_role = all_implied_roles_by_name[implied_rolename]
+      if implied_context_id is None:
+        continue
       collect_permissions(
           implied_role.permissions, implied_context_id, permissions)
 
@@ -347,6 +352,7 @@ def load_permissions_for(user):
       .setdefault('__GGRC_ALL__', dict())\
       .setdefault('contexts', list())\
       .append(personal_context.id)
+
   return permissions
 
 
