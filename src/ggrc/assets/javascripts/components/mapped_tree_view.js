@@ -19,6 +19,8 @@
             mappings = this.scope.parentInstance.get_mapping(this.scope.mapping),
             binding;
 
+        instance = instance.instance || instance;
+
         binding = _.find(mappings, function (mapping) {
           return mapping.instance.id === instance.id &&
                  mapping.instance.type === instance.type;
