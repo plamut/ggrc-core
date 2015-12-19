@@ -151,7 +151,7 @@ src/app.yaml : src/app.yaml.dist
 bower_components : bower.json
 	mkdir -p $(BOWER_PATH)
 	mkdir -p $(FLASH_PATH)
-	bower install
+	/vagrant/node_modules/bower/bin/bower install
 	cp $(BOWER_PATH)/zeroclipboard/dist/ZeroClipboard.swf $(FLASH_PATH)/ZeroClipboard.swf
 
 clean_bower_components :
