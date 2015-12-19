@@ -5,6 +5,9 @@
    */
    "predef": ["GGRC", "CMS", "jQuery", "$", "_", "can"],
 
+  // allow globals exposed by the Jasmine framework (needed for tests)
+  "jasmine": true,
+
   /*
    * ENFORCING OPTIONS
    * =================

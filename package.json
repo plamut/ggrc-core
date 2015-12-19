@@ -7,10 +7,18 @@
     "doc": "doc"
   },
   "dependencies": {
-    "jasmine-core": "~2.1.3"
+    "bower": "^1.6.8",
+    "mkdirp": "^0.5.1",
+    "pegjs": "^0.9.0"
   },
   "devDependencies": {
-    "doctoc": "^0.11.0"
+    "doctoc": "^0.11.0",
+    "jasmine-core": "^2.1.3",
+    "jshint": "^2.9.1-rc1",
+    "karma": "^0.13.15",
+    "karma-cli": "^0.1.1",
+    "karma-jasmine": "^0.3.6",
+    "nodeunit": "^0.9.1"
   },
   "scripts": {
     "test": "run_unittests"
