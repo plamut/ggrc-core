@@ -5,7 +5,7 @@
     Maintained By: brad@reciprocitylabs.com
 }}
 
-<li class="tree-item programs" data-object-id="{{instance.id}}" data-object-type="{{instance.class.table_singular}}" {{addclass "rq-" instance.status}}>
+<li class="tree-item requests" data-object-id="{{instance.id}}" data-object-type="{{instance.class.table_singular}}" {{addclass "rq-" instance.status}}>
   <div class="item-main" {{#instance}}{{data 'model'}}{{/instance}} data-model="true">
     <div class="item-wrap">
       {{{render '/static/mustache/base_objects/open_close.mustache' instance=instance}}}
@@ -29,7 +29,7 @@
                         {{get_custom_attr_value this instance}}
                       </div>
                     {{else}}
-                      <div class="owner tree-title-area">
+                      <div class="owner tree-title-area capitalize">
                         {{#switch attr_name}}
                           {{#case 'audit_object'}}
                             {{#using audit=instance.audit}}

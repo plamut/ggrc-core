@@ -18,28 +18,6 @@
         <div class="span8">
           {{> /static/mustache/base_objects/description.mustache}}
 
-          {{#if test}}
-            <div class="row-fluid wrap-row">
-              <div class="span12">
-                <h6>Test</h6>
-                <div class="rtf-block">
-                  {{test}}
-                </div>
-
-              </div>
-            </div>
-          {{/if}}
-          {{#if notes}}
-            <div class="row-fluid wrap-row">
-              <div class="span12">
-                <h6>Notes</h6>
-                <div class="rtf-block">
-                  {{notes}}
-                </div>
-              </div>
-            </div>
-          {{/if}}
-
           <div class="row-fluid wrap-row">
             <div class="span6">
               <h6>Evidence</h6>
@@ -47,14 +25,31 @@
             </div>
             <div class="span6">
               <h6>URL</h6>
-              {{#instance.class.info_pane_options.urls}}
-                {{#add_to_current_scope parent_instance=instance}}
-                  <ul class="attachment-list" data-update-count="false" {{data 'options'}} {{ (el) -> el.cms_controllers_tree_view(el.data('options')).control("tree_view").display() }} data-info-controller="true">
-                {{/add_to_current_scope}}
-              {{/instance.class.info_pane_options.urls}}
+              <mapping-tree-view
+                parent-instance="instance"
+                mapping="instance.class.info_pane_options.urls.mapping"
+                item-template="instance.class.info_pane_options.urls.show_view"
+              >
+              </mapping-tree-view>
+              {{#with_mapping instance.class.info_pane_options.urls.mapping instance}}
+                {{#info_related_objects}}
+                  {{{render parent_instance.class.info_pane_options.urls.show_view instance=instance}}}
+                {{/info_related_objects}}
+              {{/with_mapping}}
+              </ul>
               {{#is_allowed 'update' instance context='for'}}
               {{#toggle show_new_object_form}}
-                <ggrc-quick-add parent_instance="instance" join_model="Relationship" quick_create="create_url">
+                <ggrc-quick-add
+                  parent_instance="instance"
+                  join_model="Relationship"
+                  quick_create="create_url"
+                  {{#if_in instance.status "Open,Final,Verified"}}
+                    verify_event="true"
+                    modal_description='You are about to move request from "{{instance.status}}" to "In Progress" - are you sure about that?'
+                    modal_title='Confirm moving Request to "In Progress"'
+                    modal_button='Confirm'
+                  {{/if_in}}
+                >
                   {{#prune_context}}
                   <div class="objective-selector field-wrap">
                     <input tabindex="3" type="text" name="instance" placeholder="Add URL">
@@ -77,12 +72,23 @@
               {{{render "/static/mustache/base_templates/mapped_objects.mustache" instance=. update_count="false"}}}
             </div>
           </div>
-          <hr />
+
           <div class="row-fluid wrap-row">
-            <div class="span12">
-              {{> /static/mustache/custom_attributes/expanded_attrs.mustache }}
+            <div class="span6">
+              <h6>Test</h6>
+              <div class="rtf-block">
+                {{{firstnonempty test '<span class="empty-message">None</span>'}}}
+              </div>
+            </div>
+            <div class="span6">
+              <h6>Notes</h6>
+              <div class="rtf-block">
+                {{{firstnonempty notes '<span class="empty-message">None</span>'}}}
+              </div>
             </div>
           </div>
+
+          {{> /static/mustache/custom_attributes/expanded_attrs.mustache }}
 
         </div>
         <div class="span4">
@@ -104,12 +110,6 @@
               <div class="side-content">
                 {{slug}}
               </div>
-            </div>
-          </div>
-
-          <div class="row-fluid wrap-row">
-            <div class="span12">
-              {{> /static/mustache/base_templates/request_type.mustache}}
             </div>
           </div>
 

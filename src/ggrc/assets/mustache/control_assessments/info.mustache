@@ -30,10 +30,11 @@
               </li>
             {{/is_allowed}}
             <li>
-              <clipboard-link title="Get permalink" notify="true" text="{{get_permalink}}" />
+              <clipboard-link title="Get permalink" notify="true" text="{{get_permalink_url}}" />
             </li>
             {{#is_allowed 'update' instance context='for'}}
             {{#with_mapping 'related_audits' instance}}
+            {{#with_mapping 'related_controls' instance}}
             {{#using control=control}}
             {{#with_create_issue_json instance}}
               <li class="border">
@@ -50,6 +51,7 @@
               </li>
             {{/with_create_issue_json}}
             {{/using}}
+            {{/with_mapping}}
             {{/with_mapping}}
             {{/is_allowed}}
             {{#with_page_object_as 'page_instance'}}
@@ -130,6 +132,7 @@
           <ul class="repeated-utility">
             {{#is_allowed 'update' instance context='for'}}
             {{#with_mapping 'related_audits' instance}}
+            {{#with_mapping 'related_controls' instance}}
             {{#using control=control}}
             {{#with_create_issue_json instance}}
             <li>
@@ -144,6 +147,7 @@
             </li>
             {{/with_create_issue_json}}
             {{/using}}
+            {{/with_mapping}}
             {{/with_mapping}}
             {{/is_allowed}}
           </ul>
@@ -180,15 +184,23 @@
             </div>
             <div class="span4">
               <h6>Effective Date</h6>
-              <p>
-                {{localize_date start_date}}
-              </p>
+              {{#if start_date}}
+                <p>
+                  {{localize_date start_date}}
+                </p>
+              {{else}}
+                <span class="empty-message">None</span>
+              {{/if}}
             </div>
             <div class="span4">
               <h6>Stop Date</h6>
-              <p>
-              {{localize_date end_date}}
-              </p>
+              {{#if end_date}}
+                <p>
+                  {{localize_date end_date}}
+                </p>
+              {{else}}
+                <span class="empty-message">None</span>
+              {{/if}}
             </div>
           </div><!-- row-fluid end -->
         </div><!-- hidden-fields-area end -->

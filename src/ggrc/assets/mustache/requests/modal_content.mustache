@@ -10,6 +10,15 @@
 <form action="javascript://">
   {{> /static/mustache/base_objects/form_restore.mustache}}
 
+  {{^if new_object_form}}
+    {{#if_in instance.status "Open,Final,Verified"}}
+      <div class="alert warning">
+        <i class="grcicon-warning"></i>
+        You are about to move request from "{{instance.status}}" to "In Progress".
+      </div>
+    {{/if_in}}
+  {{/if}}
+
   <!-- Title Row -->
   <div class="row-fluid">
     <div class="span6">
@@ -20,6 +29,7 @@
       </label>
       <input data-id="title_txtbx" tabindex="1" class="input-block-level" placeholder="Enter Title" name="title" type="text" value="{{title}}" autofocus>
     </div>
+    {{#if new_object_form}}
     <div class="span6">
       <label>
         Audit
@@ -31,11 +41,13 @@
           {{/using}}
         </div>
     </div>
+    {{/if}}
   </div>
   <div class="row-fluid">
-    <div class="span6">
+    <div class="span6 hidable">
       <label>
         Description
+        <a href="javascript://" class="field-hide">hide</a>
       </label>
       <div class="wysiwyg-area">
         <textarea tabindex="2" id="request_description" class="span12 double wysihtml5" name="description" placeholder="State your request here...">{{{description}}}</textarea>

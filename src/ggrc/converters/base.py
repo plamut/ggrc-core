@@ -40,6 +40,7 @@ class Converter(object):
       "email",
       "slug",
       "delete",
+      "task_type",
   ]
 
   def __init__(self, **kwargs):
@@ -133,6 +134,8 @@ class Converter(object):
   def block_converters_from_csv(self):
     offsets, data_blocks = split_array(self.csv_data)
     for offset, data in zip(offsets, data_blocks):
+      if len(data) < 2:
+        continue  # empty block
       class_name = data[1][0].strip().lower()
       object_class = self.exportable.get(class_name)
       raw_headers, rows = extract_relevant_data(data)

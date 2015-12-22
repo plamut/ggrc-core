@@ -135,7 +135,7 @@ CMS.Controllers.Filterable("CMS.Controllers.DashboardWidgets", {
       }).done(tracker_stop);
 
       return this._display_deferred;
-    }
+    },
 
   /*, ".remove-widget click" : function() {
     var parent = this.element.parent();
@@ -151,8 +151,8 @@ CMS.Controllers.Filterable("CMS.Controllers.DashboardWidgets", {
     ev.stopPropagation();
     ev.originalEvent && ev.originalEvent.stopPropagation();
   }*/
-  , " updateCount" : function(el, ev, count) {
-    this.options.widget_count.attr('count', ''+count);
+  "updateCount": function (el, ev, count, updateCount) {
+    this.options.widget_count.attr("count", "" + count);
   }
 
   , display_path: function(path) {

@@ -13,6 +13,13 @@ from ggrc.models.relationship import Relatable
 class Comment(Relatable, Described, Documentable, Base, db.Model):
   __tablename__ = "comments"
 
+  assignee_type = db.Column(db.String)
+
+  # REST properties
+  _publish_attrs = [
+    "assignee_type",
+  ]
+
   _sanitize_html = [
-    "description"
+    "description",
   ]

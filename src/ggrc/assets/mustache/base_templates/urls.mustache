@@ -6,10 +6,10 @@
 }}
 
 <li data-object-id="{{instance.id}}" data-object-type="{{instance.class.table_singular}}">
-  {{#is_allowed 'update'}}
+  {{#is_allowed 'update' instace}}
   <span class="file-controls">
     <a href="javascript://" class="info-action unmap" data-toggle="unmap">
-      {{#result}}<span class="result" {{data 'result'}}></span>{{/result}}
+      <span class="result" {{data 'result'}}></span>
       <i class="grcicon-deleted"></i>
     </a>
   </span>

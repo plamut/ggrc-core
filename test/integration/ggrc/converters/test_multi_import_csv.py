@@ -135,23 +135,23 @@ class TestCsvImport(TestCase):
   def test_big_import_with_mappings(self):
     response = self.import_file("data_for_export_testing.csv")
     for block in response:
-      self.assertEquals(set(), set(block["row_warnings"]),
+      self.assertEqual(set(), set(block["row_warnings"]),
                         json.dumps(block, indent=2, sort_keys=True))
-      self.assertEquals(set(), set(block["row_errors"]),
+      self.assertEqual(set(), set(block["row_errors"]),
                         json.dumps(block, indent=2, sort_keys=True))
-      self.assertEquals(set(), set(block["block_warnings"]),
+      self.assertEqual(set(), set(block["block_warnings"]),
                         json.dumps(block, indent=2, sort_keys=True))
-      self.assertEquals(set(), set(block["block_errors"]),
+      self.assertEqual(set(), set(block["block_errors"]),
                         json.dumps(block, indent=2, sort_keys=True))
 
   def test_big_import_with_mappings_dry_run(self):
     response = self.import_file("data_for_export_testing.csv", dry_run=True)
     for block in response:
-      self.assertEquals(set(), set(block["row_warnings"]),
+      self.assertEqual(set(), set(block["row_warnings"]),
                         json.dumps(block, indent=2, sort_keys=True))
-      self.assertEquals(set(), set(block["row_errors"]),
+      self.assertEqual(set(), set(block["row_errors"]),
                         json.dumps(block, indent=2, sort_keys=True))
-      self.assertEquals(set(), set(block["block_warnings"]),
+      self.assertEqual(set(), set(block["block_warnings"]),
                         json.dumps(block, indent=2, sort_keys=True))
-      self.assertEquals(set(), set(block["block_errors"]),
+      self.assertEqual(set(), set(block["block_errors"]),
                         json.dumps(block, indent=2, sort_keys=True))

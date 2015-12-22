@@ -459,22 +459,30 @@ can.Control("GGRC.Controllers.Modals", {
     this.setup_wysihtml5(); // in case the changes in values caused a new wysi box to appear.
   },
   "[data-before], [data-after] change": function (el, ev) {
-    function setDateLimit(prop, when, date) {
-      var elem = prop ? this.element.find("[name=" + prop + "]") : el;
-      if (!elem.data("datepicker")) {
-        elem.datepicker({changeMonth: true, changeYear: true})
-      }
-      elem.datepicker("option", when, date);
+    if (!el.data("datepicker")) {
+      el.datepicker({changeMonth: true, changeYear: true});
     }
-    var date = el.datepicker("getDate") || new Date(),
+    var date = el.datepicker("getDate"),
         data = el.data(),
         options = {
-          "before": "minDate",
-          "after": "maxDate"
+          "before": "maxDate",
+          "after": "minDate"
         };
 
     _.each(options, function (val, key) {
-      setDateLimit.call(this, data[key], val, date);
+      if (!data[key]) {
+        return;
+      }
+      var targetEl = this.element.find("[name=" + data[key] + "]"),
+          isInput = targetEl.is("input"),
+          targetDate = isInput ? targetEl.val() : targetEl.text(),
+          otherKey;
+
+      el.datepicker("option", val, targetDate);
+      if (targetEl) {
+        otherKey = key === "before" ? "after" : "before";
+        targetEl.datepicker("option", options[otherKey], date);
+      }
     }, this);
   },
 

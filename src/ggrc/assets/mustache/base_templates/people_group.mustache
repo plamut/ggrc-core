@@ -9,8 +9,7 @@
 <label>
   <span class="person-label {{type}}"></span>
   {{#is_allowed 'update' instance context='for'}}
-    {{#toggle toggle_add}}
-      {{else}}
+    {{^toggle toggle_add}}
       <span class="file-controls">
         <a href="javascript://" {{toggle_button}}>
           <i class="grcicon-add-black"></i>
@@ -18,9 +17,11 @@
       </span>
     {{/toggle}}
   {{/is_allowed}}
-  {{capitalize type}}
+  {{type}}(s)
   {{#if editable}}
-    <span class="required">*</span>
+    {{#if required}}
+      <span class="required">*</span>
+    {{/if}}
   {{/if}}
 </label>
 {{#with_mapping mapping instance}}
@@ -56,7 +57,13 @@
       {{#show_add}}
         {{#is_allowed 'update' instance context='for'}}
         {{#toggle toggle_add}}
-          {{> /static/mockups/base_templates/add_people.mustache }}
+          <i class="grcicon-person-green pull-left icon-field"></i>
+          <div class="person-selector">
+            <input tabindex="7" type="text" name="" class="search-icon" data-lookup="Person" placeholder="Search for {{type}}" null-if-empty="false" value="" {{autocomplete_select}} />
+            <a href="javascript://" {{toggle_button}}>
+              <i class="grcicon-x-grey"></i>
+            </a>
+          </div>
         {{/toggle}}
         {{/is_allowed}}
       {{/show_add}}

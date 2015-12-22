@@ -5,10 +5,6 @@
  * Maintained By: vladan@reciprocitylabs.com
  */
 
-.tabs-wrap {
-	margin-top: 20px;
-}
-
 .nav-tabs {
 	padding-left: 12px;
 	border-bottom: 1px solid darken($itemBorder,10%);
@@ -67,6 +63,12 @@
       	margin-right: 7px;
       	line-height: 20px;
       	font-size: 12px;
+	}
+	&.none {
+		background: $lightGray;
+		&:after {
+			content: "N";
+		}
 	}
 	&.assignee {
 		background: $olive;

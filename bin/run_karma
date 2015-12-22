@@ -4,4 +4,4 @@
 # Created By: swizec@reciprocitylabs.com
 # Maintained By: swizec@reciprocitylabs.com
 
-karma start & watch_assets
+karma start --reporters dots & watch_assets

@@ -44,7 +44,7 @@
       get_forbidden: function (type) {
         var forbidden = {
           "Program": ["Audit"],
-          "Audit": ["Request"],
+          "Audit": ["ControlAssessment", "Program", "Request"],
           "ControlAssessment": ["Control"],
           "Request": ["Workflow", "TaskGroup"]
         };
@@ -103,6 +103,9 @@
           });
           groups["all_objects"]["models"].push(cms_model.shortName);
         }, this);
+        if (groups["all_objects"]["models"].length < 2) {
+          delete groups["all_objects"];
+        }
         return groups;
       })
     });
@@ -234,7 +237,13 @@
               // there is some kind of a race condition when filling the treview with new elements
               // so many don't get rendered. To solve it, at the end of the loading
               // we refresh the whole tree view. Other solutions could be to batch add the objects.
-              $(".cms_controllers_tree_view:visible").control().reload_list();
+              $(".cms_controllers_tree_view:visible").each(function () {
+                // TODO: This is terrible solution, but it's only way to refresh all tree views on page
+                var control = $(this).control();
+                if (control) {
+                  control.reload_list();
+                }
+              });
             }.bind(this));
         }.bind(this));
       },
@@ -499,7 +508,8 @@
             __permission_model: join_model
           };
         }
-        if (!_.includes(["ObjectPerson", "WorkflowPerson"], join_model)) {
+        if (!_.includes(["ObjectPerson", "WorkflowPerson"], join_model) &&
+            !this.options.scope.attr("mapper.search_only")) {
           data.options.__permission_type = data.options.__permission_type || "update";
         }
         data.model_name = _.isString(data.model_name) ? [data.model_name] : data.model_name;

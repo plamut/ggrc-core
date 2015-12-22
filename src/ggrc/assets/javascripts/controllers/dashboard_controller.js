@@ -144,12 +144,13 @@ can.Control("CMS.Controllers.Dashboard", {
       this.get_active_widget_containers().show();
     }
 
-  , " widgets_updated" : "update_inner_nav"
-
-  , " updateCount": function(el, ev, count) {
-      this.inner_nav_controller.update_widget_count($(ev.target), count);
+  , " widgets_updated" : "update_inner_nav",
+  " updateCount": function (el, ev, count, updateCount) {
+    if (_.isBoolean(updateCount) && !updateCount) {
+      return;
     }
-
+    this.inner_nav_controller.update_widget_count($(ev.target), count, updateCount);
+  }
   , update_inner_nav: function(el, ev, data) {
       if (this.inner_nav_controller) {
         if(data) {
@@ -541,14 +542,14 @@ can.Control("CMS.Controllers.InnerNav", {
     return index;
   }
 
-  , update_widget_count : function($el, count) {
-      var widget_id = $el.closest('.widget').attr('id'),
+  , update_widget_count: function ($el, count) {
+      var widget_id = $el.closest(".widget").attr("id"),
           widget = this.widget_by_selector("#" + widget_id);
 
       if (widget) {
         widget.attr({
-            count: count
-          , has_count: true
+          count: count,
+          has_count: true
         });
       }
       this.update_add_more_link();

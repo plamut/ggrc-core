@@ -4,13 +4,54 @@
     Created By: ivan@reciprocitylabs.com
     Maintained By: ivan@reciprocitylabs.com
 }}
-{{#instance.class.info_pane_options.evidence}}
-{{#add_to_current_scope parent_instance=instance}}
-  <ul class="attachment-list" data-update-count="{{update_count}}" data-disable-lazy-loading="true" {{data 'options'}} {{ (el) -> el.cms_controllers_tree_view(el.data('options')).control("tree_view").display() }} data-info-controller="true">
-  </ul>
-  {{#is_allowed 'update' instance context='for'}}
-    <ggrc-gdrive-picker-launcher instance="instance" link_text="Attach evidence" click_event="trigger_upload">
-    </ggrc-gdrive-picker-launcher>
-  {{/is_allowed}}
-{{/add_to_current_scope}}
-{{/instance}}
+
+<mapping-tree-view
+  parent-instance="instance"
+  mapping="instance.class.info_pane_options.evidence.mapping"
+  item-template="instance.class.info_pane_options.evidence.show_view"
+>
+</mapping-tree-view>
+
+{{#is_allowed 'update' instance context='for'}}
+  {{#with_mapping 'extended_folders' instance}}
+    <div class="oneline">
+      {{#if extended_folders.length}}
+        {{#if_in instance.status "Open,Final,Verified"}}
+          <ggrc-gdrive-picker-launcher
+            instance="instance"
+            link_text="Attach evidence"
+            click_event="trigger_upload_parent"
+            verify_event="true"
+            modal_description='You are about to move request from "{{instance.status}}" to "In Progress" - are you sure about that?'
+            modal_title='Confirm moving Request to "In Progress"'
+            modal_button='Confirm'
+            >
+          </ggrc-gdrive-picker-launcher>
+        {{else}}
+          <ggrc-gdrive-picker-launcher
+            instance="instance"
+            link_text="Attach evidence"
+            click_event="trigger_upload_parent">
+          </ggrc-gdrive-picker-launcher>
+        {{/if_in}}
+      {{else}}
+        <small class="error-inline">
+          <strong>Warning:</strong> The corresponding Audit's evidence folder
+          is not set. Please select a folder before uploading evidence files.
+        </small>
+      {{/if}}
+    </div>
+  {{else}}
+    {{! This is a failure state for with_mapping, if something in the mapping doesn't refresh properly }}
+    {{#if error.errors}}
+      <small>
+        You need permission to upload files to the audit folder. <a href="https://drive.google.com/folderview?id={{grdive_msg_to_id error.message}}&usp=sharing#">Request access.</a>
+      </small>
+    {{else}}
+      The GDrive folder for this evidence could not be accessed.
+      {{#using request=parent_instance.request}}
+        {{{render '/static/mustache/gdrive/gapi_errors.mustache' type="file" instance=request error=error}}}
+      {{/using}}
+    {{/if}}
+  {{/with_mapping}}
+{{/is_allowed}}

@@ -298,8 +298,8 @@ can.Model.Cacheable("CMS.Models.Comment", {
     create : "POST /api/comments",
     mixins : [],
     attributes : {
-      context : "CMS.Models.Context.stub",
-      modified_by : "CMS.Models.Person.stub",
+      context: "CMS.Models.Context.stub",
+      modified_by: "CMS.Models.Person.stub"
     },
     init : function() {
       this._super && this._super.apply(this, arguments);
@@ -357,7 +357,7 @@ can.Model.Cacheable("CMS.Models.Request", {
     , custom_attribute_values : "CMS.Models.CustomAttributeValue.stubs"
   }
   , defaults : {
-    status: "Unstarted",
+    status: "Open",
     requested_on: moment().toDate(),
     due_on: GGRC.Utils.firstWorkingDay(moment().add(1, "weeks"))
   }
@@ -405,7 +405,7 @@ can.Model.Cacheable("CMS.Models.Request", {
     , draw_children : true
     , child_options: [{
       model : can.Model.Cacheable,
-      mapping: "related_objects",
+      mapping: "info_related_objects",
       allow_creating : true,
     }]
   }
@@ -414,6 +414,8 @@ can.Model.Cacheable("CMS.Models.Request", {
     this.validateNonBlank("title");
     this.validateNonBlank("due_on");
     this.validateNonBlank("requested_on");
+    this.validatePresenceOf("validate_assignee");
+    this.validatePresenceOf("validate_requester");
     this.validatePresenceOf("audit");
 
     this.validate(["requested_on", "due_on"], function (newVal, prop) {
@@ -428,9 +430,18 @@ can.Model.Cacheable("CMS.Models.Request", {
       }
     });
 
+    this.validate(["validate_assignee", "validate_requester"], function (newVal, prop) {
+      if (!this.validate_assignee) {
+        return "You need to specify at least one assignee";
+      }
+      if (!this.validate_requester) {
+        return "You need to specify at least one requester";
+      }
+    });
+
     if (this === CMS.Models.Request) {
-      this.bind("created", function(ev, instance) {
-        if(instance.constructor === CMS.Models.Request) {
+      this.bind("created", function (ev, instance) {
+        if (instance.constructor === CMS.Models.Request) {
           instance.audit.reify().refresh();
         }
       });
@@ -442,7 +453,7 @@ can.Model.Cacheable("CMS.Models.Request", {
   }
 
   , display_name : function() {
-      var desc = this.description
+      var desc = this.title
         , max_len = 20;
       out_name = desc;
       // Truncate if greater than max_len chars
@@ -452,29 +463,61 @@ can.Model.Cacheable("CMS.Models.Request", {
       return 'Request "' + out_name + '"';
     }
   , form_preload : function(new_object_form) {
-    var audit, that = this;
+    var audit,
+        that = this,
+        assignees = {},
+        current_user = CMS.Models.get_instance(GGRC.current_user),
+        contact;
+
     if (new_object_form) {
+      // Current user should be Requester
+      assignees[current_user.email] = "Requester";
+
       if (GGRC.page_model.type == "Audit") {
         this.attr("audit", { id: GGRC.page_model.id, type: "Audit" });
       }
-      this.mark_for_addition("related_objects_as_destination", CMS.Models.get_instance(GGRC.current_user), {
-        attrs: {
-          "AssigneeType": "Requester",
-        }
-      });
 
       if (this.audit) {
         audit = this.audit.reify();
+
+        // Audit leads should be default assignees
         (audit.selfLink ? $.when(audit) : audit.refresh())
-        .then(function(audit) {
-          this.mark_for_addition("related_objects_as_destination", audit.contact, {
-            attrs: {
-              "AssigneeType": "Assignee",
-            }
-          });
+        .then(function (audit) {
+          contact = audit.contact.reify();
+
+          if (assignees[contact.email]) {
+            assignees[contact.email] += ",Assignee"
+          } else {
+            assignees[contact.email] = "Assignee";
+          }
         }.bind(this));
+
+        // Audit auditors should be default verifiers
+        $.when(audit.findAuditors()).then(function (auditors) {
+          auditors.each(function (elem) {
+            elem.each(function (obj) {
+              if (obj.type == "Person") {
+                if (assignees[obj.email]) {
+                  assignees[obj.email] += ",Verifier"
+                } else {
+                  assignees[obj.email] = "Verifier"
+                }
+              }
+            });
+          });
+        });
       }
-    }
+
+      // Assign assignee roles
+      can.each(assignees, function (value, key) {
+        var person = CMS.Models.Person.findInCacheByEmail(key);
+        that.mark_for_addition("related_objects_as_destination", person, {
+          attrs: {
+            "AssigneeType": value
+          }
+        });
+      });
+    } // /new_object_form
   }
   , get_filter_vals: function () {
     var filter_vals = can.Model.Cacheable.prototype.get_filter_vals,
@@ -505,6 +548,20 @@ can.Model.Cacheable("CMS.Models.Request", {
         this.attr('context', this.audit.reify().context);
       }
       return this._super.apply(this, arguments);
+  },
+  after_save: function() {
+    // Create a relationship between request & control_assessment & control
+    var dfds = can.map(['control', 'control_assessment'], function(obj){
+      if (!(this.attr(obj) && this.attr(obj).stub)) {
+        return;
+      }
+      return new CMS.Models.Relationship({
+        source: this.attr(obj).stub(),
+        destination: this.stub(),
+        context: this.context.stub(),
+      }).save();
+    }.bind(this));
+    GGRC.delay_leaving_page_until($.when.apply($, dfds));
   },
   _refresh: function (bindings) {
     var refresh_queue = new RefreshQueue();
@@ -825,21 +882,24 @@ can.Model.Cacheable("CMS.Models.ControlAssessment", {
     add_item_view: GGRC.mustache_path + "/base_objects/tree_add_item.mustache",
     attr_list : can.Model.Cacheable.attr_list.concat([
         {attr_title: 'Conclusion: Design', attr_name: 'design'},
-        {attr_title: 'Conclusion: Operation', attr_name: 'operationally'}
+        {attr_title: 'Conclusion: Operation', attr_name: 'operationally'},
+        {attr_title: 'URL', attr_name: 'url'},
+        {attr_title: 'Reference URL', attr_name: 'reference_url'}
     ])
   },
-  init : function() {
+  init: function () {
     this._super && this._super.apply(this, arguments);
     this.validatePresenceOf("control");
     this.validatePresenceOf("audit");
     this.validateNonBlank("title");
   }
 }, {
-  form_preload : function(new_object_form) {
+  form_preload: function (new_object_form) {
     var page_instance = GGRC.page_instance();
-    if(new_object_form && page_instance && page_instance.type === 'Audit') {
+    if (new_object_form && page_instance && page_instance.type === "Audit") {
       if (!this.audit) {
-        this.attr('audit', page_instance);
+        this.attr("audit", page_instance);
+        this.mark_for_addition("related_objects_as_destination", page_instance.program);
       }
     }
   }

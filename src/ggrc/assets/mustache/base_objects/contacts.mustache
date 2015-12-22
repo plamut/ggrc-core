@@ -25,9 +25,7 @@
             </span>
           {{/each}}
         {{else}}
-          <span class="error">
-            Not Assigned
-          </span>
+          <span class="empty-message">None</span>
         {{/if}}
       {{/with_mapping}}
     {{else}}
@@ -46,9 +44,7 @@
         </ul>
         {{/using}}
       {{else}}
-        <span class="error">
-          Not Assigned
-        </span>
+        <span class="empty-message">None</span>
       {{/if}}
     {{/if}}
     </p>
@@ -62,10 +58,7 @@
           {{#if person}}
             {{>'/static/mustache/people/popover.mustache'}}
           {{else}}
-            <span data-test-id="text_primary_contact_696de7244b84"
-                  class="error">
-              Not Assigned
-            </span>
+            <span data-test-id="text_primary_contact_696de7244b84" class="empty-message">None</span>
           {{/if}}
         </p>
       </div>
@@ -76,10 +69,7 @@
         {{#if person}}
           {{>'/static/mustache/people/popover.mustache'}}
         {{else}}
-          <span data-test-id="text_secondary_contact_696de7244b84"
-                class="error">
-            Not Assigned
-          </span>
+          <span data-test-id="text_secondary_contact_696de7244b84" class="empty-message">None</span>
         {{/if}}
       </p>
       {{/using}}

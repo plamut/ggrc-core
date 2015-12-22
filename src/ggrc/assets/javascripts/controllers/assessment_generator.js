@@ -26,9 +26,20 @@ can.Component.extend({
           controls_dfd = this._refresh(controls_list),
           ignore_controls, dfd, inner_dfd = new $.Deferred().resolve();
 
-      dfd = $.when(assessments_dfd, controls_dfd).then(function (assessments, controls) {
+      dfd = $.when(assessments_dfd, controls_dfd).then(function (assessments, controls){
+        // Preload related controls mapping on assessment objects
+        var related_controls_dfd = $.when.apply($, can.map(assessments, function(assessment) {
+          return assessment.refresh_all("related_controls");
+        }));
+        return $.when(assessments, controls, related_controls_dfd);
+      }).then(function (assessments, controls) {
         ignore_controls = _.map(assessments, function(ca) {
-          return ca.control.id;
+          var control_id = ca.control && ca.control.id,
+              related_controls = ca.get_mapping('related_controls');
+          if (!control_id && related_controls.length) {
+            control_id = _.exists(related_controls[0], 'instance.id');
+          }
+          return control_id;
         });
 
         return $.when.apply($, can.map(controls, function(control) {

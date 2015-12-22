@@ -30,20 +30,20 @@ class TestSpecialObjects(TestCase):
 
     filename = "program_audit.csv"
     self.import_file(filename)
-    self.assertEquals(2, Audit.query.count())
+    self.assertEqual(2, Audit.query.count())
     audit = Audit.query.filter(Audit.slug == "Aud-1").first()
     program = Program.query.filter(Program.slug == "prog-1").first()
-    self.assertEquals(audit.program_id, program.id)
+    self.assertEqual(audit.program_id, program.id)
 
   def test_program_roles_imports(self):
     """ this tests if the audit gets imported with a mapped program """
 
     filename = "program_audit.csv"
     self.import_file(filename)
-    self.assertEquals(2, Program.query.count())
+    self.assertEqual(2, Program.query.count())
     program = Program.query.filter(Program.slug == "prog-1").first()
     p1_roles = UserRole.query.filter_by(context_id=program.context_id).all()
-    self.assertEquals(5, len(p1_roles))
+    self.assertEqual(5, len(p1_roles))
     owner_ids = [r.person_id for r in p1_roles if r.role_id == 1]
     editor_ids = [r.person_id for r in p1_roles if r.role_id == 2]
     reader_ids = [r.person_id for r in p1_roles if r.role_id == 3]

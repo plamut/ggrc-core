@@ -134,7 +134,7 @@ class TestExportMultipleObjects(TestCase):
         },
     ]
     response = self.export_csv(data).data
-    self.assertEquals(3, response.count("wf-1"))  # 1 for wf and 1 on each tg
+    self.assertEqual(3, response.count("wf-1"))  # 1 for wf and 1 on each tg
     self.assertIn("tg-1", response)
     self.assertIn("tg-6", response)
 
@@ -164,7 +164,7 @@ class TestExportMultipleObjects(TestCase):
         },
     ]
     response = self.export_csv(data).data
-    self.assertEquals(3, response.count("tg-1"))  # 2 for tasks and 1 for tg
+    self.assertEqual(3, response.count("tg-1"))  # 2 for tasks and 1 for tg
     self.assertIn("task-1", response)
     self.assertIn("task-7", response)
 
@@ -235,11 +235,11 @@ class TestExportMultipleObjects(TestCase):
         },
     ]
     response = self.export_csv(data).data
-    self.assertEquals(3, response.count("wf-1"))  # 2 for cycles and 1 for wf
+    self.assertEqual(3, response.count("wf-1"))  # 2 for cycles and 1 for wf
     # 3rd block = 2, 5th block = 11, 6th block = 2.
-    self.assertEquals(15, response.count("CYCLEGROUP-"))
-    self.assertEquals(17, response.count("CYCLE-"))
-    self.assertEquals(11, response.count("CYCLETASK-"))
+    self.assertEqual(15, response.count("CYCLEGROUP-"))
+    self.assertEqual(17, response.count("CYCLE-"))
+    self.assertEqual(11, response.count("CYCLETASK-"))
 
   def test_cycle_taks_objects(self):
     """ test cycle task and various objects """
@@ -267,6 +267,22 @@ class TestExportMultipleObjects(TestCase):
         },
     ]
     response = self.export_csv(data).data
-    self.assertEquals(2, response.count("CYCLETASK-"))
-    self.assertEquals(2, response.count("Policy: p1"))
+    self.assertEqual(2, response.count("CYCLETASK-"))
+    self.assertEqual(2, response.count("Policy: p1"))
     self.assertIn(",p1,", response)
+
+  def test_workflow_no_access_users(self):
+    """ test export of No Access users """
+    data = [
+        {
+            "object_name": "Workflow",
+            "fields": ["workflow_mapped"],
+            "filters": {
+                "expression": {}
+            }
+        }
+    ]
+    response = self.export_csv(data).data
+    users = response.splitlines()[2:-2]
+    expected = [",user20@ggrc.com"] * 10
+    self.assertEqual(expected, users)

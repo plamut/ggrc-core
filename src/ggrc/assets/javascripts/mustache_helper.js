@@ -762,8 +762,16 @@ Mustache.registerHelper("category_select", function (object, attr_name, category
   return defer_render(tag_prefix, get_select_html, options_dfd);
 });
 
-Mustache.registerHelper("get_permalink", function () {
+Mustache.registerHelper("get_permalink_url", function () {
   return window.location.href;
+});
+
+Mustache.registerHelper("get_permalink_for_object", function (instance, options) {
+  instance = resolve_computed(instance);
+  if (!instance.viewLink) {
+    return "";
+  }
+  return window.location.origin + instance.viewLink;
 });
 
 Mustache.registerHelper("get_view_link", function (instance, options) {
@@ -1412,6 +1420,19 @@ Mustache.registerHelper("capitalize", function (value, options) {
   return can.capitalize(value);
 });
 
+Mustache.registerHelper("lowercase", function (value, options) {
+  value = resolve_computed(value) || "";
+  return value.toLowerCase();
+});
+
+Mustache.registerHelper("assignee_types", function (value, options) {
+  value = resolve_computed(value) || "";
+  value = _.first(_.map(value.split(","), function (type) {
+    return _.trim(type).toLowerCase();
+  }));
+  return _.isEmpty(value) ? "none" : value;
+});
+
 Mustache.registerHelper("local_time_range", function (value, start, end, options) {
   var tokens = [];
   var sod;
@@ -1876,7 +1897,9 @@ Mustache.registerHelper("last_approved", function (instance, options) {
 Mustache.registerHelper("with_is_reviewer", function (review_task, options) {
   review_task = Mustache.resolve(review_task);
   var current_user_id = GGRC.current_user.id;
-  var is_reviewer = review_task && current_user_id == review_task.contact.id;
+  var is_reviewer = review_task &&
+      (current_user_id == review_task.contact.id ||
+      Permission.is_allowed("__GGRC_ADMIN__"));
   return options.fn(options.contexts.add({is_reviewer: is_reviewer}));
 });
 
@@ -2162,7 +2185,6 @@ Mustache.registerHelper("if_in", function (needle, haystack, options) {
   var found = haystack.some(function (h) {
     return h.trim() === needle;
   });
-
   return options[found ? "fn" : "inverse"](options.contexts);
 });
 
@@ -2340,6 +2362,54 @@ Mustache.registerHelper("if_auditor", function (instance, options) {
     return options.fn(options.contexts);
   }
   return options.inverse(options.contexts);
+});
+
+Mustache.registerHelper("if_verifiers_defined", function (instance, options) {
+  var verifiers;
+
+  instance = Mustache.resolve(instance);
+  instance = (!instance || instance instanceof CMS.Models.Request) ? instance : instance.reify();
+
+  if (!instance) {
+    return '';
+  }
+
+  verifiers = instance.get_binding('related_verifiers');
+
+  return defer_render('span', function(list) {
+    if (list.length) {
+      return options.fn(options.contexts);
+    }
+    return options.inverse(options.contexts);
+  }, verifiers.refresh_instances());
+});
+
+Mustache.registerHelper("if_verifier", function (instance, options) {
+  var user = GGRC.current_user,
+      verifiers;
+
+  instance = Mustache.resolve(instance);
+  instance = (!instance || instance instanceof CMS.Models.Request) ? instance : instance.reify();
+
+  if (!instance) {
+    return '';
+  }
+
+  verifiers = instance.get_binding('related_verifiers');
+
+  return defer_render('span', function(list) {
+    var llist = _.filter(list, function(item) {
+      if (item.instance.email == user.email) {
+        return true;
+      }
+      return false;
+    });
+
+    if (llist.length) {
+      return options.fn(options.contexts);
+    }
+    return options.inverse(options.contexts);
+  }, verifiers.refresh_instances());
 });
 
 can.each({
@@ -2727,8 +2797,11 @@ Mustache.registerHelper("with_allowed_as", function (name, action, mappings, opt
   return options.fn(options.contexts.add(ctx));
 });
 
-Mustache.registerHelper("log", function (obj) {
-  console.log('Mustache log', resolve_computed(obj));
+Mustache.registerHelper("log", function () {
+  var args = can.makeArray(arguments).slice(0, arguments.length - 1);
+  console.log.apply(console, ["Mustache log"].concat(_.map(args, function (arg) {
+    return resolve_computed(arg);
+  })));
 });
 
 Mustache.registerHelper("autocomplete_select", function (options) {
@@ -2933,6 +3006,66 @@ Mustache.registerHelper("if_draw_icon", function(instance, options) {
     return options.inverse(options.contexts);
 });
 
+/**
+ * Helper method for determining the file type of a Document object from its
+ * file name extension.
+ *
+ * @param {Object} instance - an instance of a model object of type "Document"
+ * @return {String} - determined file type or "default" for unknown/missing
+ *   file name extensions.
+ *
+ * @throws {String} If the type of the `instance` is not "Document" or if its
+ *   "title" attribute is empty.
+ */
+Mustache.registerHelper("file_type", function (instance) {
+  var extension,
+      filename,
+      parts,
+      DEFAULT_VALUE = "default",
+      FILE_EXTENSIONS;
+
+  FILE_EXTENSIONS = Object.freeze({
+    plainText: Object.freeze({txt: 1}),
+    image: Object.freeze(
+      {jpg: 1, jpeg: 1, png: 1, gif: 1, tiff: 1, bmp: 1}),
+    pdfDoc: Object.freeze({pdf: 1}),
+    officeDoc: Object.freeze({doc: 1, docx: 1, odt: 1}),
+    officeSpreadsheet: Object.freeze({xls: 1, xlsx: 1, ods: 1}),
+    archiveFile: Object.freeze({zip: 1, rar: 1, "7z": 1, gz: 1, tar: 1})
+  });
+
+  if (instance.type !== "Document") {
+    throw "Cannot determine file type for a non-document object";
+  }
+
+  filename = instance.title || "";
+  if (!filename) {
+    throw "Cannot determine the object's file name";
+  }
+
+  parts = filename.split(".");
+  extension = (parts.length === 1) ? "" : parts[parts.length - 1];
+  extension = extension.toLowerCase();
+
+  if (!extension) {
+    return DEFAULT_VALUE;
+  } else if (extension in FILE_EXTENSIONS.plainText) {
+    return "txt";
+  } else if (extension in FILE_EXTENSIONS.image) {
+    return "img";
+  } else if (extension in FILE_EXTENSIONS.pdfDoc) {
+    return "pdf";
+  } else if (extension in FILE_EXTENSIONS.officeDoc) {
+    return "doc";
+  } else if (extension in FILE_EXTENSIONS.officeSpreadsheet) {
+    return "xls";
+  } else if (extension in FILE_EXTENSIONS.archiveFile) {
+    return "zip";
+  } else {
+    return DEFAULT_VALUE;
+  }
+});
+
 Mustache.registerHelper("debugger", function () {
   // This just gives you a helper that you can wrap around some code in a
   // template to see what's in the context. Dev tools need to be open for this
@@ -3089,7 +3222,7 @@ Mustache.registerHelper("with_create_issue_json", function (instance, options) {
   instance = Mustache.resolve(instance);
 
   var audits = instance.get_mapping("related_audits"),
-      audit, programs, program, control, json;
+      audit, programs, program, control, json, related_controls;
 
   if (!audits.length) {
     return "";
@@ -3099,7 +3232,11 @@ Mustache.registerHelper("with_create_issue_json", function (instance, options) {
   programs = audit.get_mapping("_program");
   program = programs[0].instance.reify();
   control = instance.control ? instance.control.reify() : {};
+  related_controls = instance.get_mapping('related_controls');
 
+  if (!control.id && related_controls.length) {
+    control = related_controls[0].instance;
+  }
   json = {
     audit: {title: audit.title, id: audit.id, type: audit.type},
     program: {title: program.title, id: program.id, type: program.type},
@@ -3144,7 +3281,7 @@ Example:
     {{log .}} // {example1: "a", example2: "b"}
   {{/add_to_current_scope}}
 */
-Mustache.registerHelper("add_to_current_scope", function(options) {
+Mustache.registerHelper("add_to_current_scope", function (options) {
   return options.fn(options.contexts.add(_.extend({}, options.context, options.hash)));
 });
 

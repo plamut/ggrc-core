@@ -75,10 +75,10 @@ class TestOneTimeWfEndDateChange(TestCase):
     with freeze_time("2015-05-02 03:21:34"):
       send_todays_digest_notifications()
       _, notif_data = notification.get_todays_notifications()
-      self.assertEquals(notif_data, {})
+      self.assertEqual(notif_data, {})
 
       # one email to owner and one to assigne
-      self.assertEquals(mock_mail.call_count, 2)
+      self.assertEqual(mock_mail.call_count, 2)
 
     with freeze_time("2015-05-04 03:21:34"):  # one day befor due date
       _, notif_data = notification.get_todays_notifications()
@@ -90,10 +90,10 @@ class TestOneTimeWfEndDateChange(TestCase):
     with freeze_time("2015-05-04 03:21:34"):  # one day befor due date
       send_todays_digest_notifications()
       _, notif_data = notification.get_todays_notifications()
-      self.assertEquals(notif_data, {})
+      self.assertEqual(notif_data, {})
 
       # one email to owner and one to assigne
-      self.assertEquals(mock_mail.call_count, 3)
+      self.assertEqual(mock_mail.call_count, 3)
 
     with freeze_time("2015-05-05 03:21:34"):  # due date
       _, notif_data = notification.get_todays_notifications()
@@ -131,10 +131,10 @@ class TestOneTimeWfEndDateChange(TestCase):
     with freeze_time("2015-05-02 03:21:34"):
       send_todays_digest_notifications()
       _, notif_data = notification.get_todays_notifications()
-      self.assertEquals(notif_data, {})
+      self.assertEqual(notif_data, {})
 
       # one email to owner and one to assigne
-      self.assertEquals(mock_mail.call_count, 2)
+      self.assertEqual(mock_mail.call_count, 2)
 
     with freeze_time("2015-05-03 03:21:34"):
       cycle = Cycle.query.get(cycle.id)
@@ -151,11 +151,11 @@ class TestOneTimeWfEndDateChange(TestCase):
     with freeze_time("2015-05-04 03:21:34"):  # one day befor due date
       _, notif_data = notification.get_todays_notifications()
       user = get_person(self.user.id)
-      self.assertEquals(notif_data, {})
+      self.assertEqual(notif_data, {})
 
     with freeze_time("2015-05-05 03:21:34"):  # due date
       _, notif_data = notification.get_todays_notifications()
-      self.assertEquals(notif_data, {})
+      self.assertEqual(notif_data, {})
 
     with freeze_time("2015-05-14 03:21:34"):  # due date
       _, notif_data = notification.get_todays_notifications()
@@ -189,10 +189,10 @@ class TestOneTimeWfEndDateChange(TestCase):
     with freeze_time("2015-05-02 03:21:34"):
       send_todays_digest_notifications()
       _, notif_data = notification.get_todays_notifications()
-      self.assertEquals(notif_data, {})
+      self.assertEqual(notif_data, {})
 
       # one email to owner and one to assigne
-      self.assertEquals(mock_mail.call_count, 2)
+      self.assertEqual(mock_mail.call_count, 2)
 
     with freeze_time("2015-05-03 03:21:34"):
       cycle = Cycle.query.get(cycle.id)
@@ -208,15 +208,15 @@ class TestOneTimeWfEndDateChange(TestCase):
 
     with freeze_time("2015-05-03 03:21:34"):  # one day befor due date
       _, notif_data = notification.get_todays_notifications()
-      self.assertEquals(notif_data, {})
+      self.assertEqual(notif_data, {})
 
     with freeze_time("2015-05-04 03:21:34"):  # due date
       _, notif_data = notification.get_todays_notifications()
-      self.assertEquals(notif_data, {})
+      self.assertEqual(notif_data, {})
 
     with freeze_time("2015-05-05 03:21:34"):  # due date
       _, notif_data = notification.get_todays_notifications()
-      self.assertEquals(notif_data, {})
+      self.assertEqual(notif_data, {})
 
   @patch("ggrc.notification.email.send_email")
   def test_move_end_date_to_today(self, mock_mail):
@@ -232,10 +232,10 @@ class TestOneTimeWfEndDateChange(TestCase):
     with freeze_time("2015-05-02 03:21:34"):
       send_todays_digest_notifications()
       _, notif_data = notification.get_todays_notifications()
-      self.assertEquals(notif_data, {})
+      self.assertEqual(notif_data, {})
 
       # one email to owner and one to assigne
-      self.assertEquals(mock_mail.call_count, 2)
+      self.assertEqual(mock_mail.call_count, 2)
 
     with freeze_time("2015-05-03 03:21:34"):
       cycle = Cycle.query.get(cycle.id)
@@ -271,7 +271,7 @@ class TestOneTimeWfEndDateChange(TestCase):
 
     with freeze_time("2015-05-05 03:21:34"):  # due date
       _, notif_data = notification.get_todays_notifications()
-      self.assertEquals(notif_data, {})
+      self.assertEqual(notif_data, {})
 
   def create_test_cases(self):
     def person_dict(person_id):

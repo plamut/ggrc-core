@@ -11,6 +11,7 @@ description = """
 permissions = {
     "read": [
         "Request",
+        "Comment",
         "ControlAssessment",
         "Issue",
         "DocumentationResponse",

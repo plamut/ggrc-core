@@ -50,23 +50,35 @@
             </div>
             <div class="span3">
               <h6>Network Zone</h6>
-              <p>
-                {{#using network_zone=network_zone}}
+              {{#using network_zone=network_zone}}
+              {{#if network_zone}}
+                <p>
                   {{network_zone.title}}
-                {{/using}}
-              </p>
+                </p>
+              {{else}}
+                <span class="empty-message">None</span>
+              {{/if}}
+              {{/using}}
             </div>
             <div class="span3">
               <h6>Effective Date</h6>
-              <p>
-                {{localize_date start_date}}
-              </p>
+              {{#if start_date}}
+                <p>
+                  {{localize_date start_date}}
+                </p>
+              {{else}}
+                <span class="empty-message">None</span>
+              {{/if}}
             </div>
             <div class="span3">
               <h6>Stop Date</h6>
-              <p>
-                {{localize_date end_date}}
-              </p>
+              {{#if end_date}}
+                <p>
+                  {{localize_date end_date}}
+                </p>
+              {{else}}
+                <span class="empty-message">None</span>
+              {{/if}}
             </div>
           </div>
         </div>

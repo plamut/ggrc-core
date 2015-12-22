@@ -7,21 +7,32 @@
 
 <h6>Dates</h6>
 <div class="side-content">
-  <ul class="label-list dates">
-    <li class="gray">
-      <label>
-        Created on
-      </label>
-      {{date created_at notime}}
-    </li>
-    <li>
-      <span class="file-controls">
-        <a href="javascript://"><i class="grcicon-edit"></i></a>
-      </span>
-      <label>
-        Due on
-      </label>
-      {{date due_on notime}}
-    </li>
-  </ul>
+  <div {{#instance}}{{data "model"}}{{/instance}} {{ (el) -> el.ggrc_controllers_quick_form({ instance : el.data("model")}); }}>
+    <ul class="label-list dates">
+      <li class="gray">
+        <label>
+          Created on
+        </label>
+        <span name="created_at">{{date created_at notime}}</span>
+      </li>
+      <li>
+        {{#toggle change_due_date}}
+          <label>Due on</label>
+          <input tabindex="5" class="span8 input-block-level date" name="due_on" data-toggle="datepicker" data-after="created_at" placeholder="MM/DD/YYYY" type="text" value="{{localize_date due_on}}">
+        {{else}}
+          {{#is_allowed 'update' instance}}
+            {{#if_in instance.status "In Progress"}}
+              <span class="file-controls">
+                <a href="javascript://" {{toggle_button}}><i class="grcicon-edit"></i></a>
+              </span>
+            {{/if_in}}
+          {{/is_allowed}}
+          <label>
+            Due on
+          </label>
+          {{date due_on notime}}
+        {{/toggle}}
+      </li>
+    </ul>
+  </div>
 </div>

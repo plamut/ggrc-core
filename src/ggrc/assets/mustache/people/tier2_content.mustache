@@ -5,30 +5,7 @@
     Maintained By: brad@reciprocitylabs.com
 }}
 
-{{#if_helpers "\
-   #is_allowed" "view_object_page" instance "\
-   or #if" options.allowed_mapping}}
-<div class="details-wrap">
-  <a class="btn btn-small btn-draft dropdown-toggle" href="#" data-toggle="dropdown"><i class="grcicon-setup-color"></i></a>
-  <ul class="dropdown-menu" aria-labelledby="drop1" role="menu">
-    {{#if instance.viewLink}}
-      {{#is_allowed "view_object_page" instance}}
-        <li>
-          <a href="{{instance.viewLink}}">
-            <i class="grcicon-goto"></i>
-            View {{instance.class.title_singular}}
-          </a>
-        </li>
-      {{/is_allowed}}
-    {{/if}}
-    {{#if is_in_selector}}
-    {{else}}
-      {{> /static/mustache/base_objects/unmap.mustache}}
-    {{/if}}
-  </ul>
-</div>
-{{/if_helpers}}
-
+{{> /static/mustache/base_objects/dropdown_menu_tier2.mustache}}
 
 <div class="tier-content">
   {{#if instance.email}}

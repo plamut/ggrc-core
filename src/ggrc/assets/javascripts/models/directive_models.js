@@ -164,7 +164,9 @@ CMS.Models.Directive("CMS.Models.Policy", {
     this.tree_view_options.attr_list = can.Model.Cacheable.attr_list.concat([
       {attr_title: 'Type', attr_name: 'kind', attr_sort_field: 'kind.title'},
       {attr_title: 'Effective Date', attr_name: 'start_date'},
-      {attr_title: 'Stop Date', attr_name: 'end_date'}
+      {attr_title: 'Stop Date', attr_name: 'end_date'},
+      {attr_title: 'URL', attr_name: 'url'},
+      {attr_title: 'Reference URL', attr_name: 'reference_url'}
     ]);
     this._super.apply(this, arguments);
   }

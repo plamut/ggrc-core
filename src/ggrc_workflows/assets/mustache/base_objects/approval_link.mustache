@@ -49,7 +49,7 @@
                   "cycle" : {{review_task.cycle.id}}, \
                   "cycle_task_group_object_task" : {{review_task.id}}, \
                   "is_declining_review" : 1, \
-                  "context": {{firstexist review_task.context.id "null"}} }'
+                  "context": {{firstnonempty review_task.context.id "null"}} }'
                 data-object-plural="cycle_task_entries"
                 data-object-id=""
                 data-placement="right"

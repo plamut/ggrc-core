@@ -3,17 +3,16 @@
 # Created By: anze@reciprocitylabs.com
 # Maintained By: anze@reciprocitylabs.com
 
-from alembic import op
-from ggrc.migrations.utils import resolve_duplicates
-from ggrc.models import Vendor
-
-
-"""Add missing constraints
+"""Add missing constraints for vendors
 
 Revision ID: 35e5344803b4
 Revises: 27684e5f313a
 Create Date: 2015-11-12 14:55:24.420680
 """
+
+from alembic import op
+from ggrc.migrations.utils import resolve_duplicates
+from ggrc.models import Vendor
 
 # revision identifiers, used by Alembic.
 revision = '35e5344803b4'

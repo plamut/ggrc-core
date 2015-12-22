@@ -72,7 +72,11 @@
         <div class="tier-2-info-content">
 
           <div class="details-wrap">
-            <a class="btn btn-small btn-draft dropdown-toggle" href="#" data-toggle="dropdown"><i class="grcicon-setup-color"></i></a>
+            <a class="btn btn-small btn-draft dropdown-toggle" href="#" data-toggle="dropdown">
+              <span class="bubble"></span>
+              <span class="bubble"></span>
+              <span class="bubble"></span>
+            </a>
             <ul class="dropdown-menu" aria-labelledby="drop1" role="menu">
               <li>
                 <a href="/people/{{id}}">
@@ -100,41 +104,49 @@
           </div>
 
           <div class="tier-content">
-            {{#if_match name '\\\\S'}}
-              {{#name}}
-                <div class="row-fluid wrap-row">
-                  <div class="span12">
-                    <h6>Name</h6>
+            <div class="row-fluid wrap-row">
+              <div class="span12">
+                <h6>Name</h6>
+                {{#if_match name '\\\\S'}}
+                  {{#name}}
                     <h3>{{name}}</h3>
-                  </div>
-                </div>
-              {{/name}}
-            {{/if_match}}
+                  {{/name}}
+                {{else}}
+                  <span class="empty-message">None</span>
+                {{/if_match}}
+              </div>
+            </div>
 
-            {{#if_match email '\\\\S'}}
-              {{#email}}
-                <div class="row-fluid wrap-row">
-                  <div class="span12">
-                    <h6>Email</h6>
+            <div class="row-fluid wrap-row">
+              <div class="span12">
+                <h6>Email</h6>
+                {{#if_match email '\\\\S'}}
+                  {{#email}}
                     <p>
                       <a href='mailto:{{email}}' target="_blank">
                         {{email}}
                       </a>
                     </p>
-                  </div>
-                </div>
-              {{/email}}
-            {{/if}}
-            {{#if_match company '\\\\S'}}
-              {{#company}}
-                <div class="row-fluid wrap-row">
-                  <div class="span12">
-                    <h6>Company</h6>
+                  {{/email}}
+                {{else}}
+                  <span class="empty-message">None</span>
+                {{/if_match}}
+              </div>
+            </div>
+
+            <div class="row-fluid wrap-row">
+              <div class="span12">
+                <h6>Company</h6>
+                {{#if_match company '\\\\S'}}
+                  {{#company}}
                     {{company}}
-                  </div>
-                </div>
-              {{/company}}
-            {{/if_match}}
+                  {{/company}}
+                {{else}}
+                  <span class="empty-message">None</span>
+                {{/if_match}}
+              </div>
+            </div>
+
             <div class="row-fluid wrap-row">
               <div class="span12">
                 <h6>Authorizations</h6>

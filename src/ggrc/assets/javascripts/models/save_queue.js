@@ -53,7 +53,7 @@
           var cb = function(single) {
             return function () {
               this.created(single[1][bucket.type]);
-              return new $.Deferred().resolve();
+              return $.when(can.Model.Cacheable.resolve_deferred_bindings(this));
             };
           };
           for (var i = 0; i < objs.length; i++) {

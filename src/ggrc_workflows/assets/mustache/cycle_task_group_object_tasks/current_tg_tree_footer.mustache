@@ -11,15 +11,15 @@
     <li class="tree-footer tree-item tree-item-add">
       <div class="row-fluid">
         <div class="span12">
-        {{#with_mapping 'owners' parent_instance}}       
+        {{#with_mapping 'owners' parent_instance}}
           <a href="javascript://" class="section-create" data-toggle="modal-ajax-form" data-modal-reset="reset" data-modal-class="modal-wide" data-object-singular="CycleTask" data-object-plural="cycle_task_group_object_tasks" data-object-params='{ \
             "cycle_task_group_object": {{current_task_group_objects.0.instance.id}}, \
             "cycle": {{current_task_group_objects.0.instance.cycle.id}}, \
             "task_group": {{cycle_task_group.task_group.id}}, \
             "sort_index": "{{sort_index_at_end original_list}}", \
-            "contact": { "id" : {{firstexist owners.0.instance.id "null"}} , "type": "Person" }, \
-            "owners": [{ "id" : {{firstexist owners.0.instance.id "null"}} , "type": "Person" }], \
-            "context": { "id" : {{firstexist cycle_task_group.context.id "null"}} }, \
+            "contact": { "id" : {{firstnonempty owners.0.instance.id "null"}} , "type": "Person" }, \
+            "owners": [{ "id" : {{firstnonempty owners.0.instance.id "null"}} , "type": "Person" }], \
+            "context": { "id" : {{firstnonempty cycle_task_group.context.id "null"}} }, \
             "modal_title": "Add Task" }'>
             <strong>Add Task</strong>
           </a>

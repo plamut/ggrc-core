@@ -15,6 +15,9 @@
             <div class="row-fluid">
               <div class="span{{display_options.title_width}}">
                 <div class="title tree-title-area" rel="tooltip" data-placement="left" title="" data-original-title="{{instance.title}}">
+                  {{#if_draw_icon instance}}
+                    <i class="grcicon-{{instance.class.table_singular}}-color"></i>
+                  {{/if_draw_icon}}
                   {{instance.title}}
                 </div>
               </div>

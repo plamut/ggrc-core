@@ -5,29 +5,7 @@
     Maintained By: brad@reciprocitylabs.com
 }}
 
-{{#if_helpers "\
-   #if" options.allow_mapping "\
-   or #is_allowed" "update" instance "\
-   or #is_allowed" "view_object_page" "Program" "\
-   " _2_context=instance.context}}
-<div class="details-wrap">
-  <a class="btn btn-small btn-draft dropdown-toggle" href="#" data-toggle="dropdown"><i class="grcicon-setup-color"></i></a>
-  <ul class="dropdown-menu" aria-labelledby="drop1" role="menu">
-    {{#if instance.viewLink}}
-      {{#is_allowed 'view_object_page' 'Program' context=instance.context}}
-        <li>
-          <a href="{{instance.viewLink}}">
-            <i class="grcicon-goto"></i>
-            View {{instance.class.title_singular}}
-          </a>
-        </li>
-      {{/is_allowed}}
-    {{/if}}
-    {{> /static/mustache/base_objects/unmap.mustache}}
-    {{> /static/mustache/base_objects/edit_object_link.mustache}}
-  </ul>
-</div>
-{{/if_helpers}}
+{{> /static/mustache/base_objects/dropdown_menu_tier2.mustache}}
 
 <div class="tier-content">
   {{{render '/static/mustache/base_objects/general_info.mustache' instance=instance }}}

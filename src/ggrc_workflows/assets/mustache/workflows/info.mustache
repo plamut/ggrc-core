@@ -30,7 +30,7 @@
               </a>
             </li>
             <li>
-              <clipboard-link title="Get permalink" notify="true" text="{{get_permalink}}" />
+              <clipboard-link title="Get permalink" notify="true" text="{{get_permalink_url}}" />
             </li>
             <li>
               <workflow-clone workflow="instance">
@@ -99,7 +99,7 @@
       <div class="span12">
         <h6>Description</h6>
         <div class="rtf-block">
-          <p>{{{firstnonempty instance.description '<em>No description</em>'}}}</p>
+          <p>{{{firstnonempty instance.description '<span class="empty-message">None</span>'}}}</p>
         </div>
       </div>
     </div>

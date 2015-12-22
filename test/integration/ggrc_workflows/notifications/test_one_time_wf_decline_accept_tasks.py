@@ -189,7 +189,7 @@ class TestCycleTaskStatusChange(TestCase):
       self.task_change_status(task1, "Finished")
 
       _, notif_data = notification.get_todays_notifications()
-      self.assertEquals(notif_data, {})
+      self.assertEqual(notif_data, {})
 
     with freeze_time("2015-05-02"):
       send_todays_digest_notifications()
@@ -229,7 +229,7 @@ class TestCycleTaskStatusChange(TestCase):
       self.task_change_status(task1, "Finished")
 
       _, notif_data = notification.get_todays_notifications()
-      self.assertEquals(notif_data, {})
+      self.assertEqual(notif_data, {})
 
     with freeze_time("2015-05-03"):
       cycle = Cycle.query.get(cycle.id)

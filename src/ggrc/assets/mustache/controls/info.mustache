@@ -52,29 +52,41 @@
             </div>
             <div class="span3">
               <h6>Principal Assessor</h6>
-              <p>
-                {{#using assessor=instance.principal_assessor}}
+              {{#using assessor=instance.principal_assessor}}
+              {{#if instance.principal_assessor}}
+                <p>
                   {{{render '/static/mustache/people/popover.mustache' person=assessor}}}
-                {{/using}}
-              </p>
+                </p>
+              {{else}}
+                <span class="empty-message">None</span>
+              {{/if}}
+              {{/using}}
             </div>
             <div class="span3">
               <h6>Secondary Assessor</h6>
-              <p>
-                {{#using assessor=instance.secondary_assessor}}
+              {{#using assessor=instance.secondary_assessor}}
+              {{#if instance.secondary_assessor}}
+                <p>
                   {{{render '/static/mustache/people/popover.mustache' person=assessor}}}
-                {{/using}}
-              </p>
+                </p>
+              {{else}}
+                <span class="empty-message">None</span>
+              {{/if}}
+              {{/using}}
             </div>
           </div>
           <div class="row-fluid wrap-row">
             <div class="span3">
               <h6>Kind/Nature</h6>
-              <p>
-                {{#using kind=kind}}
-                  {{kind.title}}
-                {{/using}}
-              </p>
+              {{#if kind}}
+                <p>
+                  {{#using kind=kind}}
+                    {{kind.title}}
+                  {{/using}}
+                </p>
+              {{else}}
+                <span class="empty-message">None</span>
+              {{/if}}
             </div>
             <div class="span3">
               <h6>Fraud Related</h6>
@@ -84,6 +96,11 @@
                 {{/if}}
                 {{#if_equals fraud_related "1"}}
                   Yes
+                {{/if}}
+                {{^if_equals fraud_related "0" }}
+                  {{^if_equals fraud_related "1" }}
+                    <span class="empty-message">None</span>
+                  {{/if}}
                 {{/if}}
               </p>
             </div>
@@ -96,58 +113,87 @@
                 {{#if_equals key_control "0"}}
                   Non-Key
                 {{/if}}
+                {{^if_equals key_control "0" }}
+                  {{^if_equals key_control "1" }}
+                    <span class="empty-message">None</span>
+                  {{/if}}
+                {{/if}}
               </p>
             </div>
             <div class="span3">
               <h6>Type/Means</h6>
-              <p>
-                {{#using means=means}}
-                  {{means.title}}
-                {{/using}}
-              </p>
+              {{#if means}}
+                <p>
+                  {{#using means=means}}
+                    {{means.title}}
+                  {{/using}}
+                </p>
+              {{else}}
+                <span class="empty-message">None</span>
+              {{/if}}
             </div>
           </div>
           <div class="row-fluid wrap-row">
             <div class="span3">
               <h6>Effective Date</h6>
-              <p>
-                {{localize_date start_date}}
-              </p>
+              {{#if start_date}}
+                <p>
+                  {{localize_date start_date}}
+                </p>
+              {{else}}
+                <span class="empty-message">None</span>
+              {{/if}}
             </div>
             <div class="span3">
               <h6>Stop Date</h6>
-              <p>
-                {{localize_date end_date}}
-              </p>
+              {{#if end_date}}
+                <p>
+                  {{localize_date end_date}}
+                </p>
+              {{else}}
+                <span class="empty-message">None</span>
+              {{/if}}
             </div>
             <div class="span3">
               <h6>Frequency</h6>
-              <p>
-                {{#using verify_frequency=verify_frequency}}
-                  {{verify_frequency.title}}
-                {{/using}}
-              </p>
+              {{#if verify_frequency}}
+                <p>
+                  {{#using verify_frequency=verify_frequency}}
+                    {{verify_frequency.title}}
+                  {{/using}}
+                </p>
+              {{else}}
+                <span class="empty-message">None</span>
+              {{/if}}
             </div>
           </div>
           <div class="row-fluid wrap-row">
             <div class="span6">
               <h6>Assertions</h6>
               {{#using items=assertions}}
-              <ul>
-                {{#items}}
-                  <li>{{name}}</li>
-                {{/items}}
-              </ul>
+              {{#if assertions}}
+                <ul>
+                  {{#items}}
+                    <li>{{name}}</li>
+                  {{/items}}
+                </ul>
+              {{else}}
+                <span class="empty-message">None</span>
+              {{/if}}
               {{/using}}
             </div>
             <div class="span6">
               <h6>Categories</h6>
               {{#using items=categories}}
-              <ul>
-                {{#items}}
-                  <li>{{name}}</li>
-                {{/items}}
-              </ul>
+              {{#if categories}}
+                <ul>
+                  {{#items}}
+                    <li>{{name}}</li>
+                  {{/items}}
+                </ul>
+              {{else}}
+                <span class="empty-message">None</span>
+              {{/if}}
               {{/using}}
             </div>
           </div>

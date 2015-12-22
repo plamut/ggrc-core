@@ -51,21 +51,33 @@
             </div>
             <div class="span3">
               <h6>Kind/Type</h6>
-              <p>
-                {{kind}}
-              </p>
+              {{#if kind}}
+                <p>
+                  {{kind}}
+                </p>
+              {{else}}
+                <span class="empty-message">None</span>
+              {{/if}}
             </div>
             <div class="span3">
               <h6>Effective Date</h6>
-              <p>
-                {{localize_date start_date}}
-              </p>
+              {{#if start_date}}
+                <p>
+                  {{localize_date start_date}}
+                </p>
+              {{else}}
+                <span class="empty-message">None</span>
+              {{/if}}
             </div>
             <div class="span3">
               <h6>Stop Date</h6>
-              <p>
-                {{localize_date end_date}}
-              </p>
+              {{#if end_date}}
+                <p>
+                  {{localize_date end_date}}
+                </p>
+              {{else}}
+                <span class="empty-message">None</span>
+              {{/if}}
             </div>
           </div>
         </div>

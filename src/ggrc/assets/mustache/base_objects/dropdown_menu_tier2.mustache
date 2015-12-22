@@ -1,0 +1,53 @@
+{{!
+    Copyright (C) 2015 Google Inc., authors, and contributors <see AUTHORS file>
+    Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
+    Created By: jure@reciprocitylabs.com
+    Maintained By: jure@reciprocitylabs.com
+}}
+
+{{#if_helpers "\
+   #is_allowed" "view_object_page" instance "\
+   or #if" options.allow_mapping "\
+   or #is_allowed" "update" instance}}
+<div class="details-wrap">
+  <a class="btn btn-small btn-draft dropdown-toggle"
+     href="#"
+     data-toggle="dropdown">
+       <span class="bubble"></span>
+       <span class="bubble"></span>
+       <span class="bubble"></span>
+  </a>
+
+  <ul class="dropdown-menu" aria-labelledby="drop1" role="menu">
+
+    {{> /static/mustache/base_objects/edit_object_link.mustache}}
+
+    <li>
+      <clipboard-link title="Get permalink" notify="true" text="{{get_permalink_for_object instance}}" />
+    </li>
+
+    {{> /static/mustache/base_objects/unmap.mustache}}
+
+    {{#if instance.viewLink}}
+      {{#is_allowed "view_object_page" instance}}
+        <li>
+          <a href="{{instance.viewLink}}">
+            <i class="grcicon-goto"></i>
+            View {{instance.class.title_singular}}
+          </a>
+        </li>
+      {{/is_allowed}}
+    {{/if}}
+
+    {{#is_allowed 'delete' instance}}
+      <li>
+        <a data-toggle="modal-ajax-deleteform" data-object-plural="{{instance.class.model_plural}}" data-object-singular="{{instance.class.model_singular}}" data-modal-reset="reset" data-modal-class="modal" data-object-id="{{instance.id}}" href="javascript://">
+          <i class="grcicon-deleted"></i>
+          Delete
+        </a>
+      </li>
+    {{/is_allowed}}
+
+  </ul>
+</div>
+{{/if_helpers}}

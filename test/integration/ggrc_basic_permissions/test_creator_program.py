@@ -198,7 +198,7 @@ class TestCreatorProgram(TestCase):
     response = self.api.post(all_models.Program, {
         "program": {"title": random_title, "context": None},
     })
-    self.assertEquals(response.status_code, 201)
+    self.assertEqual(response.status_code, 201)
     context_id = response.json.get("program").get("context").get("id")
     program_id = response.json.get("program").get("id")
     self.objects["program"] = all_models.Program.query.get(program_id)
@@ -208,7 +208,7 @@ class TestCreatorProgram(TestCase):
       response = self.api.post(all_models.System, {
           "system": {"title": random_title, "context": None},
       })
-      self.assertEquals(response.status_code, 201)
+      self.assertEqual(response.status_code, 201)
       system_id = response.json.get("system").get("id")
       self.objects[obj] = all_models.System.query.get(system_id)
       # Become the owner
@@ -230,7 +230,7 @@ class TestCreatorProgram(TestCase):
             "type": "System"
         }, "context": None},
     })
-    self.assertEquals(response.status_code, 201)
+    self.assertEqual(response.status_code, 201)
 
     # Map people to Program:
     if test_case_name != "notmapped":
@@ -268,7 +268,7 @@ class TestCreatorProgram(TestCase):
               "id": context_id,
               "href": "/api/contexts/{}".format(context_id)
           }}})
-      self.assertEquals(response.status_code, 201)
+      self.assertEqual(response.status_code, 201)
 
   def test_creator_program_roles(self):
     """ Test creator role with all program scoped roles """
@@ -293,4 +293,79 @@ class TestCreatorProgram(TestCase):
                 "{}: Tried {} on {}, but received {} instead of {}".format(
                     test_case, action, obj, res, actions[action]))
       # Try mapping
-    self.assertEquals(errors, [])
+    self.assertEqual(errors, [])
+
+  def test_creator_audit_request_creation(self):
+    self.init_objects("ProgramOwner")
+    program = self.objects.get("program")
+    creator = self.people.get("creator")
+    # Create an audit
+    response = self.api.post(all_models.Audit, {
+        "audit": {
+            "title": "Audit for program",
+            "status": "Planned",
+            "context": {
+                "id": program.context_id,
+                "type": "Context"
+            },
+            "program": {
+                "context_id": program.context_id,
+                "id": program.id,
+                "type": "Program",
+            },
+            "contact": {
+                "id": creator.id,
+                "type": "Person"
+            }
+        },
+    })
+    self.assertEqual(response.status_code, 201)
+    audit_id = response.json.get("audit").get("id")
+    audit_context_id = response.json.get("audit").get("context").get("id")
+    # Create a request
+    response = self.api.post(all_models.Request, {
+        "request": {
+            "title": "Request for audit",
+            "status": "In Progress",
+            "context": {
+                "id": audit_context_id,
+                "type": "Context"
+            },
+            "audit": {
+                "id": audit_id,
+                "type": "Audit",
+            },
+            "due_on": "2015-12-08",
+            "requested_on": "2015-12-01",
+            "request_type": "documentation"
+        },
+    })
+    self.assertEqual(response.status_code, 201)
+    request_id = response.json.get("request").get("id")
+
+    # Create assignee/requester relationships
+    assignee = self.people.get("notmapped")
+    response = self.api.post(all_models.Relationship, {
+        "relationship": {
+            "attrs": {
+                "AssigneeType": "Assignee"
+            },
+            "context": {
+                "id": audit_context_id,
+                "type": "Context",
+            },
+            "destination": {
+                "id": request_id,
+                "type": "Request",
+            },
+            "source": {
+                "id": assignee.id,
+                "type": "Person"
+            }
+        },
+    })
+    self.assertEqual(response.status_code, 201)
+    relationship_id = response.json.get("relationship").get("id")
+    response = self.api.get_collection(all_models.Relationship, relationship_id)
+    num = len(response.json["relationships_collection"]["relationships"])
+    self.assertEqual(num, 2)

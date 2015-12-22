@@ -7,16 +7,21 @@
 
 {{#is_allowed 'update' instance context='for'}}
   <div {{#instance}}{{data 'model'}}{{/instance}} {{ (el) -> el.ggrc_controllers_quick_form({instance : el.data("model") }) }}>
-    {{#if_equals instance.status "Unstarted"}}
-      <button href="javascript://" class="btn btn-small btn-primary pull-right btn-info-pin-header {{instance._disabled}}" data-name="status" data-value="In Progress">Start</button>
-    {{/if_equals}}
-    {{#if_equals instance.status "In Progress"}}
-      <button href="javascript://" class="btn btn-small btn-primary pull-right btn-info-pin-header {{instance._disabled}}" data-name="status" data-value="Finished">Finish</button>
-    {{/if_equals}}
-    {{#if_equals instance.status "Finished"}}
+
+  {{#if_in instance.status "Open,In Progress"}}
+    {{#if_verifiers_defined instance}}
+        <button href="javascript://" class="btn btn-small btn-primary pull-right btn-info-pin-header {{instance._disabled}}" data-name="status" data-value="Finished">Finish</button>
+    {{else}}
+        <button href="javascript://" class="btn btn-small btn-primary pull-right btn-info-pin-header {{instance._disabled}}" data-name="status" data-value="Final">Finish</button>
+    {{/if_verifiers_defined}}
+  {{/if_in}}
+
+  {{#if_equals instance.status "Finished"}}
+    {{#if_verifier instance}}
       <button href="javascript://" class="btn btn-small btn-success pull-right btn-info-pin-header {{instance._disabled}}" data-name="status" data-value="Verified">Verify</button>
       <button href="javascript://" class="btn btn-small btn-danger pull-right btn-info-pin-header {{instance._disabled}}" data-name="status" data-value="In Progress">Decline</button>
-    {{/if_equals}}
+    {{/if_verifier}}
+  {{/if_equals}}
 
     {{#instance._undo.0}}
         <a href="javascript://" data-name="status" data-value="{{instance._undo.0}}" data-undo="true" class="undo btn-info-pin-header pull-right {{instance._disabled}}">Undo</a>

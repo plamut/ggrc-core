@@ -35,6 +35,6 @@ before_script:
 script:
   - bin/run_travis_tests unit
   - bin/run_travis_tests integration
-  - ./node_modules/karma/bin/karma start karma.conf.js --single-run
+  - ./node_modules/karma/bin/karma start karma.conf.js --single-run --reporters dots
 notifications:
   email: false

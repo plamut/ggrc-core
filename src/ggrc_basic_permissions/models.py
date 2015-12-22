@@ -130,7 +130,8 @@ class UserRole(Base, db.Model):
         orm.subqueryload('context'))
 
   def _display_name(self):
-    if self.context and self.context.related_object:
+    if self.context and self.context.related_object_type and \
+       self.context.related_object:
       context_related = ' in ' + self.context.related_object.display_name
     elif hasattr(self, '_display_related_title'):
       context_related = ' in ' + self._display_related_title
@@ -228,4 +229,3 @@ def get_ids_related_to(object_type, related_type, related_ids):
   if len(non_empty) == 0:
     return None
   return non_empty.pop().union(*non_empty)
-

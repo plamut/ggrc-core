@@ -15,7 +15,7 @@ def resolve_duplicates(model, attr, separator=u"-"):
       v0.id > v1.id
   ))
   for v in query:
-    i = 0
+    i = 1
     nattr = "{}{}{}".format(getattr(v, attr, model.type), separator, i)
     while db.session.query(model).\
             filter(getattr(model, attr) == nattr).count():

@@ -7,11 +7,14 @@ import datetime
 
 from ggrc import db
 from sqlalchemy import or_
+from sqlalchemy import and_
 from sqlalchemy import inspect
-from sqlalchemy.ext.declarative import declared_attr
+from sqlalchemy import orm
 
-from ggrc.models.audit import Audit
-from ggrc.models.audit_object import AuditObject
+
+from ggrc.models import person
+from ggrc.models import audit
+from ggrc.models import reflection
 from ggrc.models.mixins import Assignable
 from ggrc.models.mixins import Base
 from ggrc.models.mixins import CustomAttributable
@@ -20,8 +23,10 @@ from ggrc.models.mixins import Described
 from ggrc.models.mixins import Slugged
 from ggrc.models.mixins import Titled
 from ggrc.models.object_document import Documentable
+from ggrc.models.object_document import ObjectDocument
 from ggrc.models.object_person import Personable
 from ggrc.models.relationship import Relatable
+from ggrc.models import relationship
 from ggrc.services.common import Resource
 
 
@@ -31,7 +36,7 @@ class Request(Assignable, Documentable, Personable, CustomAttributable,
   _title_uniqueness = False
 
   VALID_TYPES = (u'documentation', u'interview')
-  VALID_STATES = (u'Unstarted', u'In Progress', u'Finished', u'Verified')
+  VALID_STATES = (u'Open', u'In Progress', u'Finished', u'Verified', u'Final')
   ASSIGNEE_TYPES = (u'Assignee', u'Requester', u'Verifier')
 
   # TODO Remove requestor and requestor_id on database cleanup
@@ -59,11 +64,6 @@ class Request(Assignable, Documentable, Personable, CustomAttributable,
   responses = db.relationship('Response', backref='request',
                               cascade='all, delete-orphan')
 
-  # workaround for title being attached to slug
-  @declared_attr
-  def title(cls):
-    return deferred(db.Column(db.String, nullable=True), cls.__name__)
-
   _publish_attrs = [
       'requestor',
       'request_type',
@@ -86,13 +86,10 @@ class Request(Assignable, Documentable, Personable, CustomAttributable,
   ]
 
   _aliases = {
-      "audit_object": {
-          "display_name": "Request Object",
-          "filter_by": "_filter_by_audit_object",
-      },
       "request_audit": {
           "display_name": "Audit",
           "filter_by": "_filter_by_request_audit",
+          "mandatory": True,
       },
       "due_on": "Due On",
       "notes": "Notes",
@@ -100,7 +97,23 @@ class Request(Assignable, Documentable, Personable, CustomAttributable,
       "requested_on": "Requested On",
       "status": "Status",
       "test": "Test",
-      "title": "Request Title",
+      "related_assignees": {
+          "display_name": "Assignee",
+          "mandatory": True,
+          "filter_by": "_filter_by_related_assignees",
+          "type": reflection.AttributeInfo.Type.MAPPING,
+      },
+      "related_requesters": {
+          "display_name": "Requester",
+          "mandatory": True,
+          "filter_by": "_filter_by_related_requesters",
+          "type": reflection.AttributeInfo.Type.MAPPING,
+      },
+      "related_verifiers": {
+          "display_name": "Verifier",
+          "filter_by": "_filter_by_related_verifiers",
+          "type": reflection.AttributeInfo.Type.MAPPING,
+      },
   }
 
   def _display_name(self):
@@ -120,41 +133,48 @@ class Request(Assignable, Documentable, Personable, CustomAttributable,
 
   @classmethod
   def eager_query(cls):
-    from sqlalchemy import orm
-
     query = super(Request, cls).eager_query()
     return query.options(
         orm.joinedload('audit'),
-        orm.joinedload('audit_object'),
         orm.subqueryload('responses'))
+
+  @classmethod
+  def _get_relate_filter(cls, predicate, related_type):
+    Rel = relationship.Relationship
+    RelAttr = relationship.RelationshipAttr
+    Person = person.Person
+    return db.session.query(Rel).join(RelAttr).join(
+        Person,
+        or_(and_(
+            Rel.source_id == Person.id,
+            Rel.source_type == Person.__name__
+        ), and_(
+            Rel.destination_id == Person.id,
+            Rel.destination_type == Person.__name__
+        ))
+    ).filter(and_(
+        RelAttr.attr_value.contains(related_type),
+        RelAttr.attr_name == "AssigneeType",
+        or_(predicate(Person.name), predicate(Person.email))
+    )).exists()
+
+  @classmethod
+  def _filter_by_related_assignees(cls, predicate):
+    return cls._get_relate_filter(predicate, "Assignee")
+
+  @classmethod
+  def _filter_by_related_requesters(cls, predicate):
+    return cls._get_relate_filter(predicate, "Requester")
+
+  @classmethod
+  def _filter_by_related_verifiers(cls, predicate):
+    return cls._get_relate_filter(predicate, "Verifier")
 
   @classmethod
   def _filter_by_request_audit(cls, predicate):
     return cls.query.filter(
-        (Audit.id == cls.audit_id) &
-        (predicate(Audit.slug) | predicate(Audit.title))
-    ).exists()
-
-  @classmethod
-  def _filter_by_audit_object(cls, predicate):
-    from ggrc.models import all_models
-    queries = []
-    for model_name in all_models.__all__:
-      model = getattr(all_models, model_name)
-      if not hasattr(model, "query"):
-        continue
-      fields = []
-      for field_name in ["slug", "title", "name", "email"]:
-        if hasattr(model, field_name):
-          fields.append(getattr(model, field_name))
-      if len(fields) > 0:
-        queries.append(model.query.filter(
-            (AuditObject.auditable_type == model.__name__) &
-            or_(*map(predicate, fields))
-        ).exists())
-    return AuditObject.query.filter(
-        (AuditObject.id == cls.audit_object_id) &
-        or_(*queries)
+        (audit.Audit.id == cls.audit_id) &
+        (predicate(audit.Audit.slug) | predicate(audit.Audit.title))
     ).exists()
 
 
@@ -172,7 +192,7 @@ def _date_has_changes(attr):
 @Resource.model_put.connect_via(Request)
 def handle_request_put(sender, obj=None, src=None, service=None):
   all_attrs = set(Request._publish_attrs)
-  non_tracked_attrs = {'status', 'requestor'}
+  non_tracked_attrs = {'status'}
   tracked_date_attrs = {'requested_on', 'due_on'}
   tracked_attrs = all_attrs - non_tracked_attrs - tracked_date_attrs
   has_changes = False
@@ -185,5 +205,39 @@ def handle_request_put(sender, obj=None, src=None, service=None):
          for attr in tracked_date_attrs):
     has_changes = True
 
-  if has_changes:
+  if has_changes and obj.status in {"Open", "Final", "Verified"}:
     obj.status = "In Progress"
+
+
+@Resource.model_posted.connect_via(relationship.Relationship)
+def handle_relationship_post(sender, obj=None, src=None, service=None):
+  has_changes = False
+  if "Request" in (obj.source.type, obj.destination.type):
+    if obj.source.type == "Request":
+      req = obj.source
+    else:
+      req = obj.destination
+
+    if "Document" in (obj.source.type, obj.destination.type):
+      # This captures the "Add URL" event
+      has_changes = True
+
+    if "Person" in (obj.source.type, obj.destination.type):
+      # This captures assignable addition
+      history = inspect(obj).attrs.relationship_attrs.history
+      if history.has_changes() and req.status in {"Final", "Verified"}:
+        has_changes = True
+
+    if has_changes and req.status in {"Open", "Final", "Verified"}:
+      req.status = "In Progress"
+      db.session.add(req)
+
+
+@Resource.model_posted.connect_via(ObjectDocument)
+def handle_objectdocument_post(sender, obj=None, src=None, service=None):
+  # This captures "Attach Evidence" event
+  if obj.documentable.type == "Request":
+    req = obj.documentable
+    if req.status in {"Open", "Final", "Verified"}:
+      req.status = "In Progress"
+      db.session.add(req)

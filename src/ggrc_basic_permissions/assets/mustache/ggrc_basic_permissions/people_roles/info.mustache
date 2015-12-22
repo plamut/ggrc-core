@@ -19,14 +19,25 @@
         <span class="bubble"></span>
       </a>
       <ul class="dropdown-menu" aria-labelledby="drop1" role="menu">
+        {{#is_allowed 'create' 'delete' 'UserRole' context=options.parent_instance.context.id}}
+        {{#is_info_pin}}
+        {{#if_equals options.mapping "mapped_and_or_authorized_people"}}
+          <li>
+            <a data-modal-class="modal-wide"
+               data-modal-selector-options="user_roles"
+               data-person_id="{{instance.id}}"
+               data-placement="left"
+               data-toggle="user-roles-modal-selector"
+               href="javascript://">
+              <i class="grcicon-role-color"></i>
+              Edit Authorizations
+            </a>
+          </li>
+        {{/options.mapped_and_or_authorized_people}}
+        {{/is_info_pin}}
+        {{/is_allowed}}
         <li>
-          <a href="/people/{{instance.id}}">
-            <i class="grcicon-goto"></i>
-            View Profile Page
-          </a>
-        </li>
-        <li>
-          <clipboard-link title="Get permalink" notify="true" text="{{get_permalink}}" />
+          <clipboard-link title="Get permalink" notify="true" text="{{get_permalink_for_object instance}}" />
         </li>
         {{#with_program_roles_as "roles" result}}
           {{#if_helpers '\
@@ -43,18 +54,24 @@
             </li>
           {{/if_helpers}}
         {{/with_program_roles_as}}
-
-        {{#is_allowed 'create' 'delete' 'UserRole' context=options.parent_instance.context.id}}
-        {{#is_info_pin}}
-        {{#if_equals options.mapping "mapped_and_or_authorized_people"}}
+        <li>
+          <a href="/people/{{instance.id}}">
+            <i class="grcicon-goto"></i>
+            View Profile Page
+          </a>
+        </li>
+        {{#is_allowed 'delete' instance}}
           <li>
-            <a href="javascript://" data-modal-class="modal-wide" data-placement="left" data-toggle="user-roles-modal-selector" data-modal-selector-options="user_roles" data-person_id="{{instance.id}}">
-              <i class="grcicon-role-color"></i>
-              Edit Authorizations
+            <a data-modal-reset="reset" data-modal-class="modal"
+               data-object-id="{{instance.id}}" href="javascript://"
+               data-object-plural="{{instance.class.model_plural}}"
+               data-object-singular="{{instance.class.model_singular}}"
+               data-test-id="dropdown_delete_0839163b"
+               data-toggle="modal-ajax-deleteform">
+              <i class="grcicon-deleted"></i>
+              Delete
             </a>
           </li>
-        {{/options.mapped_and_or_authorized_people}}
-        {{/is_info_pin}}
         {{/is_allowed}}
       </ul>
     </div>

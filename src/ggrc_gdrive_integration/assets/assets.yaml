@@ -25,4 +25,5 @@ dashboard-js-template-files:
   - gdrive/gapi_errors.mustache
   - gdrive/gdrive_folder.mustache
   - gdrive/gdrive_file.mustache
+  - gdrive/confirm_buttons.mustache
   - roles/gdrive_option_detail.mustache

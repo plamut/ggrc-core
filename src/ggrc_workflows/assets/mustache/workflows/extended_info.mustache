@@ -3,7 +3,7 @@
     Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
     Created By: anze@reciprocitylabs.com
     Maintained By: predrag@reciprocitylabs.com
-    
+
     Template applicable to workflows only
 }}
 
@@ -21,14 +21,14 @@
     <div class="span12">
       <h6>Description</h6>
       <div class="rtf">
-        {{{firstnonempty description '<em>No description</em>'}}}
+        {{{firstnonempty description '<span class="empty-message">None</span>'}}}
       </div>
     </div>
   </div>
 
   <div class="row-fluid">
     <div class="span12">
-      <h6>Status</h6>    
+      <h6>Status</h6>
       <p class="{{#if_equals status 'Active'}}Active{{/if_equals}}{{#if_equals status 'Inactive'}}Inactive{{/if_equals}}{{#if_equals status 'Draft'}}Draft{{/if_equals}}">
         {{status}}
       </p>

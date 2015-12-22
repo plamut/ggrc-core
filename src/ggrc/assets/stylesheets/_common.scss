@@ -191,6 +191,11 @@ small {
   color: $subTitle;
 }
 
+.empty-message {
+  color: $gray;
+  font-style: italic;
+}
+
 .checkbox-inline {
   input[type="checkbox"] {
     margin: -1px 0 0 0;
@@ -1337,4 +1342,8 @@ label.disabled {
     margin-right: 5px;
     width: 70%;
   }
+}
+
+.capitalize {
+  text-transform: capitalize;
 }

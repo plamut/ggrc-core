@@ -30,7 +30,7 @@
             </a>
           </li>
           <li>
-            <clipboard-link title="Get permalink" notify="true" text="{{get_permalink}}" />
+            <clipboard-link title="Get permalink" notify="true" text="{{get_permalink_url}}" />
           </li>
           {{#is_allowed 'delete' instance}}
             <li>
@@ -51,7 +51,7 @@
         <div class="row-fluid wrap-row">
           <div class="span9">
             <h6>Response</h6>
-            {{{firstnonempty instance.description 'Response'}}}
+            {{{firstnonempty instance.description '<span class="empty-message">None</span>'}}}
           </div>
         </div>
       </div>
@@ -64,7 +64,7 @@
             <div class="span6">
               <h6>Request</h6>
               <div class="rtf-block">
-                {{{firstnonempty request.description '<i>No description</i>'}}}
+                {{{firstnonempty request.description '<span class="empty-message">None</span>'}}}
               </div>
             </div>
             <div class="span3">
@@ -74,7 +74,7 @@
                   {{localize_date requested_on}}
                 {{/using}}
               {{else}}
-                N/A
+                <span class="empty-message">None</span>
               {{/if}}
             </div>
             <div class="span3">
@@ -84,7 +84,7 @@
                   {{{renderLive '/static/mustache/people/popover.mustache' person=assignee}}}
                 {{/using}}
               {{else}}
-                N/A
+                <span class="empty-message">None</span>
               {{/if}}
             </div>
           </div>

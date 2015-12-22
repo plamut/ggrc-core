@@ -297,7 +297,9 @@ a.remove_filter i[class^="grcicon-"] {
 .grcicon-file-img { background-position: -366px -296px; }
 .grcicon-file-zip { background-position: -366px -344px; }
 .grcicon-file-url { background-position: -342px -368px; }
-.grcicon-file { background-position: -366px -248px; }
+.grcicon-file, .grcicon-file-default {
+  background-position: -366px -248px;
+}
 
 // Large icons
 .grciconlarge-dashboard { background-position:-8px -8px; }

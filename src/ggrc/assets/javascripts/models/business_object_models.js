@@ -290,7 +290,9 @@ can.Model.Cacheable("CMS.Models.Product", {
     show_view : GGRC.mustache_path + "/base_objects/tree.mustache"
     , footer_view : GGRC.mustache_path + "/base_objects/tree_footer.mustache"
     , attr_list : can.Model.Cacheable.attr_list.concat([
-      {attr_title: 'Type', attr_name: 'type'}
+      {attr_title: 'Type', attr_name: 'type'},
+      {attr_title: 'URL', attr_name: 'url'},
+      {attr_title: 'Reference URL', attr_name: 'reference_url'}
     ])
     , child_tree_display_list : ['System']
     , add_item_view : GGRC.mustache_path + "/base_objects/tree_add_item.mustache"

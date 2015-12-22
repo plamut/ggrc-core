@@ -38,7 +38,7 @@ class TestCreator(TestCase):
   def test_admin_page_access(self):
     for role, code in (("creator", 403), ("admin", 200)):
       self.api.set_user(self.users[role])
-      self.assertEquals(self.api.tc.get("/admin").status_code, code)
+      self.assertEqual(self.api.tc.get("/admin").status_code, code)
 
   def test_creator_can_crud(self):
     """ Test Basic create/read,update/delete operations """
@@ -118,7 +118,7 @@ class TestCreator(TestCase):
       except:
           all_errors.append("{} exception thrown".format(model_singular))
           raise
-    self.assertEquals(all_errors, [])
+    self.assertEqual(all_errors, [])
 
   def test_creator_search(self):
     """ Test if creator can see the correct object while using the search api """
@@ -141,11 +141,11 @@ class TestCreator(TestCase):
         }, "context": None}})
     response, _ = self.api.search("Regulation,Policy")
     entries = response.json["results"]["entries"]
-    self.assertEquals(len(entries), 1)
-    self.assertEquals(entries[0]["type"], "Policy")
+    self.assertEqual(len(entries), 1)
+    self.assertEqual(entries[0]["type"], "Policy")
     response, _ = self.api.search("Regulation,Policy", counts=True)
-    self.assertEquals(response.json["results"]["counts"]["Policy"], 1)
-    self.assertEquals(
+    self.assertEqual(response.json["results"]["counts"]["Policy"], 1)
+    self.assertEqual(
         response.json["results"]["counts"].get("Regulation"), None)
 
   def _get_count(self, obj):
@@ -159,7 +159,7 @@ class TestCreator(TestCase):
     admin_count = self._get_count("Person")
     self.api.set_user(self.users['creator'])
     creator_count = self._get_count("Person")
-    self.assertEquals(admin_count, creator_count)
+    self.assertEqual(admin_count, creator_count)
 
   def test_creator_cannot_be_owner(self):
     """ Test if creater cannot become owner of the object he has not created """
@@ -176,7 +176,7 @@ class TestCreator(TestCase):
             "type": "Regulation",
             "id": obj.id,
         }, "context": None}})
-    self.assertEquals(response.status_code, 403)
+    self.assertEqual(response.status_code, 403)
 
   def test_relationships_access(self):
     """Check if creator cannot access relationship objects"""
@@ -197,9 +197,9 @@ class TestCreator(TestCase):
         }, "context": None},
     })
     relationship_id = rel.id
-    self.assertEquals(response.status_code, 201)
+    self.assertEqual(response.status_code, 201)
     self.api.set_user(self.users['creator'])
     response = self.api.get_collection(all_models.Relationship, relationship_id)
-    self.assertEquals(response.status_code, 200)
+    self.assertEqual(response.status_code, 200)
     num = len(response.json["relationships_collection"]["relationships"])
-    self.assertEquals(num, 0)
+    self.assertEqual(num, 0)

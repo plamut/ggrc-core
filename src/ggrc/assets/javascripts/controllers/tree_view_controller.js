@@ -132,22 +132,22 @@ can.Control("CMS.Controllers.TreeLoader", {
         $footer.before($spinner_li);
       }
     }
-  }
-  , prepare: function() {
-    var that = this;
-
-    if (this._prepare_deferred)
+  },
+  prepare: function () {
+    if (this._prepare_deferred) {
       return this._prepare_deferred;
+    }
 
-    this._prepare_deferred = new $.Deferred();
+    this._prepare_deferred = $.Deferred();
     this._prepare_deferred.resolve();
 
-    this._attached_deferred.then(function() {
-      if (that.element && that.options.update_count) {
-        that.element.trigger("updateCount", 0);
-        that.init_count();
+    this._attached_deferred.then(function () {
+      if (!this.element) {
+        return;
       }
-    });
+      can.trigger(this.element, "updateCount", [0, this.options.update_count]);
+      this.init_count();
+    }.bind(this));
 
     return this._prepare_deferred;
   }
@@ -201,12 +201,16 @@ can.Control("CMS.Controllers.TreeLoader", {
   , draw_list : function(list, is_reload, force_prepare_chilren) {
     is_reload = is_reload === true;
     // TODO figure out why this happens and fix the root of the problem
-    if (!list && !this.options.list) return;
-    if (this._draw_list_deferred)
-      return this._draw_list_deferred;
-    this._draw_list_deferred = new $.Deferred();
-    if (this.element && !this.element.closest('body').length)
+    if (!list && !this.options.list) {
       return;
+    }
+    if (this._draw_list_deferred) {
+      return this._draw_list_deferred;
+    }
+    this._draw_list_deferred = new $.Deferred();
+    if (this.element && !this.element.closest('body').length) {
+      return;
+    }
 
     var that = this
       , refresh_queue = new RefreshQueue()
@@ -214,7 +218,7 @@ can.Control("CMS.Controllers.TreeLoader", {
       , original_function
       , sort_prop;
 
-    if(list) {
+    if (list) {
       list = list.length == null ? new can.Observe.List([list]) : list;
     } else {
       list = this.options.list;
@@ -706,42 +710,41 @@ CMS.Controllers.TreeLoader("CMS.Controllers.TreeView", {
           ));
       }
       return $.when.apply($.when, dfds);
-    }
+    },
 
-  , init_count : function() {
-      var self = this
-        ;
+    init_count: function () {
+      var self = this;
 
-      if (this.get_count_deferred)
+      if (this.get_count_deferred) {
         return this.get_count_deferred;
-
+      }
       if (this.options.parent_instance && this.options.mapping) {
         this.get_count_deferred =
           this.options.parent_instance.get_list_counter(this.options.mapping);
       } else if (this.options.list_loader) {
         this.get_count_deferred =
           this.options.list_loader(this.options.parent_instance)
-            .then(function(list) {
-              return can.compute(function() {
+            .then(function (list) {
+              return can.compute(function () {
                 return list.attr("length");
               });
             });
       }
       if (this.get_count_deferred) {
-        this.get_count_deferred.then(this._ifNotRemoved(function(count) {
-          if (self.options.update_count && self.element) {
-            self.element.trigger("updateCount", count());
+        this.get_count_deferred.then(this._ifNotRemoved(function (count) {
+          if (self.element) {
+            can.trigger(self.element, "updateCount", [count(), self.options.update_count]);
           }
-          count.bind("change", self._ifNotRemoved(function() {
-            if (self.options.update_count) {
-              self.element.trigger("updateCount", count());
-            }
+          count.bind("change", self._ifNotRemoved(function () {
+            can.trigger(self.element, "updateCount", [count(), self.options.update_count]);
           }));
         }));
       } else {
         // FIXME: Does this ever happen?
-        this.get_count_deferred = new $.Deferred();
-        this.get_count_deferred.resolve(function() { return 0; });
+        this.get_count_deferred = $.Deferred();
+        this.get_count_deferred.resolve(function () {
+          return 0;
+        });
       }
       return this.get_count_deferred;
     }

@@ -19,43 +19,55 @@
 
     <div class="tier-content">
       <div class="pane-header">
-        {{#name}}
-          <div class="row-fluid wrap-row">
-            <div class="span12">
-              <h6>Name</h6>
-              <h3>{{name}}
-                {{#if_equals system_wide_role 'No Access'}}
-                  <span class="user-disabled">
-                    (No Access)
-                  </span>
-                {{/if}}
-              </h3>
-            </div>
-          </div>
-        {{/name}}
-      </div>
-
-      {{#email}}
         <div class="row-fluid wrap-row">
           <div class="span12">
-            <h6>Email</h6>
-            <p>
-            {{email}}
-            </p>
+            <h6>Name</h6>
+            {{#if name}}
+              {{#name}}
+                <h3>{{name}}
+                  {{#if_equals system_wide_role 'No Access'}}
+                    <span class="user-disabled">
+                      (No Access)
+                    </span>
+                  {{/if}}
+                </h3>
+              {{/name}}
+            {{else}}
+              <span class="empty-message">None</span>
+            {{/if}}
           </div>
         </div>
-      {{/email}}
+      </div>
 
-      {{#company}}
-        <div class="row-fluid wrap-row">
-          <div class="span12">
-            <h6>Company</h6>
+      <div class="row-fluid wrap-row">
+        <div class="span12">
+          <h6>Email</h6>
+          {{#if email}}
+            {{#email}}
+              <p>
+                {{email}}
+              </p>
+            {{/email}}
+          {{else}}
+            <span class="empty-message">None</span>
+          {{/if}}
+        </div>
+      </div>
+
+      <div class="row-fluid wrap-row">
+        <div class="span12">
+          <h6>Company</h6>
+          {{#if company}}
+            {{#company}}
               <p>
                 {{company}}
               </p>
-          </div>
+            {{/company}}
+          {{else}}
+            <span class="empty-message">None</span>
+          {{/if}}
         </div>
-      {{/company}}
+      </div>
     </div><!-- tier-content end -->
 
   {{{render '/static/mustache/custom_attributes/info.mustache' instance=instance}}}

@@ -95,16 +95,20 @@ class Relationship(Mapping, db.Model):
 
   @classmethod
   def find_related(cls, object1, object2):
+    return cls.get_related_query(object1, object2).first()
+
+  @classmethod
+  def get_related_query(cls, object1, object2):
     def predicate(src, dst):
       return and_(
           Relationship.source_type == src.type,
-          Relationship.source_id == src.id,
+          or_(Relationship.source_id == src.id, src.id == None),  # noqa
           Relationship.destination_type == dst.type,
-          Relationship.destination_id == dst.id
+          or_(Relationship.destination_id == dst.id, dst.id == None),  # noqa
       )
     return Relationship.query.filter(
         or_(predicate(object1, object2), predicate(object2, object1))
-    ).first()
+    )
 
   @classmethod
   def update_attributes(cls, object1, object2, new_attrs):

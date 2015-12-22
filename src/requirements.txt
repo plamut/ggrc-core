@@ -22,7 +22,7 @@ iso8601==0.1.0
 blinker==1.3
 bleach==1.2.2
 html5lib==0.95
-six==1.3.0
+six==1.10.0
 chardet==2.1.1
 google-api-python-client==1.2
 httplib2==0.8

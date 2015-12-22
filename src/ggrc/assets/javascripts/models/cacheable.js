@@ -771,12 +771,14 @@ can.Model("can.Model.Cacheable", {
     })
   , computed_unsuppressed_errors : can.compute(function() {
     return this.errors();
-  })
-  , get_list_counter: function(name) {
-      var binding = this.get_binding(name);
-      if(!binding) return new $.Deferred().reject();
-      return binding.refresh_count();
+  }),
+  get_list_counter: function (name) {
+    var binding = this.get_binding(name);
+    if (!binding) {
+      return $.Deferred().reject();
     }
+    return binding.refresh_count();
+  }
 
   , get_list_loader: function(name) {
       var binding = this.get_binding(name);
@@ -929,35 +931,36 @@ can.Model("can.Model.Cacheable", {
       }
     }
     this._triggerChange(attrName, "set", this[attrName], this[attrName].slice(0, this[attrName].length - 1));
-  }
-  , refresh : function(params) {
+  },
+  refresh: function (params) {
     var dfd,
-      href = this.selfLink || this.href,
-      that = this;
+        href = this.selfLink || this.href,
+        that = this;
 
-    if (!href)
+    if (!href) {
       return (new can.Deferred()).reject();
-    if(!this._pending_refresh) {
+    }
+    if (!this._pending_refresh) {
       this._pending_refresh = {
-        dfd : new $.Deferred()
-        , fn : _.throttle(function() {
+        dfd: $.Deferred(),
+        fn: _.throttle(function () {
           var dfd = that._pending_refresh.dfd;
           can.ajax({
-            url : href
-            , params : params
-            , type : "get"
-            , dataType : "json"
+            url: href,
+            params: params,
+            type: "get",
+            dataType : "json"
           })
-          .then(function(resources) {
+          .then(function (resources) {
             delete that._pending_refresh;
             return resources;
           })
           .then($.proxy(that.constructor, "model"))
-          .done(function(d) {
-            d.backup();
-            dfd.resolve(d);
+          .done(function (response) {
+            response.backup();
+            dfd.resolve.apply(dfd, arguments);
           })
-          .fail(function() {
+          .fail(function () {
             dfd.reject.apply(dfd, arguments);
           });
         }, 1000, {trailing: false})

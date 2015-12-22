@@ -13,21 +13,27 @@
         URL
       </h6>
       <p>
-        <a data-test-id="text_program_url_aa7d1a65" class="url"
-           href="{{schemed_url url}}" target="_blank">
-          {{url}}
-        </a>
+        {{#if url}}
+          <a data-test-id="text_program_url_aa7d1a65" class="url" href="{{schemed_url url}}" target="_blank">
+            {{url}}
+          </a>
+        {{else}}
+          <span class="empty-message">None</span>
+        {{/if}}
       </p>
     </div>
     <div data-test-id="title_reference_url_aa7d1a65" class="span6">
       <h6>Reference URL</h6>
       <p>
-        <a data-test-id="text_reference_url_aa7d1a65" class="url"
-           href="{{schemed_url reference_url}}" target="_blank">
-          {{reference_url}}
-        </a>
+        {{#if reference_url}}
+          <a data-test-id="text_reference_url_aa7d1a65" class="url" href="{{schemed_url reference_url}}" target="_blank">
+            {{reference_url}}
+          </a>
+        {{else}}
+          <span class="empty-message">None</span>
+        {{/if}}
       </p>
     </div>
   </div>
-  
+
 {{/instance}}

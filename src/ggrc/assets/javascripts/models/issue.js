@@ -23,6 +23,12 @@
       start_date: "date",
       end_date: "date"
     },
+    tree_view_options : {
+      attr_list : can.Model.Cacheable.attr_list.concat([
+        {attr_title: 'URL', attr_name: 'url'},
+        {attr_title: 'Reference URL', attr_name: 'reference_url'}
+      ])
+    },
     init : function() {
       this._super && this._super.apply(this, arguments);
       this.validateNonBlank("title");

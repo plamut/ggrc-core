@@ -2,33 +2,29 @@
     Copyright (C) 2015 Google Inc., authors, and contributors <see AUTHORS file>
     Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
     Created By: ivan@reciprocitylabs.com
-    Maintained By: urban@reciprocitylabs.com
+    Maintained By: vladan@reciprocitylabs.com
 }}
 
-{{#instance.class.info_pane_options.mapped_objects}}
-{{#add_to_current_scope parent_instance=instance}}
-<div class="row-fluid wrap-row">
-  <div class="span12">
-    <h6>Mapped objects</h6>
-    <ul class="mapped-list" data-update-count="{{update_count}}" {{data 'options'}}  data-disable-lazy-loading="true"
-      {{ (el) -> el.cms_controllers_tree_view(el.data("options")).control("tree_view").display() }}>
-    </ul>
-    {{#is_allowed 'update' instance context='for'}}
-      <a
-        class="btn btn-draft btn-small"
-        href="javascript://"
-        rel="tooltip"
-        data-placement="left"
-        data-toggle="unified-mapper"
-        data-join-mapping="related_objects"
-        data-join-option-type="{{model.shortName}}"
-        data-join-object-id="{{instance.id}}"
-        data-join-object-type="{{instance.class.shortName}}"
-        data-original-title="Map {{firstnonempty title_singular model.title_singular 'Object'}} to this {{firstnonempty instance.class.title_singular 'Object'}}">
-        Map Objects
-      </a>
-    {{/is_allowed}}
-  </div>
-</div>
-{{/add_to_current_scope}}
-{{/instance}}
+<h6>Mapped objects</h6>
+
+<mapping-tree-view
+  parent-instance="instance"
+  mapping="instance.class.info_pane_options.mapped_objects.mapping"
+  item-template="instance.class.info_pane_options.mapped_objects.show_view"
+>
+</mapping-tree-view>
+{{#is_allowed 'update' instance context='for'}}
+  <a
+    class="btn btn-draft btn-small"
+    href="javascript://"
+    rel="tooltip"
+    data-placement="left"
+    data-toggle="unified-mapper"
+    data-join-mapping="related_objects"
+    data-join-option-type="{{model.shortName}}"
+    data-join-object-id="{{instance.id}}"
+    data-join-object-type="{{instance.class.shortName}}"
+    data-original-title="Map {{firstnonempty title_singular model.title_singular 'Object'}} to this {{firstnonempty instance.class.title_singular 'Object'}}">
+    Map Objects
+  </a>
+{{/is_allowed}}

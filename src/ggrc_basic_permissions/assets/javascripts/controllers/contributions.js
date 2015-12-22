@@ -381,6 +381,7 @@
         , clicked_option = li.data('option') || {}
         , join
         , delete_dfds
+        , already_exists = false
         ;
 
       // Look for and remove the existing join.
@@ -390,6 +391,11 @@
         , join = self.find_join(option.id)
         ;
 
+        if (join && join.role.id === clicked_option.id) {
+          // Don't delete the role we marked to add.
+          already_exists = true;
+          return;
+        }
         if(join) {
           return join.refresh().done(function() {
             return join.destroy().then(function() {
@@ -400,7 +406,8 @@
       });
 
       // Create the new join (skipping "No Access" role, with id == 0)
-      if (clicked_option.id > 0) {
+      if (clicked_option.id > 0 && !already_exists) {
+
         $.when.apply($, delete_dfds).then(function() {
           join = self.get_new_join(
               clicked_option.id, clicked_option.scope, clicked_option.constructor.shortName);

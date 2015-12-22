@@ -121,3 +121,13 @@ def is_allowed_view_object_page_for(instance):
 def is_admin():
   """Whether the current user has ADMIN permission"""
   return permissions_for(get_user()).is_admin()
+
+def has_conditions(action, resource):
+  """
+  Checks if the resource has a condition that needs to be checked with
+  is_allowed_for
+  """
+  _permissions = permissions_for()._permissions()
+  return bool(_permissions.get(action, {})
+              .get(resource, {})
+              .get('conditions', {}))

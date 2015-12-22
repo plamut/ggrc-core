@@ -3,17 +3,17 @@
 # Created By: anze@reciprocitylabs.com
 # Maintained By: anze@reciprocitylabs.com
 
-from alembic import op
-from ggrc.migrations.utils import resolve_duplicates
-from ggrc_risks.models import Threat
-
-"""Add missing constraints
+"""Add missing constraints for threats
 
 Revision ID: 62f26762d0a
 Revises: 2837682ad516
 Create Date: 2015-11-12 16:10:29.579969
 
 """
+
+from alembic import op
+from ggrc.migrations.utils import resolve_duplicates
+from ggrc_risks.models import Threat
 
 # revision identifiers, used by Alembic.
 revision = '62f26762d0a'

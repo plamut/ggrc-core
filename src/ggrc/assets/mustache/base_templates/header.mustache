@@ -11,6 +11,11 @@
       <h6>Title</h6>
       <h3>{{title}}</h3>
       <span class="state-value state-{{to_class status '_'}}">{{status}}</span>
+      <span class="gray">
+        {{#if request_type}}
+          ({{capitalize request_type}})
+        {{/if}}
+      </span>
     </div>
     <div class="span3">
       <div class="info-pane-utility">
@@ -25,7 +30,7 @@
               {{> /static/mustache/base_objects/edit_object_link.mustache}}
             {{/is_allowed}}
             <li>
-              <clipboard-link title="Get permalink" notify="true" text="{{get_permalink}}" />
+              <clipboard-link title="Get permalink" notify="true" text="{{get_permalink_url}}" />
             </li>
 
             {{#is_info_pin}}

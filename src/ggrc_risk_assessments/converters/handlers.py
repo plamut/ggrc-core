@@ -3,7 +3,7 @@
 # Created By: miha@reciprocitylabs.com
 # Maintained By: miha@reciprocitylabs.com
 
-from ggrc.converters.handlers import UserColumnHandler
+from ggrc.converters.handlers.handlers import UserColumnHandler
 
 COLUMN_HANDLERS = {
     "ra_counsel": UserColumnHandler,

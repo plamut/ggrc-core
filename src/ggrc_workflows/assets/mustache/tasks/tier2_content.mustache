@@ -5,36 +5,7 @@
     Maintained By: ivan@reciprocitylabs.com
 }}
 
-        <div class="row-fluid">
-          <!-- View Task link -->
-          <div class="span6">
-          {{#if instance.viewLink}}
-            {{#is_allowed "view_object_page" instance}}
-              <a href="{{instance.viewLink}}" class="info-action">
-                <i class="grcicon-goto"></i>
-                View {{instance.class.title_singular}}
-              </a>
-            {{/is_allowed}}
-          {{/if}}
-          </div>
-
-          <!-- edit and unmap link -->
-          <div class="span6">
-          {{#if mappings}}
-          {{#is_allowed_all 'delete' mappings}}
-          {{^is_dashboard}}
-            <a href="javascript://" class="info-action unmap pull-right" data-toggle="unmap">
-              {{#result}}<span class="result" {{data 'result'}}></span>{{/result}}
-              <i class="grcicon-remove"></i>
-              Unmap
-            </a>
-          {{/is_dashboard}}
-          {{/is_allowed_all}}
-          {{/if}}
-          {{> /static/mustache/base_objects/edit_object_link.mustache}}
-          </div>
-
-        </div>
+{{> /static/mustache/base_objects/dropdown_menu_tier2.mustache}}
 
         <!-- description -->
         {{#instance.description}}

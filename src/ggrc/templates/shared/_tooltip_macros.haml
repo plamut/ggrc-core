@@ -14,9 +14,9 @@
     .span10
       %h3
         %i{ 'class' : 'grcicon-={name|lower}-color' }
-        %span.title 
+        %span.title
           =instance.title
-        %span.code.governance 
+        %span.code.governance
           =instance.slug
     .span2
       %a.btn.btn-mini.btn-primary.pull-right{ 'href': '={instance|viewlink}', 'rel': 'tooltip', 'title': 'View ={name}' }
@@ -65,7 +65,8 @@
               =instance.description
             -else
               .no-description
-                No description
+                .empty-message
+                  None
 
     -if object == 'program'
       .row-fluid
@@ -84,7 +85,7 @@
             %br
             %strong
               report date:
-              -if instance.cycles|length > 0 
+              -if instance.cycles|length > 0
                 =(instance.cycles|first).report_due_at
               -else
                 None
@@ -199,7 +200,7 @@
           %h4
             People
           %i.grcicon-user-black
-          =instance.people|length 
+          =instance.people|length
         -#.span6
           %h4
             References
@@ -209,7 +210,7 @@
           %h4
             Controls
           %i.grcicon-control-color
-          =instance.controls|length 
+          =instance.controls|length
         .span6
           %h4
             Programs
@@ -246,7 +247,7 @@
               %p.oneline
                 =instance.owner.name
           -else
-            
+
         -else
           %p
             %span.no-data.warning

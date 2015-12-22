@@ -65,15 +65,11 @@ WRONG_REQUIRED_VALUE = (u"Line {line}: Required field {column_name} contains"
 MISSING_VALUE_ERROR = (u"Line {line}: Field {column_name} is required. The line"
                        " will be ignored.")
 
-MAPPING_PERMISSION_ERROR = (u"Line {line}: You don't have permission to"
-                            " map/unmap this record. Value {value} will be"
-                            " ignored.")
-
 PERMISSION_ERROR = (u"Line {line}: You don't have permission to update/delete"
                     " this record.")
 
 MAPPING_PERMISSION_ERROR = (u"Line {line}: You don't have permission to update"
-                            " mappings for {object_type}: {title} ({slug}).")
+                            " mappings for {object_type}: {slug}.")
 
 DELETE_NEW_OBJECT_ERROR = (u"Line {line}: Tried to create and delete the same"
                            " object {object_type}: {slug} in one import.")

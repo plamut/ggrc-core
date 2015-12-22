@@ -38,7 +38,7 @@ class TestReader(TestCase):
     return
     for role, code in (("reader", 403), ("admin", 200)):
       self.api.set_user(self.users[role])
-      self.assertEquals(self.api.tc.get("/admin").status_code, code)
+      self.assertEqual(self.api.tc.get("/admin").status_code, code)
 
   def test_reader_can_crud(self):
     return
@@ -95,7 +95,7 @@ class TestReader(TestCase):
       except:
           all_errors.append("{} exception thrown".format(model_singular))
           raise
-    self.assertEquals(all_errors, [])
+    self.assertEqual(all_errors, [])
 
   def test_reader_search(self):
     return
@@ -119,10 +119,10 @@ class TestReader(TestCase):
         }, "context": None}})
     response, _ = self.api.search("Regulation,Policy")
     entries = response.json["results"]["entries"]
-    self.assertEquals(len(entries), 2)
+    self.assertEqual(len(entries), 2)
     response, _ = self.api.search("Regulation,Policy", counts=True)
-    self.assertEquals(response.json["results"]["counts"]["Policy"], 1)
-    self.assertEquals(response.json["results"]["counts"]["Regulation"], 1)
+    self.assertEqual(response.json["results"]["counts"]["Policy"], 1)
+    self.assertEqual(response.json["results"]["counts"]["Regulation"], 1)
 
   def _get_count(self, obj):
     """ Return the number of counts for the given object from search """
@@ -135,7 +135,7 @@ class TestReader(TestCase):
     admin_count = self._get_count("Person")
     self.api.set_user(self.users['reader'])
     reader_count = self._get_count("Person")
-    self.assertEquals(admin_count, reader_count)
+    self.assertEqual(admin_count, reader_count)
 
   def test_reader_cannot_be_owner(self):
     """ Test if reader cannot become owner of the object he has not created """
@@ -152,7 +152,7 @@ class TestReader(TestCase):
             "type": "Regulation",
             "id": obj.id,
         }, "context": None}})
-    self.assertEquals(response.status_code, 403)
+    self.assertEqual(response.status_code, 403)
 
   def test_relationships_access(self):
     """Check if reader can access relationship objects"""
@@ -175,13 +175,13 @@ class TestReader(TestCase):
         }
     )
     relationship_id = rel.id
-    self.assertEquals(response.status_code, 201)
+    self.assertEqual(response.status_code, 201)
     self.api.set_user(self.users['reader'])
     response = self.api.get_collection(all_models.Relationship,
                                        relationship_id)
-    self.assertEquals(response.status_code, 200)
+    self.assertEqual(response.status_code, 200)
     num = len(response.json["relationships_collection"]["relationships"])
-    self.assertEquals(num, 1)
+    self.assertEqual(num, 1)
 
   def test_creation_of_mappings(self):
     self.generator.api.set_user(self.users["admin"])
@@ -206,4 +206,4 @@ class TestReader(TestCase):
                 "type": "context"
             }},
         })
-    self.assertEquals(response.status_code, 403)
+    self.assertEqual(response.status_code, 403)

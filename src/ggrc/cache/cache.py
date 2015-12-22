@@ -20,7 +20,7 @@ def mapping(class_name, attr, polymorph=False):
 
 def all_cache_entries():
   ret = [
-      resource('access_groups', 'Access Groups'),
+      resource('access_groups', 'AccessGroup'),
       resource('audits', 'Audit'),
       resource('categorizations', 'Categorization'),
       resource('category_bases', 'CategoryBase'),

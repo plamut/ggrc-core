@@ -19,8 +19,8 @@ can.Control("GGRC.Controllers.PbcWorkflows", {
 
     var audit_dfd, control_dfd;
 
-    audit_dfd = this._create_relationship(instance, instance.audit);
-    control_dfd = this._create_relationship(instance, instance.control);
+    audit_dfd = this._create_relationship(instance, instance.audit, instance.audit.context);
+    control_dfd = this._create_relationship(instance, instance.control, instance.audit.context);
     instance.delay_resolving_save_until($.when(audit_dfd, control_dfd));
 
   },
@@ -79,16 +79,18 @@ can.Control("GGRC.Controllers.PbcWorkflows", {
     });
     instance.delay_resolving_save_until(dfd);
   },
-  _create_relationship: function(source, destination) {
+  _create_relationship: function(source, destination, context) {
 
     if (!destination) {
       return $.Deferred().resolve();
     }
-
+    if (!context) {
+      context = source.context;
+    }
     return new CMS.Models.Relationship({
       source: source.stub(),
       destination: destination,
-      context: source.context,
+      context: context
     }).save();
   }
 });

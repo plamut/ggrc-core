@@ -8,29 +8,25 @@ import chardet
 from StringIO import StringIO
 from ggrc.models.reflection import AttributeInfo
 from ggrc.converters.column_handlers import COLUMN_HANDLERS
-from ggrc.converters import handlers
+from ggrc.converters.handlers import handlers
+from ggrc.converters.handlers import custom_attribute
 
-
-_mapping_handlers = {
-  "__mapping__:person": handlers.PersonMappingColumnHandler,
-  "__unmapping__:person": handlers.PersonUnmappingColumnHandler,
-  "directive": handlers.SectionDirectiveColumnHandler
-}
 
 def get_object_column_definitions(object_class):
   """ Attach additional info to attribute definitions """
   attributes = AttributeInfo.get_object_attr_definitions(object_class)
   for key, attr in attributes.items():
-    handler = COLUMN_HANDLERS.get(key, handlers.ColumnHandler)
+    handler_key = attr.get("handler_key", key)
+    handler = COLUMN_HANDLERS.get(handler_key, handlers.ColumnHandler)
     validator = None
     default = None
     if attr["type"] == AttributeInfo.Type.PROPERTY:
       validator = getattr(object_class, "validate_{}".format(key), None)
       default = getattr(object_class, "default_{}".format(key), None)
     elif attr["type"] == AttributeInfo.Type.MAPPING:
-      handler = _mapping_handlers.get(key, handlers.MappingColumnHandler)
+      handler = COLUMN_HANDLERS.get(key, handlers.MappingColumnHandler)
     elif attr["type"] == AttributeInfo.Type.CUSTOM:
-      handler = handlers.CustomAttributeColumHandler
+      handler = custom_attribute.CustomAttributeColumHandler
     attr["handler"] = attr.get("handler", handler)
     attr["validator"] = attr.get("validator", validator)
     attr["default"] = attr.get("default", default)

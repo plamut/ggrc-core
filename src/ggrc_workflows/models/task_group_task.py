@@ -6,6 +6,7 @@
 from datetime import date
 from datetime import datetime
 from sqlalchemy import orm
+from sqlalchemy import schema
 
 from ggrc import db
 from ggrc.login import get_current_user
@@ -18,7 +19,11 @@ from ggrc_workflows.models.task_group import TaskGroup
 class TaskGroupTask(WithContact, Slugged, Titled, Described, RelativeTimeboxed,
                     Base, db.Model):
   __tablename__ = 'task_group_tasks'
+  __table_args__ = (
+      schema.CheckConstraint('start_date <= end_date'),
+  )
   _title_uniqueness = False
+  _start_changed = False
 
   @classmethod
   def default_task_type(cls):
@@ -58,17 +63,13 @@ class TaskGroupTask(WithContact, Slugged, Titled, Described, RelativeTimeboxed,
       return date(year, value.month, value.day)
     return value
 
-  @orm.validates('start_date')
-  def validate_start_date(self, key, value):
-    value = self.validate_date(value)
-    if self.end_date is not None and value > self.end_date:
-      raise ValueError("Start date can not be after end date.")
-    return value
-
-  @orm.validates('end_date')
+  @orm.validates("start_date", "end_date")
   def validate_end_date(self, key, value):
     value = self.validate_date(value)
-    if self.start_date is not None and self.start_date > value:
+    if key == "start_date":
+      self._start_changed = True
+    if key == "end_date" and self._start_changed and self.start_date > value:
+      self._start_changed = False
       raise ValueError("Start date can not be after end date.")
     return value
 
@@ -86,7 +87,10 @@ class TaskGroupTask(WithContact, Slugged, Titled, Described, RelativeTimeboxed,
   _sanitize_html = []
   _aliases = {
       "title": "Summary",
-      "description": "Task Description",
+      "description": {
+          "display_name": "Task Description",
+          "handler_key": "task_description",
+      },
       "contact": {
           "display_name": "Assignee",
           "mandatory": True,

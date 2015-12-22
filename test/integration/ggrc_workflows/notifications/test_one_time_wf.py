@@ -125,7 +125,7 @@ class TestOneTimeWorkflowNotification(TestCase):
       self.assertEqual(len(notif_data[user]["due_today"]), 3)
 
       send_todays_digest_notifications()
-      self.assertEquals(mock_mail.call_count, 1)
+      self.assertEqual(mock_mail.call_count, 1)
 
   def create_test_cases(self):
     def person_dict(person_id):

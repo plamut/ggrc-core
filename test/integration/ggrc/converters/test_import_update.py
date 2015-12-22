@@ -23,10 +23,10 @@ class TestImportUpdates(TestCase):
     response = self.import_file(filename)
     for block in response:
       for message in messages:
-        self.assertEquals(set(), set(block[message]))
+        self.assertEqual(set(), set(block[message]))
 
     filename = "policy_basic_import_update.csv"
     response = self.import_file(filename)
     for block in response:
       for message in messages:
-        self.assertEquals(set(), set(block[message]))
+        self.assertEqual(set(), set(block[message]))

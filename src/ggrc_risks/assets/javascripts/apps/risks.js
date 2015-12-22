@@ -157,6 +157,7 @@
         widget_name: model.model_plural,
         widget_icon: model.table_singular,
         content_controller_options: {
+          add_item_view : GGRC.mustache_path + "/base_objects/tree_add_item.mustache",
           child_options: [],
           draw_children: false,
           parent_instance: page_instance,

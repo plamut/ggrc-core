@@ -6,15 +6,15 @@
 }}
 
 <li data-object-id="{{instance.id}}" data-object-type="{{instance.class.table_singular}}">
-  {{#is_allowed 'update'}}
+  {{#is_allowed 'update' instance}}
   <span class="file-controls">
     <a href="javascript://" class="info-action unmap" data-toggle="unmap">
-      {{#result}}<span class="result" {{data 'result'}}></span>{{/result}}
+      <span class="result" {{data 'result'}}></span>
       <i class="grcicon-deleted"></i>
     </a>
   </span>
   {{/is_allowed}}
-  <i class="grcicon-file"></i>
+  <i class="grcicon-file-{{file_type instance}}"></i>
   <span class="date">{{date instance.created_at "no_time"}}</span>
   <a href="{{schemed_url instance.link}}" href="{{schemed_url instance.link}}" target="_blank">
     <span>{{firstnonempty instance.title instance.link}}</span>

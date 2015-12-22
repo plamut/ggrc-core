@@ -15,6 +15,7 @@ from ggrc.utils import title_from_camelcase
 ATTRIBUTE_ORDER = (
     "slug",
     "audit",
+    "request_audit",
     "control",
     "program",
     "task_group",
@@ -24,6 +25,10 @@ ATTRIBUTE_ORDER = (
     "notes",
     "test_plan",
     "owners",
+    "request_type",
+    "related_requesters",
+    "related_assignees",
+    "related_verifiers",
     "program_owner",
     "program_editor",
     "program_reader",
@@ -31,6 +36,8 @@ ATTRIBUTE_ORDER = (
     "workflow_owner",
     "workflow_member",
     "task_type",
+    "requested_on",
+    "due_on",
     "start_date",
     "end_date",
     "report_start_date",
@@ -62,6 +69,7 @@ ATTRIBUTE_ORDER = (
     "is_enabled",
     "company",
     "user_role",
+    "test",
 )
 
 
@@ -289,6 +297,7 @@ class AttributeInfo(object):
       filtered_aliases.append(("delete", {
         "display_name": "Delete",
         "import_only": True,
+        "description": "",
       }))
 
     unique_columns = cls.get_unique_constraints(object_class)
@@ -302,6 +311,7 @@ class AttributeInfo(object):
           "unique": key in unique_columns,
           "description": "",
           "type": cls.Type.PROPERTY,
+          "handler_key": key,
       }
       if type(value) is dict:
         definition.update(value)

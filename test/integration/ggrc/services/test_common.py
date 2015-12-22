@@ -107,7 +107,7 @@ class TestResource(TestCase):
     self.assertIn('Last-Modified', response.headers)
     self.assertIn('Content-Type', response.headers)
     for k, v in headers.items():
-      self.assertEquals(v, response.headers.get(k))
+      self.assertEqual(v, response.headers.get(k))
 
   def assertAllow(self, response, allowed=None):
     self.assert405(response)

@@ -114,6 +114,7 @@ dashboard-js-files:
   - components/csv/import.js
   - components/mapper.js
   - components/people_list.js
+  - components/mapped_tree_view.js
   #- d3.v2.js
   #- related_graph.js
 
@@ -136,6 +137,7 @@ dashboard-js-template-files:
   - base_objects/notes.mustache
   - base_objects/info.mustache
   - base_objects/dropdown_menu.mustache
+  - base_objects/dropdown_menu_tier2.mustache
   - base_objects/view_link.mustache
   - base_objects/unmap.mustache
   - base_objects/map_related_modal_content.mustache
@@ -180,11 +182,11 @@ dashboard-js-template-files:
   - base_templates/mapped_objects.mustache
   - base_templates/notes.mustache
   - base_templates/people_list.mustache
-  - base_templates/add_people.mustache
   - base_templates/people_group.mustache
   - base_templates/request_type.mustache
   - base_templates/test.mustache
   - base_templates/urls.mustache
+  - base_templates/mapping_tree_view.mustache
   - mixins/assignable.mustache
   - mixins/stateful.mustache
   - clauses/modal_content.mustache
@@ -375,6 +377,7 @@ dashboard-js-template-files:
   - import_export/export/attribute_selector.mustache
   - import_export/export/filter_query.mustache
   - mapper/relevant_filter.mustache
+  - quick_form/confirm_buttons.mustache
 
 dashboard-css-files:
   # dashboard.css is generated automatically from `compass watch -c compass.config.rb`

@@ -16,7 +16,6 @@
 {{/if}}
 
 {{else}}
-{{^if_instance_of parent_instance 'ControlAssessment'}}
 {{#if allow_mapping}}
 {{#is_allowed_to_map parent_instance model.shortName}}
   <a
@@ -33,6 +32,5 @@
   </a>
 {{/is_allowed_to_map}}
 {{/if}}
-{{/if_instance_of}}
 {{/if_instance_of}}
 {{/if}}

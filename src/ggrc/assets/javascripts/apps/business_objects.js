@@ -335,7 +335,11 @@
           },
           Request: {
             mapping: "related_requests",
-            child_options: [related_objects_child_options],
+            child_options: [
+              _.extend({}, related_objects_child_options, {
+                mapping: "info_related_objects"
+              })
+            ],
             draw_children: true
           },
           Document: {
@@ -576,7 +580,7 @@
             draw_children: true
           },
           Request: {
-            mapping: "requests",
+            mapping: "related_requests",
             draw_children: true,
             show_view: GGRC.mustache_path + "/requests/tree.mustache",
             footer_view: GGRC.mustache_path + "/requests/tree_footer.mustache",

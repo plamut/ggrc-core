@@ -77,7 +77,7 @@ class TestUtilsFunctions(TestCase):
 
     result = utils.merge_dict(dict1, dict2)
 
-    self.assertEquals(result, expected_result)
+    self.assertEqual(result, expected_result)
 
   def test_merge_dicts(self):
     dict1 = {

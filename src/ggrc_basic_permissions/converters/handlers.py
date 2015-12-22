@@ -8,7 +8,7 @@ from sqlalchemy import and_
 
 from ggrc import db
 from ggrc.converters import errors
-from ggrc.converters.handlers import UserColumnHandler
+from ggrc.converters.handlers.handlers import UserColumnHandler
 from ggrc.login import get_current_user
 from ggrc.models import Context
 from ggrc.models import Person

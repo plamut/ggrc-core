@@ -53,7 +53,9 @@ can.Model.Cacheable("CMS.Models.SystemOrProcess", {
       , attr_list : can.Model.Cacheable.attr_list.concat([
         {attr_title: 'Network Zone', attr_name: 'network_zone', attr_sort_field: 'network_zone.title'},
         {attr_title: 'Effective Date', attr_name: 'start_date'},
-        {attr_title: 'Stop Date', attr_name: 'end_date'}
+        {attr_title: 'Stop Date', attr_name: 'end_date'},
+        {attr_title: 'URL', attr_name: 'url'},
+        {attr_title: 'Reference URL', attr_name: 'reference_url'}
       ])
       , child_tree_display_list : ['Control']
       , add_item_view : GGRC.mustache_path + "/base_objects/tree_add_item.mustache"

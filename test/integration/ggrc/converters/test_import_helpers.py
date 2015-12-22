@@ -7,19 +7,23 @@ from copy import copy
 from os.path import abspath, dirname, join
 from random import shuffle
 
+from ggrc import converters
 from ggrc import models
-from ggrc_workflows import models as wf_models
-from ggrc_risk_assessments import models as ra_models
-from ggrc.converters.import_helper import get_object_column_definitions
+from ggrc.converters import column_handlers
+from ggrc.converters import import_helper
 from ggrc.converters.import_helper import get_column_order
+from ggrc.converters.import_helper import get_object_column_definitions
 from ggrc.converters.import_helper import split_array
-from ggrc.utils import title_from_camelcase
 from ggrc.utils import get_mapping_rules
+from ggrc.utils import title_from_camelcase
+from ggrc_risk_assessments import models as ra_models
+from ggrc_workflows import models as wf_models
 from integration.ggrc import TestCase
 from integration.ggrc.generator import ObjectGenerator
 
 THIS_ABS_PATH = abspath(dirname(__file__))
 CSV_DIR = join(THIS_ABS_PATH, 'example_csvs/')
+
 
 def get_mapping_names(class_name):
   mapping_rules = get_mapping_rules().get(class_name, set())
@@ -28,13 +32,14 @@ def get_mapping_names(class_name):
   unmapping_names = {"unmap:{}".format(name) for name in pretty_rules}
   return mapping_names.union(unmapping_names)
 
+
 class TestSplitArry(TestCase):
 
   def test_sigle_block(self):
     test_data = [
-      ["hello", "world"],
-      ["hello", "world"],
-      ["hello", "world"],
+        ["hello", "world"],
+        ["hello", "world"],
+        ["hello", "world"],
     ]
     offests, data_blocks = split_array(test_data)
     self.assertEqual(len(data_blocks), 1)
@@ -43,11 +48,11 @@ class TestSplitArry(TestCase):
 
   def test_sigle_block_with_padding(self):
     test_data = [
-      ["", ""],
-      ["hello", "world"],
-      ["hello", "world", "uet"],
-      ["hello", "world"],
-      ["hello", "world"],
+        ["", ""],
+        ["hello", "world"],
+        ["hello", "world", "uet"],
+        ["hello", "world"],
+        ["hello", "world"],
     ]
     offests, data_blocks = split_array(test_data)
     self.assertEqual(len(data_blocks), 1)
@@ -55,15 +60,15 @@ class TestSplitArry(TestCase):
     self.assertEqual(offests[0], 1)
 
     test_data = [
-      ["", ""],
-      ["", ""],
-      ["", ""],
-      ["hello", "world"],
-      ["hello", "world", "uet"],
-      ["hello", "world"],
-      ["hello", "world"],
-      ["", ""],
-      ["", ""],
+        ["", ""],
+        ["", ""],
+        ["", ""],
+        ["hello", "world"],
+        ["hello", "world", "uet"],
+        ["hello", "world"],
+        ["hello", "world"],
+        ["", ""],
+        ["", ""],
     ]
     offests, data_blocks = split_array(test_data)
     self.assertEqual(len(data_blocks), 1)
@@ -72,12 +77,12 @@ class TestSplitArry(TestCase):
 
   def test_multiple_blocks(self):
     test_data = [
-      ["", ""],
-      ["hello", "world"],
-      ["hello", "world", "uet"],
-      ["", ""],
-      ["hello", "world"],
-      ["hello", "world"],
+        ["", ""],
+        ["hello", "world"],
+        ["hello", "world", "uet"],
+        ["", ""],
+        ["hello", "world"],
+        ["hello", "world"],
     ]
     offests, data_blocks = split_array(test_data)
     self.assertEqual(len(data_blocks), 2)
@@ -87,18 +92,18 @@ class TestSplitArry(TestCase):
     self.assertEqual(offests[1], 4)
 
     test_data = [
-      ["", ""],
-      ["hello", "world"],
-      ["hello", "world", "uet"],
-      ["hello", "world"],
-      ["", ""],
-      ["", ""],
-      ["hello", "world"],
-      ["", ""],
-      ["", ""],
-      ["hello", "world"],
-      ["hello", "world"],
-      ["hello", "world"],
+        ["", ""],
+        ["hello", "world"],
+        ["hello", "world", "uet"],
+        ["hello", "world"],
+        ["", ""],
+        ["", ""],
+        ["hello", "world"],
+        ["", ""],
+        ["", ""],
+        ["hello", "world"],
+        ["hello", "world"],
+        ["hello", "world"],
     ]
     offests, data_blocks = split_array(test_data)
     self.assertEqual(len(data_blocks), 3)
@@ -110,6 +115,36 @@ class TestSplitArry(TestCase):
     self.assertEqual(offests[2], 9)
 
 
+class TestGetObjectColumnDefinitons(TestCase):
+
+  def test_object_column_handlers(self):
+
+    def test_single_object(obj):
+      handlers = column_handlers.COLUMN_HANDLERS
+      column_definitions = import_helper.get_object_column_definitions(obj)
+      for key, value in column_definitions.items():
+        if key in handlers:
+          handler_key = value.get("handler_key", key)
+          self.assertEqual(
+              value["handler"],
+              handlers[handler_key],
+              "Object '{}', column '{}': expected {}, found {}".format(
+                  obj.__name__,
+                  key,
+                  handlers[key].__name__,
+                  value["handler"].__name__,
+              )
+          )
+
+    verificationErrors = []
+    for obj in set(converters.get_exportables().values()):
+      try:
+        test_single_object(obj)
+      except AssertionError as e:
+        verificationErrors.append(str(e))
+
+    verificationErrors.sort()
+    self.assertEqual(verificationErrors, [])
 
 
 class TestCulumnOrder(TestCase):
@@ -245,7 +280,72 @@ class TestGetObjectColumnDefinitions(TestCase):
   order of these test functions is the same as the objects in LHN
   """
 
+  def _test_definiton_names(self, obj_class, names, has_mappings=True):
+    """ Test name definitions for one class
 
+    This function checks if names returned by get_object_column_definitions
+    match provided list of names with the approprate mapping names fro that
+    class if has_mappings attribute is set.
+    """
+    definitions = get_object_column_definitions(obj_class)
+    display_names = {val["display_name"] for val in definitions.values()}
+    mapping_names = get_mapping_names(obj_class.__name__)
+    expected_names = names.union(mapping_names)
+    self.assertEqual(expected_names, display_names)
+    if has_mappings:
+      self.assertNotEqual(set(), mapping_names)
+    else:
+      self.assertEqual(set(), mapping_names)
+
+  def _test_mandatory_fields(self, obj_class, mandatory):
+    """ Test mandatory column definitions
+
+    Check that all the correct and only the correct fields are marked as
+    mandotory
+    """
+    definitions = get_object_column_definitions(obj_class)
+    mandatory_names = {val["display_name"] for val in definitions.values()
+                       if val["mandatory"]}
+    self.assertEqual(mandatory_names, mandatory)
+
+  def _test_unique_fields(self, obj_class, unique):
+    """ Test unique column definitions
+
+    Check that all the correct and only the correct fields are marked as
+    unique
+    """
+    definitions = get_object_column_definitions(obj_class)
+    mandatory_names = {val["display_name"] for val in definitions.values()
+                       if val["unique"]}
+    self.assertEqual(mandatory_names, unique)
+
+  def _test_single_object(self, obj_class, names, mandatory, unique,
+                          has_mappings=True):
+    """ Test object definitions
+
+    This is a helper function to aggregate tests for column name definitions,
+    mandatory fields and unique fields.
+    """
+    errors = ""
+    try:
+      self._test_definiton_names(obj_class, names, has_mappings)
+    except AssertionError as e:
+      errors += "\n\n{} definition names missmatch.\n{}".format(
+          obj_class.__name__, str(e))
+
+    try:
+      self._test_mandatory_fields(obj_class, mandatory)
+    except AssertionError as e:
+      errors += "\n\n{} mandatory fields missmatch.\n{}".format(
+          obj_class.__name__, str(e))
+
+    try:
+      self._test_unique_fields(obj_class, unique)
+    except AssertionError as e:
+      errors += "\n\n{} unique fields missmatch.\n{}".format(
+          obj_class.__name__, str(e))
+
+    self.assertEqual(errors, "", errors)
 
   def test_program_definitions(self):
     """ test default headers for Program """
@@ -885,25 +985,38 @@ class TestGetObjectColumnDefinitions(TestCase):
 
   def test_request_definitions(self):
     """ test default headers for Request """
-    definitions = get_object_column_definitions(models.Request)
-    mapping_names = get_mapping_names(models.Request.__name__)
-    display_names = {val["display_name"] for val in definitions.values()}
-    element_names = {
+
+    names = {
+        "Assignee",
         "Audit",
         "Code",
-        "Request Title",
+        "Delete",
         "Description",
         "Due On",
         "Notes",
-        "Request Object",
         "Request Type",
         "Requested On",
+        "Requester",
         "Status",
         "Test",
-        "Delete",
+        "Title",
+        "Verifier",
     }
-    expected_names = element_names.union(mapping_names)
-    self.assertEqual(expected_names, display_names)
+    mandatory = {
+        "Assignee",
+        "Audit",
+        "Code",
+        "Due On",
+        "Request Type",
+        "Requested On",
+        "Requester",
+        "Status",
+        "Title",
+    }
+    unique = {
+        "Code",
+    }
+    self._test_single_object(models.Request, names, mandatory, unique)
 
 
 class TestGetWorkflowObjectColumnDefinitions(TestCase):
@@ -978,7 +1091,8 @@ class TestGetWorkflowObjectColumnDefinitions(TestCase):
 
   def test_cycle_task_definitions(self):
     """ test default headers for Cycle Task Group Object Task """
-    definitions = get_object_column_definitions(wf_models.CycleTaskGroupObjectTask)
+    definitions = get_object_column_definitions(
+        wf_models.CycleTaskGroupObjectTask)
     display_names = {val["display_name"] for val in definitions.values()}
     expected_names = {
         "Code",

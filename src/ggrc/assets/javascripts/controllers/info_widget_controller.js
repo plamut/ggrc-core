@@ -9,11 +9,11 @@
 
 can.Control("GGRC.Controllers.InfoWidget", {
   defaults : {
-    model : null
-    , instance : null
-    , widget_view : GGRC.mustache_path + "/base_objects/info.mustache"
-  }
-  , init : function() {
+    model : null,
+    instance : null,
+    widget_view : GGRC.mustache_path + "/base_objects/info.mustache"
+  },
+  init : function() {
     var that = this;
     $(function() {
       if (GGRC.page_object) {
@@ -45,55 +45,68 @@ can.Control("GGRC.Controllers.InfoWidget", {
     can.view(this.get_widget_view(this.element), this.options.context, function(frag) {
       that.element.html(frag);
     });
-  }
+  },
 
-  , get_widget_view: function(el) {
-      var widget_view = $(el)
-            .closest('[data-widget-view]').attr('data-widget-view');
-      if (widget_view && widget_view.length > 0)
-        return GGRC.mustache_path + widget_view;
-      else
-        return this.options.widget_view;
-    }
+  get_widget_view: function(el) {
+    var widget_view = $(el)
+          .closest('[data-widget-view]').attr('data-widget-view');
+    if (widget_view && widget_view.length > 0)
+      return GGRC.mustache_path + widget_view;
+    else
+      return this.options.widget_view;
+  },
 
-  , init_menu: function() {
-    var start_menu,
-        object_menu;
+  generate_menu_items: function(item_names, display_prefix) {
+    return _.filter(_.map(item_names, function(item_name){
+      display_prefix = display_prefix || "";
+      if (item_name in CMS.Models){
+        return {
+          model_name: CMS.Models[item_name].model_singular,
+          model_lowercase: CMS.Models[item_name].table_singular,
+          model_plural: CMS.Models[item_name].table_plural,
+          display_name: display_prefix + CMS.Models[item_name].title_singular
+        };
+      }
+    }));
+  },
 
+  init_menu: function() {
     if(!this.options.start_menu) {
-      start_menu = [
-        { model_name: 'Program', model_lowercase: 'program', model_plural: 'programs', display_name: 'Start new Program'},
-        { model_name: 'Audit', model_lowercase: 'audit', model_plural: 'audits', display_name: 'Start new Audit'},
-        { model_name: 'Workflow', model_lowercase: 'workflow', model_plural: 'workflows', display_name: 'Start new Workflow'}
+      names = [
+        'Program',
+        'Audit',
+        'Workflow',
       ];
-      this.options.start_menu = start_menu;
+      this.options.start_menu = this.generate_menu_items(names, "Start new ");
     }
     if(!this.options.object_menu) {
-      object_menu = [
-        { model_name: 'Regulation', model_lowercase: 'regulation', model_plural: 'regulations', display_name: 'Regulations'},
-        { model_name: 'Policy', model_lowercase: 'policy', model_plural: 'policies', display_name: 'Policies'},
-        { model_name: 'Standard', model_lowercase: 'standard', model_plural: 'standards', display_name: 'Standards'},
-        { model_name: 'Contract', model_lowercase: 'contract', model_plural: 'contracts', display_name: 'Contracts'},
-        { model_name: 'Clause', model_lowercase: 'clause', model_plural: 'clauses', display_name: 'Clauses'},
-        { model_name: 'Section', model_lowercase: 'section', model_plural: 'sections', display_name: 'Sections'},
-        { model_name: 'Objective', model_lowercase: 'objective', model_plural: 'objectives', display_name: 'Objectives'},
-        { model_name: 'Control', model_lowercase: 'control', model_plural: 'controls', display_name: 'Controls'},
-        { model_name: 'Person', model_lowercase: 'person', model_plural: 'people', display_name: 'People'},
-        { model_name: 'OrgGroup', model_lowercase: 'org_group', model_plural: 'org_groups', display_name: 'Org Groups'},
-        { model_name: 'Vendor', model_lowercase: 'vendor', model_plural: 'vendors', display_name: 'Vendors'},
-        { model_name: 'System', model_lowercase: 'system', model_plural: 'systems', display_name: 'Systems'},
-        { model_name: 'Process', model_lowercase: 'process', model_plural: 'processes', display_name: 'Processes'},
-        { model_name: 'DataAsset', model_lowercase: 'data_asset', model_plural: 'data_assets', display_name: 'Data Assets'},
-        { model_name: 'AccessGroup', model_lowercase: 'access_group', model_plural: 'access_groups', display_name: 'Access Groups'},
-        { model_name: 'Product', model_lowercase: 'product', model_plural: 'products', display_name: 'Products'},
-        { model_name: 'Project', model_lowercase: 'project', model_plural: 'projects', display_name: 'Projects'},
-        { model_name: 'Facility', model_lowercase: 'facility', model_plural: 'facilities', display_name: 'Facilities'},
-        { model_name: 'Market', model_lowercase: 'market', model_plural: 'markets', display_name: 'Markets'},
-        { model_name: 'Issue', model_lowercase: 'issue', model_plural: 'issues', display_name: 'issues'},
-        { model_name: 'ControlAssessment', model_lowercase: 'control_assessment', model_plural: 'control_assessments', display_name: 'Control Assessments'},
-        { model_name: 'Request', model_lowercase: 'request', model_plural: 'requests', display_name: 'Requests'}
+      names = [
+        'AccessGroup',
+        'Clause',
+        'Contract',
+        'Control',
+        'ControlAssessment',
+        'DataAsset',
+        'Facility',
+        'Issue',
+        'Market',
+        'Objective',
+        'OrgGroup',
+        'Person',
+        'Policy',
+        'Process',
+        'Product',
+        'Project',
+        'Regulation',
+        'Request',
+        'Risk',
+        'Section',
+        'Standard',
+        'System',
+        'Threat',
+        'Vendor',
       ];
-      this.options.object_menu = object_menu;
+      this.options.object_menu = this.generate_menu_items(names);
     }
   }
 });
