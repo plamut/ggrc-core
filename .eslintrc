@@ -16,6 +16,7 @@
     "Mustache": false,
     "MutationObserver": false,
     "Permission": false,
+    "PersistentNotifier", false,
     "RefreshQueue": false,
     "RefreshQueueManager": false,
     "Spinner": false,
