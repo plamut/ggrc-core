@@ -695,5 +695,4 @@
       this.validateNonBlank('title');
     }
   }, {});
-
 })(this.can);
