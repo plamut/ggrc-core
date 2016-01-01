@@ -309,7 +309,7 @@ class TestAutomappings(integration.ggrc.TestCase):
         'title': next('Request'),
         'assignee': {'id': creator.id},
         'request_type': 'documentation',
-        'status': 'Unstarted',
+        'status': 'Open',
         'requested_on': '1/1/2015',
         'due_on': '1/1/2016',
     })

@@ -62,19 +62,19 @@
       }
     },
 
-    /**
-     * Determine if `source` is allowed to be mapped to `target`.
-     *
-     * By symmetry, this method can be also used to check whether `source` can
-     * be unmapped from `target`.
-     *
-     * @param {Object} source - the source object the mapping
-     * @param {Object} target - the target object of the mapping
-     * @param {Object} options - the options objects, similar to the one that is
-     *   passed as an argument to Mustache helpers
-     *
-     * @return {Boolean} - true if mapping is allowed, false otherwise
-     */
+  /**
+   * Determine if `source` is allowed to be mapped to `target`.
+   *
+   * By symmetry, this method can be also used to check whether `source` can
+   * be unmapped from `target`.
+   *
+   * @param {Object} source - the source object the mapping
+   * @param {Object} target - the target object of the mapping
+   * @param {Object} options - the options objects, similar to the one that is
+   *   passed as an argument to Mustache helpers
+   *
+   * @return {Boolean} - true if mapping is allowed, false otherwise
+   */
     allowed_to_map: function (source, target, options) {
       var can_map = false;
       var types;
@@ -85,9 +85,13 @@
       var create_contexts;
       var canonical;
       var has_widget;
+      var canonical_mapping;
 
-      target_type = target instanceof can.Model ? target.constructor.shortName :
-        (target.type || target);
+      if (target instanceof can.Model) {
+        target_type = target.constructor.shortName;
+      } else {
+        target_type = target.type || target;
+      }
       source_type = source.constructor.shortName || source;
 
       // special case check: mapping an Audit to a Program (and vice versa) is
@@ -99,7 +103,10 @@
 
       canonical = GGRC.Mappings.get_canonical_mapping_name(
         source_type, target_type);
-      if (canonical && canonical.startsWith('_')) {
+      canonical_mapping = GGRC.Mappings.get_canonical_mapping(
+        source_type, target_type);
+
+      if (canonical && canonical.indexOf('_') === 0) {
         canonical = null;
       }
 
@@ -107,7 +114,8 @@
         GGRC.tree_view.base_widgets_by_type[source_type] || [],
         target_type);
 
-      if (_.exists(options, 'hash.join') && (!canonical || !has_widget)) {
+      if (_.exists(options, 'hash.join') && (!canonical || !has_widget) ||
+          (canonical && !canonical_mapping.model_name)) {
         return false;
       }
       target_context = _.exists(target, 'context.id');

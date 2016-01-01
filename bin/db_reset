@@ -4,9 +4,39 @@
 # Created By: dan@reciprocitylabs.com
 # Maintained By: dan@reciprocitylabs.com
 
+set -o nounset
+set -o errexit
+
+
+DB_NAME="ggrcdev"
 SCRIPTPATH=$( cd "$(dirname "$0")" ; pwd -P )
+ROOT_PATH="${SCRIPTPATH}/../"
+DUMP_FILE=${1:-}
 
-cd "${SCRIPTPATH}/../src"
+if [[ "$DUMP_FILE" == "-h" || "$DUMP_FILE" == "--help" ]] ; then
+  echo "Usage: $(basename $0) [sql_dump_file.sql]"
+  echo ""
+  echo "Reset entire database. If sql dump file is provided, it gets imported"
+  echo "and migrations applied on top of it."
+  exit 0
+fi
 
-python -c "import ggrc.models; ggrc.models.drop_db(use_migrations=True); ggrc.models.create_db(use_migrations=True)"
+find $ROOT_PATH -iname "*.pyc" -delete
 
+if [[ -f "$DUMP_FILE" ]] && grep "^USE " $DUMP_FILE; then
+  echo "Error: 'USE' statement found in the database dump."
+  echo ""
+  echo "Importing into $DB_NAME will fail if there is USE block in the"
+  echo "database dump file. Please fix the dump file and run this script again"
+  exit 1
+fi
+
+mysql -uroot -proot -e "drop database if exists $DB_NAME"
+mysql -uroot -proot -e "create database $DB_NAME character set utf8"
+
+if [[ -f "$DUMP_FILE" ]]; then
+  echo "Importing: $DUMP_FILE"
+  mysql -uroot -proot $DB_NAME < $DUMP_FILE
+fi
+
+db_migrate

@@ -14,9 +14,9 @@
           <div class="row-fluid">
             <div class="span{{display_options.title_width}}">
               <div class="title tree-title-area">
-                {{#if_draw_icon instance}}
+                {{#is_subtree}}
                   <i class="grcicon-{{instance.request_type}}"></i>
-                {{/if_draw_icon}}
+                {{/is_subtree}}
                 <span>{{instance.title}}</span>
               </div>
             </div>

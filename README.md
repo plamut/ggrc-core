@@ -135,6 +135,17 @@ This will run the tests on each file update.
 cd test/unit; sniffer
 ```
 
+For Selenium tests:
+
+First you have to manually launch the server inside you dev container.
+Then you can run the selenium tests with:
+
+```sh
+docker exec -it ggrccore_selenium_1 python /selenium/src/run_selenium.py
+```
+
+Note: The tests should pass if you launch the server with a clean database.
+
 Quickstart Breakdown
 --------------------
 

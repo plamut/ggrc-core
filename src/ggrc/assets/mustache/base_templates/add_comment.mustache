@@ -9,8 +9,38 @@
     <div class="span8">
       <div class="controls top">
         {{#is_allowed 'update' parent_instance context='for'}}
-        <ggrc-gdrive-picker-launcher icon="attach" instance="instance" link_text="Attach evidence" deferred="true" click_event="trigger_upload">
-        </ggrc-gdrive-picker-launcher>
+          {{#with_mapping 'extended_folders' parent_instance}}
+            {{#if extended_folders.length}}
+              <ggrc-gdrive-picker-launcher
+                icon="attach"
+                instance="instance"
+                folder_instance="parent_instance"
+                link_text="Attach evidence"
+                deferred="true"
+                click_event="trigger_upload_parent">
+              </ggrc-gdrive-picker-launcher>
+            {{else}}
+              <ggrc-gdrive-picker-launcher
+                icon="attach"
+                instance="instance"
+                link_text="Attach evidence"
+                deferred="true"
+                click_event="trigger_upload">
+              </ggrc-gdrive-picker-launcher><i class="grcicon-warning" style="margin-top:4px" rel="tooltip" data-placement="bottom" data-original-title="Audit folder not set. Files will be uploaded to your GDrive root folder."></i>
+            {{/if}}
+          {{else}}
+            {{! This is a failure state for with_mapping, if something in the mapping doesn't refresh properly }}
+            {{#if error.errors}}
+              <small>
+                You need permission to upload files to the audit folder. <a href="https://drive.google.com/folderview?id={{grdive_msg_to_id error.message}}&usp=sharing#">Request access.</a>
+              </small>
+            {{else}}
+              The GDrive folder for this evidence could not be accessed.
+              {{#using request=parent_instance.request}}
+                {{{render '/static/mustache/gdrive/gapi_errors.mustache' type="file" instance=request error=error}}}
+              {{/using}}
+            {{/if}}
+          {{/with_mapping}}
           {{#toggle show_new_object_form}}
             <ggrc-quick-add parent_instance="instance" join_model="Relationship" deferred="true" quick_create="create_url">
               {{#prune_context}}

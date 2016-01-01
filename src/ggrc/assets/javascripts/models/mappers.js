@@ -642,7 +642,7 @@
             if (instance instanceof CMS.Models.Relationship) {
               if (_.exists(instance, 'attrs') &&
                   instance.attrs[prop] &&
-                  _.contains(instance.attrs[prop].split(','), value)) {
+                  (!value || _.contains(instance.attrs[prop].split(","), value))) {
                 return true;
               }
             }

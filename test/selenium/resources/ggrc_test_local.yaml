@@ -1,0 +1,13 @@
+logging:
+ level: 10  # see python logging module for reference
+ format: "%(asctime)s:%(name)s:%(levelname)s:%(module)s:%(funcName):%(lineno)s:%(message)s"
+
+webdriver:
+ path: /usr/bin/chromedriver
+
+app:
+ url: http://dev:8080/
+
+browser:
+ display: False
+ resolution: (1920, 1080)

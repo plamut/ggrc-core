@@ -5,20 +5,19 @@
     Maintained By: brad@reciprocitylabs.com
 */
 
-/* eslint no-caller: 1 */
-
+/* eslint no-caller: 0 */
 (function (can) {
   var _old_attr = can.Observe.prototype.attr;
-
   var makeFindRelated = function (thistype, othertype) {
     return function (params) {
       if (!params[thistype + '_type']) {
         params[thistype + '_type'] = this.shortName;
       }
-      return CMS.Models.Relationship.findAll(params)
-        .then(function (relationships) {
+      return CMS.Models.Relationship.findAll(params).then(
+        function (relationships) {
           var dfds = [];
           var things = new can.Model.List();
+
           can.each(relationships, function (rel, idx) {
             var dfd;
             if (rel[othertype].selfLink) {
@@ -65,8 +64,9 @@
         !/[-+]\d\d:?\d\d/.test(d)) {
       ret.subtract(new Date().getTimezoneOffset(), 'minute');
     }
-    if (oldValue && oldValue.getTime && ret &&
-      ret.toDate().getTime() === oldValue.getTime()) {
+
+    if (oldValue && oldValue.getTime &&
+      ret && ret.toDate().getTime() === oldValue.getTime()) {
       return oldValue;  // avoid changing to new Date object if the value is the same.
     }
     return ret ? ret.toDate() : undefined;
@@ -81,8 +81,7 @@
   }
 
   function makeDateSerializer(type, key) {
-    var conversion = type === 'date' ? 'YYYY-MM-DD' :
-      'YYYY-MM-DD\\THH:mm:ss\\Z';
+    var conversion = type === 'date' ? 'YYYY-MM-DD' : 'YYYY-MM-DD\\THH:mm:ss\\Z';
     return function (d) {
       var retstr;
       var retval;
@@ -153,9 +152,9 @@
       return function (id, instance) {
         return destroy(id).then(function (result) {
           if ('background_task' in result) {
-            return CMS.Models.BackgroundTask.findOne({
-              id: result.background_task.id
-            }).then(function (task) {
+            return CMS.Models.BackgroundTask.findOne(
+              {id: result.background_task.id}
+            ).then(function (task) {
               if (!task) {
                 return undefined;
               }
@@ -210,7 +209,6 @@
           }
 
           // Trigger a setTimeout loop to modelize remaining objects
-          // TODO: Figure out why this is writen in this manner and clean it up
           (function () {
             modelizeMS(100);
             if (sourceData.length > index) {
@@ -241,7 +239,7 @@
             'No default findPage() exists for subclasses of Cacheable');
         };
       } else if ((!statics || !statics.findAll) &&
-          this.findAll === can.Model.Cacheable.findAll) {
+        this.findAll === can.Model.Cacheable.findAll) {
         if (this.root_collection) {
           this.findAll = 'GET /api/' + this.root_collection;
         } else {
@@ -270,6 +268,7 @@
           });
         this.table_singular = statics.table_singular || this.root_object;
       }
+
       if (!can.isFunction(this.findAll)) {
         this.findPage = this.makeFindPage(this.findAll);
       }
@@ -279,6 +278,7 @@
       //  events not to be isolated (like in the LHN controller).
       //  I've submitted a fix to CanJS for this but it remains to be seen
       //  whether it gets in and when.  --BM 3/4/14
+      // this.__bindEvents = {};
 
       if (statics.mixins) {
         can.each(statics.mixins, function (mixin) {
@@ -290,7 +290,8 @@
             _mixin.add_to(that);
           } else {
             throw new Error(
-              'Cannot find mixin ' + mixin + ' for class ' + that.fullName);
+              'Error: Cannot find mixin ' +
+              mixin + ' for class ' + that.fullName);
           }
         });
         delete this.mixins;
@@ -303,8 +304,10 @@
 
       // set up default attribute converters/serializers for all classes
       can.extend(this.attributes, {
-        created_at: 'datetime', updated_at: 'datetime'
+        created_at: 'datetime',
+        updated_at: 'datetime'
       });
+
       return ret;
     },
     init: function () {
@@ -326,14 +329,16 @@
           old_obj.constructor, true)[old_obj[id_key]];
       });
 
-      // FIXME:  This gets set up in a chain of multiple calls to the function defined
-      //  below when the update endpoint isn't set in the model's static config.
-      //  This leads to conflicts not actually rejecting because on the second go-round
-      //  the local and remote objects look the same.  --BM 2015-02-06
+    // FIXME:  This gets set up in a chain of multiple calls to the function defined
+    //  below when the update endpoint isn't set in the model's static config.
+    //  This leads to conflicts not actually rejecting because on the second go-round
+    //  the local and remote objects look the same.  --BM 2015-02-06
+
       this.update = function (id, params) {
         var that = this;
         var ret = _update.call(this, id, this.process_args(params))
-          .then($.proxy(this, 'resolve_deferred_bindings'),
+          .then(
+            $.proxy(this, 'resolve_deferred_bindings'),
             function (xhr, status, e) {
               var obj;
               var attrs;
@@ -381,14 +386,13 @@
       };
 
       this.create = function (params) {
-        var ret = _create
-          .call(this, this.process_args(params))
+        var ret = _create.call(this, this.process_args(params))
           .then($.proxy(this, 'resolve_deferred_bindings'));
         delete ret.hasFailCallback;
         return ret;
       };
 
-      // Register this type as a custom attributable type if it is one.
+    // Register this type as a custom attributable type if it is one.
       if (this.is_custom_attributable) {
         if (!GGRC.custom_attributable_types) {
           GGRC.custom_attributable_types = [];
@@ -401,77 +405,73 @@
       var refresh_dfds = [];
       var dfds = [];
 
-      if (obj._pending_joins && obj._pending_joins.length) {
-        _pjs = obj._pending_joins.slice(0); // refresh of bindings later will muck up the pending joins on the object
-        can.each(can.unique(can.map(_pjs, function (pj) {
-          return pj.through;
-        })), function (binding) {
-          refresh_dfds.push(obj.get_binding(binding).refresh_stubs());
-        });
-
-        return $.when.apply($, refresh_dfds)
-        .then(function () {
-          can.each(obj._pending_joins, function (pj) {
-            var inst;
-            var binding = obj.get_binding(pj.through);
-            var model = CMS.Models[binding.loader.model_name] ||
-              GGRC.Models[binding.loader.model_name];
-
-            if (pj.how === 'add') {
-              // Don't re-add -- if the object is already mapped (could be direct or through a proxy)
-              // move on to the next one
-              if (~can.inArray(pj.what, can.map(binding.list,
-                  function (bo) {
-                    return bo.instance;
-                  })) ||
-                 (binding.loader.option_attr &&
-                    ~can.inArray(
-                      pj.what, can.map(
-                        binding.list, function (join_obj) {
-                          return join_obj.instance[binding.loader.option_attr];
-                        }))
-              )) {
-                return;
-              }
-              inst = pj.what instanceof model ?
-                pj.what : new model({
-                  context: obj.context
-                });
-              dfds.push($.when(pj.what !== inst && pj.what.isNew() ?
-                pj.what.save() : null)
-                  .then(function () {
-                    if (binding.loader.object_attr) {
-                      inst.attr(binding.loader.object_attr, obj.stub());
-                    }
-                    if (binding.loader.option_attr) {
-                      inst.attr(binding.loader.option_attr, pj.what.stub());
-                    }
-                    if (pj.extra) {
-                      inst.attr(pj.extra);
-                    }
-                    return inst.save();
-                  }));
-            } else if (pj.how === 'remove') {
-              can.map(binding.list, function (bound_obj) {
-                if (bound_obj.instance === pj.what ||
-                  bound_obj.instance[binding.loader.option_attr] === pj.what) {
-                  can.each(bound_obj.get_mappings(), function (mapping) {
-                    dfds.push(mapping.refresh().then(function () {
-                      mapping.destroy();
-                    }));
-                  });
-                }
-              });
-            }
-          });
-
-          obj.attr('_pending_joins', []);
-          return $.when.apply($, dfds).then(function () {
-            return obj.refresh();
-          });
-        });
+      if (obj._pending_joins && !obj._pending_joins.length) {
+        return obj;
       }
-      return obj;
+      _pjs = obj._pending_joins.slice(0); // refresh of bindings later will muck up the pending joins on the object
+      can.each(can.unique(can.map(_pjs, function (pj) {
+        return pj.through;
+      })), function (binding) {
+        refresh_dfds.push(obj.get_binding(binding).refresh_stubs());
+      });
+
+      return $.when.apply($, refresh_dfds)
+      .then(function () {
+        can.each(obj._pending_joins, function (pj) {
+          var inst;
+          var binding = obj.get_binding(pj.through);
+          var model = CMS.Models[binding.loader.model_name] ||
+            GGRC.Models[binding.loader.model_name];
+
+          if (pj.how === 'add') {
+            // Don't re-add -- if the object is already mapped (could be direct or through a proxy)
+            // move on to the next one
+            if (~can.inArray(pj.what, can.map(binding.list, function (bo) {
+              return bo.instance;
+            })) || (binding.loader.option_attr && ~can.inArray(
+              pj.what, can.map(binding.list, function (join_obj) {
+                return join_obj.instance[binding.loader.option_attr];
+              })))) {
+              return;
+            }
+            inst = pj.what instanceof model ? pj.what :
+              new model({
+                context: obj.context
+              });
+            dfds.push(
+              $.when(pj.what !== inst && pj.what.isNew() ?
+                  pj.what.save() : null)
+                .then(function () {
+                  if (binding.loader.object_attr) {
+                    inst.attr(binding.loader.object_attr, obj.stub());
+                  }
+                  if (binding.loader.option_attr) {
+                    inst.attr(binding.loader.option_attr, pj.what.stub());
+                  }
+                  if (pj.extra) {
+                    inst.attr(pj.extra);
+                  }
+                  return inst.save();
+                }));
+          } else if (pj.how === 'remove') {
+            can.map(binding.list, function (bound_obj) {
+              if (bound_obj.instance === pj.what ||
+                bound_obj.instance[binding.loader.option_attr] === pj.what) {
+                can.each(bound_obj.get_mappings(), function (mapping) {
+                  dfds.push(mapping.refresh().then(function () {
+                    mapping.destroy();
+                  }));
+                });
+              }
+            });
+          }
+        });
+
+        obj.attr('_pending_joins', []);
+        return $.when.apply($, dfds).then(function () {
+          return obj.refresh();
+        });
+      });
     },
     findInCacheById: function (id) {
       return can.getObject('cache', this, true)[id];
@@ -479,7 +479,8 @@
     newInstance: function (args) {
       var cache = can.getObject('cache', this, true);
       if (args && args[this.id] && cache[args[this.id]]) {
-        // cache[args.id].attr(args, false); //CanJS has bugs in recursive merging
+        // cache[args.id].attr(args, false);
+        // CanJS has bugs in recursive merging
         // (merging -- adding properties from an object without removing existing ones
         //  -- doesn't work in nested objects).  So we're just going to not merge properties.
         return cache[args[this.id]];
@@ -491,7 +492,7 @@
       var obj = pargs;
       var src;
       var go_names;
-      var i = 0;
+      var i;
       var not_names;
 
       if (this.root_object && !(this.root_object in args)) {
@@ -499,7 +500,7 @@
       }
       src = args.serialize ? args.serialize() : args;
       go_names = (!names || names.not) ? Object.keys(src) : names;
-      for (; i < (go_names.length || 0); i++) {
+      for (i = 0; i < (go_names.length || 0); i++) {
         obj[go_names[i]] = src[go_names[i]];
       }
       if (names && names.not) {
@@ -542,7 +543,7 @@
             if (params.attr) {
               params.attr(i, params[obj_name][i]);
             } else {
-              (params[i] = params[obj_name][i]);
+              params[i] = params[obj_name][i];
             }
           }
         }
@@ -570,7 +571,6 @@
     },
     model: function (params) {
       var m;
-
       params = this.object_from_resource(params);
       if (!params) {
         return params;
@@ -611,32 +611,32 @@
       return this.root_model || this.shortName;
     },
     makeFindPage: function (findAllSpec) {
-        /* Create a findPage function that will return a paging object that will
-         * provide access to the model items provided in a single page as well
-         * as paging capability to retrieve the named pages provided in the
-         * resposne.
-         *
-         * findPage returns an object with two properties:
-         * {this.options.model.root_collection}_collection and paging. The models
-         * property will be an array of all model instances in the page retrieved
-         * for the collection. The paging property will be an object that can be
-         * used to retrieve other named pages from the collection.  The names of
-         * pages include first, prev, next, last. Named page properties will
-         * either be functions or the null value in the case where there is no
-         * link available in the collection under that name.  Paging functions
-         * have the same type of return value as the findPage function.
-         *
-         * This method assumes that findAllSpec is a string like
-         * "GET /api/programs". If this assumption is invalid, this function
-         * WILL NOT work correctly.
-         */
+      /* Create a findPage function that will return a paging object that will
+       * provide access to the model items provided in a single page as well
+       * as paging capability to retrieve the named pages provided in the
+       * resposne.
+       *
+       * findPage returns an object with two properties:
+       * {this.options.model.root_collection}_collection and paging. The models
+       * property will be an array of all model instances in the page retrieved
+       * for the collection. The paging property will be an object that can be
+       * used to retrieve other named pages from the collection.  The names of
+       * pages include first, prev, next, last. Named page properties will
+       * either be functions or the null value in the case where there is no
+       * link available in the collection under that name.  Paging functions
+       * have the same type of return value as the findPage function.
+       *
+       * This method assumes that findAllSpec is a string like
+       * "GET /api/programs". If this assumption is invalid, this function
+       * WILL NOT work correctly.
+       */
       var parts;
       var method;
       var collection_url;
       var base_params;
       var findPageFunc;
-      var that = this;
       var make_paginator;
+      var that = this;
 
       if (typeof findAllSpec === 'string') {
         parts = findAllSpec.split(' ');
@@ -648,24 +648,9 @@
       } else {
         return undefined; // TODO make a pager if findAllSpec is a function.
       }
-
       base_params = {
         type: method,
         dataType: 'json'
-      };
-      findPageFunc = function (url, data) {
-        return can.ajax(can.extend({
-          url: url,
-          data: data
-        }, base_params)).then(function (response_data) {
-          var collection = response_data[that.root_collection + '_collection'];
-          var ret = {
-            paging: make_paginator(collection.paging)
-          };
-          ret[that.root_collection + '_collection'] = that.models(
-            collection[that.root_collection]);
-          return ret;
-        });
       };
       make_paginator = function (paging) {
         var get_page = function (page_name) {
@@ -676,6 +661,7 @@
           }
           return null;
         };
+
         return {
           count: paging.count,
           total: paging.total,
@@ -690,6 +676,21 @@
             return this.prev !== null;
           }
         };
+      };
+      findPageFunc = function (url, data) {
+        return can.ajax(can.extend({
+          url: url,
+          data: data
+        }, base_params))
+        .then(function (response_data) {
+          var collection = response_data[that.root_collection + '_collection'];
+          var ret = {
+            paging: make_paginator(collection.paging)
+          };
+          ret[that.root_collection + '_collection'] =
+            that.models(collection[that.root_collection]);
+          return ret;
+        });
       };
 
       return function (params) {
@@ -743,6 +744,10 @@
       this.notifier = new PersistentNotifier({
         name: this.constructor.model_singular
       });
+
+      if (!this._pending_joins) {
+        this.attr('_pending_joins', []);
+      }
 
       // Listen for `stub_destroyed` change events and nullify or remove the
       // corresponding property or list item.
@@ -803,8 +808,7 @@
         this.attr('custom_attributes', new can.Map());
         can.each(this.custom_attribute_values, function (value) {
           value = value.reify();
-          self.custom_attributes.attr(
-            value.custom_attribute_id, value.attribute_value);
+          self.custom_attributes.attr(value.custom_attribute_id, value.attribute_value);
         });
       }
     },
@@ -837,7 +841,6 @@
       }
       return [];
     },
-
     // This retrieves the potential orphan stats for a given instance
     // Example: "This may also delete 3 Sections, 2 Controls, and 4 object mappings."
     get_orphaned_count: function () {
@@ -881,7 +884,8 @@
           can.each(objects, function (instance) {
             var title = instance.constructor.title_singular;
             counts[title] = counts[title] || {
-              model: instance.constructor, count: 0
+              model: instance.constructor,
+              count: 0
             };
             counts[title].count++;
           });
@@ -893,24 +897,21 @@
         }
         if (mappings.length) {
           parts++;
-          result.push(mappings.length + ' object mapping' +
-            (mappings.length !== 1 ? 's' : ''));
+          result.push(mappings.length +
+            ' object mapping' + (mappings.length !== 1 ? 's' : ''));
         }
 
         // Clean up commas, add an "and" if appropriate
         if (parts >= 1 && parts <= 2) {
-          result[result.length - 1] = result[result.length - 1]
-            .replace(',', '');
+          result[result.length - 1] = result[result.length - 1].replace(',', '');
         }
         if (parts === 2) {
-          result[result.length - 2] = result[result.length - 2]
-           .replace(',', '');
+          result[result.length - 2] = result[result.length - 2].replace(',', '');
         }
         if (parts >= 2) {
           result.splice(result.length - 1, 0, 'and');
         }
-        return result.join(' ') + (objects.length ||
-          mappings.length ? '.' : '');
+        return result.join(' ') + (objects.length || mappings.length ? '.' : '');
       });
     },
     _get_binding_attr: function (mapper) {
@@ -918,7 +919,6 @@
         return '_' + mapper + '_binding';
       }
     },
-
     // checks if binding exists without throwing debug statements
     // modeled after what get_binding is doing
     has_binding: function (mapper) {
@@ -929,7 +929,6 @@
       if (binding_attr) {
         binding = this[binding_attr];
       }
-
       if (!binding) {
         if (typeof (mapper) === 'string') {
           mapping = this.constructor.get_mapper(mapper);
@@ -940,7 +939,6 @@
           return false;
         }
       }
-
       return true;
     },
     get_binding: function (mapper) {
@@ -957,8 +955,8 @@
           // Lookup and attach named mapper
           mapping = this.constructor.get_mapper(mapper);
           if (!mapping) {
-            console.debug('No such mapper:  ' +
-              this.constructor.shortName + '.' + mapper);
+            console.debug(
+              'No such mapper:  ' + this.constructor.shortName + '.' + mapper);
           } else {
             binding = mapping.attach(this);
           }
@@ -977,8 +975,8 @@
     },
     addElementToChildList: function (attrName, new_element) {
       this[attrName].push(new_element);
-      this._triggerChange(attrName, 'set', this[attrName],
-        this[attrName].slice(0, this[attrName].length - 1));
+      this._triggerChange(attrName, 'set',
+        this[attrName], this[attrName].slice(0, this[attrName].length - 1));
     },
     removeElementFromChildList: function (attrName, old_element, all_instances) {
       var i = this[attrName].length - 1;
@@ -990,8 +988,7 @@
           }
         }
       }
-      this._triggerChange(attrName, 'set',
-        this[attrName], this[attrName].slice(0, this[attrName].length - 1));
+      this._triggerChange(attrName, 'set', this[attrName], this[attrName].slice(0, this[attrName].length - 1));
     },
     refresh: function (params) {
       var dfd;
@@ -1049,15 +1046,15 @@
               serial[name] = val.stubs().serialize();
             }
           } else if (fun_name === 'stub' || fun_name === 'get_stub' ||
-                     fun_name === 'model' || fun_name === 'get_instance') {
+            fun_name === 'model' || fun_name === 'get_instance') {
             serial[name] = (val ? val.stub().serialize() : null);
           } else {
             serial[name] = that._super(name);
           }
         } else if (val && typeof val.save === 'function') {
           serial[name] = val.stub().serialize();
-        } else if (typeof val === 'object' && val !== null &&
-          val.length !== null) {
+        } else if (typeof val === 'object' &&
+          val !== null && val.length !== null) {
           serial[name] = can.map(val, function (v) {
             if (v && typeof v.save === 'function') {
               return v.stub().serialize();
@@ -1096,40 +1093,59 @@
       return dfd.promise();
     },
 
+    mark_for_change: function (join_attr, obj, extra_attrs) {
+      var args = can.makeArray(arguments).concat({change: true});
+      extra_attrs = extra_attrs || {};
+      this.mark_for_deletion.apply(this, args);
+      this.mark_for_addition.apply(this, args);
+    },
     /*
      Set up a deferred join object deletion when this object is updated.
     */
-    mark_for_deletion: function (join_attr, obj) {
-      var i;
+    mark_for_deletion: function (join_attr, obj, extra_attrs, options) {
       obj = obj.reify ? obj.reify() : obj;
-      if (!this._pending_joins) {
-        this.attr('_pending_joins', []);
-      }
-      for (i = this._pending_joins.length; i--;) {
-        if (this._pending_joins[i].what === obj) {
-          this._pending_joins.splice(i, 1);
-        }
-      }
-      this._pending_joins.push(
-        {how: 'remove', what: obj, through: join_attr});
+
+      this.is_pending_join(obj);
+      this._pending_joins.push({
+        how: 'remove',
+        what: obj,
+        through: join_attr,
+        opts: options
+      });
     },
     /*
      Set up a deferred join object creation when this object is updated.
     */
-    mark_for_addition: function (join_attr, obj, extra_attrs) {
-      var i;
+    mark_for_addition: function (join_attr, obj, extra_attrs, options) {
       obj = obj.reify ? obj.reify() : obj;
+      extra_attrs = _.isEmpty(extra_attrs) ? undefined : extra_attrs;
+
+      this.is_pending_join(obj);
+      this._pending_joins.push({
+        how: 'add',
+        what: obj,
+        through: join_attr,
+        extra: extra_attrs,
+        opts: options
+      });
+    },
+    is_pending_join: function (needle) {
+      var joins;
+      var len;
       if (!this._pending_joins) {
         this.attr('_pending_joins', []);
       }
-      for (i = this._pending_joins.length; i--;) {
-        if (this._pending_joins[i].what === obj) {
-          this._pending_joins.splice(i, 1);
-        }
+      len = this._pending_joins.length;
+      joins = _.filter(this._pending_joins, function (val) {
+        var isNeedle = val.what === needle;
+        var isChanged = val.opts && val.opts.change;
+        return !(isNeedle && !isChanged);
+      });
+      if (len !== joins.length) {
+        this.attr('_pending_joins').replace(joins);
       }
-      this._pending_joins.push(
-        {how: 'add', what: obj, through: join_attr, extra: extra_attrs});
     },
+
     delay_resolving_save_until: function (dfd) {
       return this.notifier.queue(dfd);
     },
@@ -1196,7 +1212,7 @@
     },
     save: function () {
       Array.prototype.push.call(arguments, this._super);
-      this._dfd = new $.Deferred();
+      this._dfd = $.Deferred();
       GGRC.SaveQueue.enqueue(this, arguments);
       return this._dfd;
     },
@@ -1270,8 +1286,10 @@
               .toLowerCase()
               .replace(/ /g, '_');
 
-      return [type, this.id].join('/');
+      return [type,
+              this.id].join('/');
     },
+
     // Returns a deep property as specified in the descriptor built
     // by Cacheable.parse_deep_property_descriptor
     get_deep_property: function (property_descriptor) {
@@ -1281,8 +1299,8 @@
       var field;
       var found;
       var tmp;
-      var map_all;
       var val = this;
+      var mapProp;
 
       function map_deep_prop(index) {
         return function (element) {
@@ -1297,8 +1315,8 @@
         }
         found = false;
         if (part === 'GET_ALL') {
-          map_all = map_deep_prop(i);
-          return _.map(val, map_all);
+          mapProp = map_deep_prop(i);
+          return _.map(val, mapProp);
         }
         for (j = 0; j < part.length; j++) {
           field = part[j];
@@ -1410,6 +1428,7 @@
   can.Observe.prototype.reify = function () {
     var type;
     var model;
+
     if (this instanceof can.Model) {
       return this;
     }

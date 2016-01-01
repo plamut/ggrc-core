@@ -73,6 +73,15 @@ def cleaner(value, bleach_tags=[], bleach_attrs={}):
   return ret
 
 
+def _get_max_comment_id(connection):
+  max_comment_id = connection.execute("SELECT max(id) FROM comments")\
+    .fetchone().values()[0]
+  if max_comment_id:
+    return max_comment_id
+  else:
+    return 0
+
+
 def _build_comment(iid,
                    description,
                    created_at,
@@ -109,7 +118,7 @@ def _build_request_comment_relationship(req_id,
 
 
 def _build_request_object_relationship(req, dest):
-  return {
+  relationship = {
       "source_type": "Request",
       "source_id": req.id,
       "destination_type": dest.type,
@@ -118,20 +127,22 @@ def _build_request_object_relationship(req, dest):
       "updated_at": datetime.datetime.now(),
       "created_at": datetime.datetime.now()
   }
+  identifier = (
+      'Request',
+      relationship['source_id'],
+      relationship['destination_type'],
+      relationship['destination_id'],
+  )
+  return (identifier, relationship)
 
 
 def migrate_documentation_responses(conn):
   documentation_responses = db.session.query(DocumentationResponse)
   comments = []
   comm_relationships = []
-  request_object_relationships = []
+  request_object_relationships = {}
 
-  _max_comment_id = conn.execute("SELECT max(id) FROM comments").fetchone()\
-      .values()[0]
-  if not _max_comment_id:
-    _max_comment_id = 0
-
-  comment_id = _max_comment_id + 1
+  comment_id = _get_max_comment_id(conn) + 1
   for i, dr in enumerate(documentation_responses):
     related = dr.related_sources + dr.related_destinations
     comments += [_build_comment(
@@ -153,11 +164,11 @@ def migrate_documentation_responses(conn):
       else:
         continue
 
-      request_object_relationships += [
-          _build_request_object_relationship(
-              dr.request,
-              destination
-          )]
+      relationship_id, built_relationship = _build_request_object_relationship(
+          dr.request,
+          destination
+      )
+      request_object_relationships[relationship_id] = built_relationship
 
   for comm in comments:
     comm_relationships += [
@@ -168,21 +179,16 @@ def migrate_documentation_responses(conn):
 
   op.bulk_insert(comments_table, comments)
   op.bulk_insert(relationships_table, comm_relationships)
-  op.bulk_insert(relationships_table, request_object_relationships)
+  op.bulk_insert(relationships_table, request_object_relationships.values())
 
 
 def migrate_interview_responses(conn):
   interview_responses = db.session.query(InterviewResponse)
   comments = []
   comm_relationships = []
-  request_object_relationships = []
+  request_object_relationships = {}
 
-  _max_comment_id = conn.execute("SELECT max(id) FROM comments").fetchone()\
-      .values()[0]
-  if not _max_comment_id:
-    _max_comment_id = 0
-
-  comment_id = _max_comment_id + 1
+  comment_id = _get_max_comment_id(conn) + 1
   for i, ir in enumerate(interview_responses):
     related = ir.related_sources + ir.related_destinations
     desc = ir.description
@@ -218,11 +224,11 @@ def migrate_interview_responses(conn):
       else:
         continue
 
-      request_object_relationships += [
-          _build_request_object_relationship(
-              ir.request,
-              destination
-          )]
+      relationship_id, built_relationship = _build_request_object_relationship(
+          ir.request,
+          destination
+      )
+      request_object_relationships[relationship_id] = built_relationship
 
   for comm in comments:
     comm_relationships += [
@@ -233,7 +239,7 @@ def migrate_interview_responses(conn):
 
   op.bulk_insert(comments_table, comments)
   op.bulk_insert(relationships_table, comm_relationships)
-  op.bulk_insert(relationships_table, request_object_relationships)
+  op.bulk_insert(relationships_table, request_object_relationships.values())
 
 
 def upgrade():

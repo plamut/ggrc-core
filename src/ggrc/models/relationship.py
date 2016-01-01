@@ -25,16 +25,6 @@ class Relationship(Mapping, db.Model):
   source_type = db.Column(db.String, nullable=False)
   destination_id = db.Column(db.Integer, nullable=False)
   destination_type = db.Column(db.String, nullable=False)
-  relationship_type_id = db.Column(db.String)
-  # FIXME: Should this be a strict constraint?  If so, a migration is needed.
-  # relationship_type_id = db.Column(
-  #    db.Integer, db.ForeignKey('relationship_types.id'))
-  relationship_type = db.relationship(
-      'RelationshipType',
-      primaryjoin='foreign(RelationshipType.relationship_type) =='
-      ' Relationship.relationship_type_id',
-      uselist=False
-  )
   automapping_id = db.Column(
       db.Integer,
       db.ForeignKey('relationships.id', ondelete='SET NULL'),
@@ -137,7 +127,6 @@ class Relationship(Mapping, db.Model):
   _publish_attrs = [
       'source',
       'destination',
-      'relationship_type_id',
       'attrs',
   ]
   attrs.publish_raw = True
@@ -145,21 +134,6 @@ class Relationship(Mapping, db.Model):
   def _display_name(self):
     return "{}:{} <-> {}:{}".format(self.source_type, self.source_id,
                                     self.destination_type, self.destination_id)
-
-
-class RelationshipType(Described, Base, db.Model):
-  __tablename__ = 'relationship_types'
-  relationship_type = deferred(db.Column(db.String), 'RelationshipType')
-  forward_phrase = deferred(db.Column(db.String), 'RelationshipType')
-  backward_phrase = deferred(db.Column(db.String), 'RelationshipType')
-  symmetric = deferred(
-      db.Column(db.Boolean, nullable=False), 'RelationshipType')
-
-  _publish_attrs = [
-      'forward_phrase',
-      'backward_phrase',
-      'symmetric',
-  ]
 
 
 class Relatable(object):

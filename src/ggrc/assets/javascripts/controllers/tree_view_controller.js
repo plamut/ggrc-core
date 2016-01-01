@@ -352,6 +352,7 @@ CMS.Controllers.TreeLoader('CMS.Controllers.TreeView', {
     // { property : "controls", model : CMS.Models.Control, }
     // { parent_find_param : "system_id" ... }
     , scroll_page_count: 0.5 // pages above and below viewport
+    , is_subtree: false
   },
   do_not_propagate: [
     'header_view', 'footer_view', 'add_item_view', 'list', 'original_list', 'single_object', 'find_function',
@@ -394,7 +395,6 @@ CMS.Controllers.TreeLoader('CMS.Controllers.TreeView', {
     hash.pop();
     window.location.hash = hash.join('/');
   },
-
   // Total display with is set to be span12.
   // Default: title : span4
   //          middle selectable : span4, by default 2 attributes are selected
@@ -1329,6 +1329,7 @@ can.Control('CMS.Controllers.TreeViewNode', {
         this._draw_node_deferred.resolve();
       }.bind(this)));
       this._draw_node_in_progress = false;
+      this.options.attr('is_subtree', this.element && this.element.closest('.inner-tree').length > 0);
     }.bind(this), 2); // We give the browser a 2ms pause for scrolling
   }, draw_placeholder: function () {
     var that = this;

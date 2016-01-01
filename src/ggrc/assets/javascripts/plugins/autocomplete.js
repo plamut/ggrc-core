@@ -11,7 +11,8 @@
       // Ensure that the input.change event still occurs
       change: function (event, ui) {
         if (!$(event.target).parents(document.body).length) {
-          console.warn('autocomplete menu change event is coming from detached nodes');
+          console.warn(
+            'autocomplete menu change event is coming from detached nodes');
         }
         $(event.target).trigger('change');
       },
@@ -118,8 +119,7 @@
       select: function (ev, ui) {
         var original_event;
         var $this = $(this);
-        var name = $this.data('autocomplete-widget-name');
-        var ctl = $this.data(name).options.controller;
+        var ctl = $this.data($this.data('autocomplete-widget-name')).options.controller;
         var widget_name;
 
         if (ui.item) {
@@ -131,19 +131,24 @@
           }
         } else {
           original_event = ev;
-          $(document.body).off('.autocomplete')
-          .one('modal:success.autocomplete', function (_ev, new_obj) {
-            var autocomplete_select = ctl.autocomplete_select ||
-              ctl.scope.autocomplete_select;
-            autocomplete_select($this, original_event, {
-              item: new_obj
+          $(document.body).off('.autocomplete').one('modal:success.autocomplete',
+            function (_ev, new_obj) {
+              var autocomplete_select = ctl.autocomplete_select ||
+                ctl.scope.autocomplete_select;
+              if (autocomplete_select) {
+                autocomplete_select($this, original_event, {
+                  item: new_obj
+                });
+              }
+              $this.trigger('autocomplete:select', [{
+                item: new_obj
+              }]);
+              $this.trigger('modal:success', new_obj);
+            }).one('hidden', function () {
+              setTimeout(function () {
+                $(this).off('.autocomplete');
+              }, 100);
             });
-            $this.trigger('modal:success', new_obj);
-          }).one('hidden', function () {
-            setTimeout(function () {
-              $(this).off('.autocomplete');
-            }, 100);
-          });
 
           while ((original_event = original_event.originalEvent)) {
             if (original_event.type === 'keydown') {

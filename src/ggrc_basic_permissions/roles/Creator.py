@@ -160,7 +160,6 @@ owner_base = [
         },
         "condition": "contains"
     },
-    "RelationshipType",
     {
         "type": "Section",
         "terms": {
@@ -285,7 +284,6 @@ permissions = {
             },
             "condition": "relationship",
         },
-        "RelationshipType",
         "Section",
         "Clause",
         "SystemOrProcess",

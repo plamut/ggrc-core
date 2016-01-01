@@ -3,17 +3,27 @@
 # Created By: vraj@reciprocitylabs.com
 # Maintained By: vraj@reciprocitylabs.com
 
-import sqlalchemy.types as types
+"""Declaration of custom ORM data types.
+
+Add Json and Compressed type declaration for use in ORM models.
+"""
+
 import json
-from ggrc.utils import as_json
-from .exceptions import ValidationError
+import pickle
+import sqlalchemy.types as types
+from ggrc import utils
+from ggrc.models import exceptions
+
 
 class JsonType(types.TypeDecorator):
-  '''
-  Marshals Python structures to and from JSON stored
-  as Text in the db
-  '''
-  # FIXME: Change this to a larger column type and fix validation below
+  # pylint: disable=W0223
+  """ Custom Json data type
+
+  Custom type for storing Json objects in our database as serialized text.
+  The Limit for the serialized Json is the same as the database text column
+  limit (65534).
+  """
+  MAX_TEXT_LENGTH = 65534
   impl = types.Text
 
   def process_result_value(self, value, dialect):
@@ -25,31 +35,28 @@ class JsonType(types.TypeDecorator):
     if value is None or isinstance(value, basestring):
       pass
     else:
-      value = as_json(value)
-      # Detect if the byte-length of the encoded JSON is larger than the
-      # database "TEXT" column type can handle
-      if len(value.encode('utf-8')) > 65534:
-        raise ValidationError("Log record content too long")
+      value = utils.as_json(value)
+      if len(value.encode('utf-8')) > self.MAX_TEXT_LENGTH:
+        raise exceptions.ValidationError("Log record content too long")
     return value
 
+
 class CompressedType(types.TypeDecorator):
-  '''
-  Marshals Python structures to and from a compressed pickle format
-  as LargeBinary in the db
-  '''
-  impl = types.LargeBinary(length=16777215)
+  # pylint: disable=W0223
+  """ Custom Compresed data type
+
+  Custom type for storing any python object in our database as serialized text.
+  """
+  MAX_BINARY_LENGTH = 16777215
+  impl = types.LargeBinary(length=MAX_BINARY_LENGTH)
 
   def process_result_value(self, value, dialect):
-    import pickle, zlib
     if value is not None:
-      value = pickle.loads(zlib.decompress(value))
+      value = pickle.loads(value)
     return value
 
   def process_bind_param(self, value, dialect):
-    import pickle, zlib
-    value = zlib.compress(pickle.dumps(value))
-    # Detect if the byte-length of the compressed pickle is larger than the
-    # database "LargeBinary" column type can handle
-    if len(value) > 16777215:
-      raise ValidationError("Log record content too long")
+    value = pickle.dumps(value)
+    if len(value) > self.MAX_BINARY_LENGTH:
+      raise exceptions.ValidationError("Log record content too long")
     return value

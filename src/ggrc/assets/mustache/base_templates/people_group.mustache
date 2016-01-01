@@ -8,7 +8,7 @@
 
 <label>
   <span class="person-label {{type}}"></span>
-  {{#is_allowed 'update' instance context='for'}}
+  {{#has_permissions}}
     {{^toggle toggle_add}}
       <span class="file-controls">
         <a href="javascript://" {{toggle_button}}>
@@ -16,7 +16,7 @@
         </a>
       </span>
     {{/toggle}}
-  {{/is_allowed}}
+  {{/has_permissions}}
   {{type}}(s)
   {{#if editable}}
     {{#if required}}
@@ -24,39 +24,28 @@
     {{/if}}
   {{/if}}
 </label>
-{{#using parentInstance=instance}}
-{{#with_mapping mapping instance}}
-  <ul class="inner-count-list">
-    {{^if results.length}}
-      {{^if instance._pending_joins}}
-      <li><i> No {{type}}s</i></li>
-      {{/if}}
-    {{/if}}
-    {{#results}}
-      <li>
-        {{#is_allowed 'update' parentInstance context='for'}}
+<ul class="inner-count-list">
+  {{^if results.length}}
+    <li><i> No {{type}}s</i></li>
+  {{/if}}
+  {{#results}}
+    <li>
+      {{#has_permissions}}
         {{#can_unmap}}
         <span class="file-controls">
-          <a href="javascript://" class="info-action unmap" can-click="remove_role" data-person={{instance.id}}>
+          <a href="javascript://" class="info-action unmap" can-click="remove_role" data-person={{id}}>
             <span class="result" {{data 'result'}}></span>
             <i class="grcicon-deleted"></i>
           </a>
         </span>
         {{/can_unmap}}
-        {{/is_allowed}}
-        {{{render '/static/mustache/people/popover.mustache' person=instance}}}
-      </li>
-    {{/each}}
-    {{#instance._pending_joins}}
-    {{#if_has_role extra.attrs.AssigneeType type}}
-      <li>
-        {{{render '/static/mustache/people/popover.mustache' person=what}}}
-      </li>
-    {{/if_has_role}}
-    {{/instance._pending_joins}}
-    <li class="person-add">
-      {{#show_add}}
-        {{#is_allowed 'update' instance context='for'}}
+      {{/has_permissions}}
+      {{{render '/static/mustache/people/popover.mustache' person=.}}}
+    </li>
+  {{/results}}
+  <li class="person-add">
+    {{#show_add}}
+      {{#has_permissions}}
         {{#toggle toggle_add}}
           <i class="grcicon-person-green pull-left icon-field"></i>
           <div class="person-selector">
@@ -66,9 +55,7 @@
             </a>
           </div>
         {{/toggle}}
-        {{/is_allowed}}
-      {{/show_add}}
-    </li>
-  </ul>
-{{/with_mapping}}
-{{/using}}
+      {{/has_permissions}}
+    {{/show_add}}
+  </li>
+</ul>

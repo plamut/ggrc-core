@@ -147,7 +147,8 @@
     },
     hide: function (e) {
       var that = this;
-      var options;
+      var control = this.$element.control();
+      var options = control && control.options;
 
       // If the hide was initiated by the backdrop, check for dirty form data before continuing
       if (e && $(e.target).is('.modal-backdrop')) {
@@ -158,10 +159,6 @@
           return;
         }
         if (this.is_form_dirty()) {
-          // Copy some base options from the original modal,
-          // otherwise the form won't be properly reset on discard
-          options = that.$element.control().options;
-
           // Confirm that the user wants to lose the data prior to hiding
           GGRC.Controllers.Modals.confirm({
             modal_title: 'Discard Changes',
@@ -180,8 +177,15 @@
         }
       }
       // Hide the modal like normal
-      $.fn.modal.Constructor.prototype.hide.apply(this, [e]);
-      this.$element.off('modal_form');
+      $.when(function () {
+        if (options) {
+          return can.trigger(options.instance, 'modal:dismiss');
+        }
+        return undefined;
+      }).then(function () {
+        $.fn.modal.Constructor.prototype.hide.apply(this, [e]);
+        this.$element.off('modal_form');
+      }.bind(this));
     },
     focus_first_input: function (ev) {
       var that = this;

@@ -121,7 +121,6 @@ class AutomapperGenerator(object):
           "source_type": src.type,
           "destination_id": dst.id,
           "destination_type": dst.type,
-          "relationship_type_id": None,
           "context_id": None,
           "status": None,
           "automapping_id": self.relationship.id}

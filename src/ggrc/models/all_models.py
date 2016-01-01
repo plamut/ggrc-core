@@ -38,7 +38,6 @@ from ggrc.models.program import Program
 from ggrc.models.project import Project
 from ggrc.models.relationship import Relationship
 from ggrc.models.relationship import RelationshipAttr
-from ggrc.models.relationship import RelationshipType
 from ggrc.models.request import Request
 from ggrc.models.response import (
     Response, DocumentationResponse, InterviewResponse,
@@ -49,8 +48,6 @@ from ggrc.models.background_task import BackgroundTask
 from ggrc.models.notification import NotificationConfig, NotificationType, Notification
 from ggrc.models.issue import Issue
 
-# TODO: This isn't currently used
-# from .relationship_type import RelationshipType
 from .section import Section
 from .clause import Clause
 from .system import SystemOrProcess, System, Process
@@ -95,7 +92,6 @@ all_models = [
     Program,
     Project,
     Relationship,
-    RelationshipType,
     RelationshipAttr,
     Request,
     Response,

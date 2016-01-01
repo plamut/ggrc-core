@@ -15,9 +15,9 @@
             <div class="row-fluid">
               <div class="span4">
                 <div class="title tree-title-area">
-                  {{#if_draw_icon instance}}
+                  {{#is_subtree}}
                     <i class="grcicon-{{instance.class.table_singular}}-color"></i>
-                  {{/if_draw_icon}}
+                  {{/is_subtree}}
                   {{{truncate instance.description}}}
                 </div>
               </div>

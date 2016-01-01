@@ -28,8 +28,7 @@
     options: new can.List(),
     relevant: new can.List(),
     get_instance: can.compute(function () {
-      return CMS.Models.get_instance(this.attr('object'),
-        this.attr('join_object_id'));
+      return CMS.Models.get_instance(this.attr('object'), this.attr('join_object_id'));
     }),
     get_binding_name: function (instance, plural) {
       return (instance.has_binding(plural) ? '' : 'related_') + plural;
@@ -48,16 +47,17 @@
         Program: ['Audit'],
         Audit: ['ControlAssessment', 'Program', 'Request'],
         ControlAssessment: ['Control'],
-        Request: ['Workflow', 'TaskGroup']
+        Request: ['Workflow', 'TaskGroup', 'Person']
       };
       return forbidden[type] ? forbidden[type] : [];
     },
     get_whitelist: function () {
-      var whitelisted = ['TaskGroupTask', 'TaskGroup',
-        'CycleTaskGroupObjectTask'];
+      var whitelisted = ['TaskGroupTask', 'TaskGroup', 'CycleTaskGroupObjectTask'];
       return this.attr('search_only') ? whitelisted : [];
     },
     types: can.compute(function () {
+      var cms_model;
+      var group;
       var selector_list;
       var canonical = GGRC.Mappings.get_canonical_mappings_for(this.object);
       var list = GGRC.tree_view.base_widgets_by_type[this.object];
@@ -90,9 +90,6 @@
         _.compact([_.keys(canonical), list]));
       selector_list = _.union(selector_list, whitelist);
       can.each(selector_list, function (model_name) {
-        var cms_model;
-        var group;
-
         if (!model_name || !CMS.Models[model_name] ||
             ~forbidden.indexOf(model_name)) {
           return;

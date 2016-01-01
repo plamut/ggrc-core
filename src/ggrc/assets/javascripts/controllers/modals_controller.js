@@ -449,27 +449,31 @@
       $hidable = $el.closest('[class*="span"].hidable'),
       $innerHide = $el.closest('[class*="span"]').find('.hidable'),
       $showButton = $(this.element).find('#formRestore'),
-      $hideButton = $(this.element).find('#formHide');
+      $hideButton = $(this.element).find('#formHide'),
+      totalInner = $el.closest('.hide-wrap.hidable').find('.inner-hide').length,
+      totalHidden;
 
-    $el.closest('.inner-hide').addClass('inner-hidable');
-    //$hidable.hide();
-    $hidable.addClass('hidden');
-    this.options.reset_visible = true;
-    //update ui array
-    var ui_unit = $hidable.find('[tabindex]');
-    var i, tab_value;
-    for (i = 0; i < ui_unit.length; i++) {
-      tab_value = $(ui_unit[i]).attr('tabindex');
-      if (tab_value > 0) {
-        this.options.ui_array[tab_value - 1] = 1;
-        $(ui_unit[i]).attr('tabindex', '-1');
-        $(ui_unit[i]).attr('uiindex', tab_value);
+      $el.closest('.inner-hide').addClass('inner-hidable');
+      totalHidden = $el.closest('.hide-wrap.hidable').find('.inner-hidable').length;
+      //$hidable.hide();
+      $hidable.addClass("hidden");
+      this.options.reset_visible = true;
+      //update ui array
+      var ui_unit = $hidable.find('[tabindex]');
+      var i, tab_value;
+      for (i = 0; i < ui_unit.length; i++) {
+        tab_value = $(ui_unit[i]).attr('tabindex');
+        if(tab_value > 0) {
+          this.options.ui_array[tab_value-1] = 1;
+          $(ui_unit[i]).attr('tabindex', '-1');
+          $(ui_unit[i]).attr('uiindex', tab_value);
+        }
       }
     }
 
-    for (i = 0; i < $el.closest('.hide-wrap.hidable').find('.inner-hidable').length; i++) {
-      if (i === 1) {
-        $el.closest('.inner-hide').parent('.hidable').addClass('hidden');
+
+      if (totalInner == totalHidden) {
+        $el.closest('.inner-hide').parent('.hidable').addClass("hidden");
       }
     }
 
@@ -805,8 +809,8 @@
         ev.preventDefault();
         return false;
       }
-    if (this.options.instance) {
-        delete this.options.instance._pending_joins;
+      if (this.options.instance) {
+        this.options.instance.attr("_pending_joins", []);
       }
     if (this.options.instance instanceof can.Model
           // Ensure that this modal was hidden and not a child modal

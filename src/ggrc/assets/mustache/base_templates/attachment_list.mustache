@@ -15,8 +15,8 @@
 {{#is_allowed 'update' instance context='for'}}
   {{#with_mapping 'extended_folders' instance}}
     <div class="oneline">
-      {{#if extended_folders.length}}
-        {{#if_in instance.status "Open,Final,Verified"}}
+      {{#if_in instance.status "Open,Final,Verified"}}
+        {{#if extended_folders.length}}
           <ggrc-gdrive-picker-launcher
             instance="instance"
             link_text="Attach evidence"
@@ -31,14 +31,32 @@
           <ggrc-gdrive-picker-launcher
             instance="instance"
             link_text="Attach evidence"
-            click_event="trigger_upload_parent">
+            click_event="trigger_upload"
+            verify_event="true"
+            modal_description='You are about to move request from "{{instance.status}}" to "In Progress" - are you sure about that?'
+            modal_title='Confirm moving Request to "In Progress"'
+            modal_button='Confirm'
+            >
           </ggrc-gdrive-picker-launcher>
+          <i class="grcicon-warning" style="margin-top:4px" rel="tooltip" data-placement="bottom" data-original-title="Audit folder not set. Files will be uploaded to your GDrive root folder."></i>
         {{/if_in}}
       {{else}}
-        <small class="error-inline">
-          <strong>Warning:</strong> The corresponding Audit's evidence folder
-          is not set. Please select a folder before uploading evidence files.
-        </small>
+        {{#if extended_folders.length}}
+          <ggrc-gdrive-picker-launcher
+            icon="attach"
+            instance="instance"
+            link_text="Attach evidence"
+            click_event="trigger_upload_parent">
+          </ggrc-gdrive-picker-launcher>
+        {{else}}
+          <ggrc-gdrive-picker-launcher
+            icon="attach"
+            instance="instance"
+            link_text="Attach evidence"
+            click_event="trigger_upload">
+          </ggrc-gdrive-picker-launcher>
+          <i class="grcicon-warning" style="margin-top:4px" rel="tooltip" data-placement="bottom" data-original-title="Audit folder not set. Files will be uploaded to your GDrive root folder."></i>
+        {{/if_in}}
       {{/if}}
     </div>
   {{else}}
