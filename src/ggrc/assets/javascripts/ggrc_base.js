@@ -5,6 +5,8 @@
     Maintained By: ivan@reciprocitylabs.com
 */
 (function ($, GGRC) {
+  var onbeforeunload;
+  var notifier;
   GGRC.mustache_path = '/static/mustache';
 
   GGRC.hooks = GGRC.hooks || {};
@@ -17,7 +19,9 @@
   }
 
   GGRC.register_hook = function (path, hook) {
-    var h, parent_path, last;
+    var h;
+    var parent_path;
+    var last;
     parent_path = path.split('.');
     last = parent_path.pop();
     parent_path = can.getObject(parent_path.join('.'), GGRC.hooks, true);
@@ -29,34 +33,33 @@
   };
 
   GGRC.current_url_compute = can.compute(function () {
-    var path = window.location.pathname,
-      fragment = window.location.hash;
+    var path = window.location.pathname;
+    var fragment = window.location.hash;
     return window.encodeURIComponent(path + fragment);
   });
 
-  var onbeforeunload = function (evnt) {
-      evnt = evnt || window.event;
-      var message = 'There are operations in progress. Are you sure you want to leave the page?';
-      if (evnt) {
-        evnt.returnValue = message;
-      }
-      return message;
+  onbeforeunload = function (evnt) {
+    var message = 'There are operations in progress. Are you sure you want to leave the page?';
+    evnt = evnt || window.event;
+    if (evnt) {
+      evnt.returnValue = message;
+    }
+    return message;
+  };
+  notifier = new PersistentNotifier({
+    while_queue_has_elements: function () {
+      window.onbeforeunload = onbeforeunload;
     },
-    notifier = new PersistentNotifier({
-      while_queue_has_elements: function () {
-        window.onbeforeunload = onbeforeunload;
-      },
-      when_queue_empties: function () {
-        window.onbeforeunload = $.noop;
-      },
-      name: 'GGRC/window'
-    });
+    when_queue_empties: function () {
+      window.onbeforeunload = $.noop;
+    },
+    name: 'GGRC/window'
+  });
 
   $.extend(GGRC, {
     get_object_type_decision_tree: function () {
-      var tree = {},
-        extensions = GGRC.extensions || []
-      ;
+      var tree = {};
+      var extensions = GGRC.extensions || [];
 
       can.each(extensions, function (extension) {
         if (extension.object_type_decision_tree) {
@@ -86,8 +89,9 @@
       }
 
       function resolve(subtree, data) {
-        if (typeof subtree === 'undefined')
+        if (typeof subtree === 'undefined') {
           return null;
+        }
         return can.isPlainObject(subtree) ?
           subtree._discriminator(data) :
           subtree;
@@ -120,24 +124,28 @@
 
     eventqueue: [],
     eventqueueTimeout: null,
-    eventqueueTimegap: 20, //ms
+    eventqueueTimegap: 20, // ms
 
     queue_exec_next: function () {
       var fn = GGRC.eventqueue.shift();
-      if (fn)
+      if (fn) {
         fn();
-      if (GGRC.eventqueue.length > 0)
+      }
+      if (GGRC.eventqueue.length > 0) {
         GGRC.eventqueueTimeout = setTimeout(GGRC.queue_exec_next, GGRC.eventqueueTimegap);
-      else
+      } else {
         GGRC.eventqueueTimeout = null;
+      }
     },
 
     queue_event: function (events) {
-      if (typeof (events) === 'function')
+      if (typeof (events) === 'function') {
         events = [events];
+      }
       GGRC.eventqueue.push.apply(GGRC.eventqueue, events);
-      if (!GGRC.eventqueueTimeout)
+      if (!GGRC.eventqueueTimeout) {
         GGRC.eventqueueTimeout = setTimeout(GGRC.queue_exec_next, GGRC.eventqueueTimegap);
+      }
     },
 
     navigate: function (url) {
@@ -169,18 +177,20 @@
       @return the sum of the numbers represented in a and b, as a decimal notation string.
     */
     string_add: function (a, b) {
-      var _a, _b, i,
-        _c = 0,
-        ret = [],
-        adi = a.indexOf('.'),
-        bdi = b.indexOf('.');
+      var _a;
+      var _b;
+      var i;
+      var _c = 0;
+      var ret = [];
+      var adi = a.indexOf('.');
+      var bdi = b.indexOf('.');
 
       if (adi < 0) {
-        a = a + '.';
+        a += '.';
         adi = a.length - 1;
       }
       if (bdi < 0) {
-        b = b + '.';
+        b += '.';
         bdi = b.length - 1;
       }
       while (adi < bdi) {
@@ -196,11 +206,12 @@
         _a = a[i] || 0;
         _b = b[i] || 0;
         if (_a === '.' || _b === '.') {
-          if (_a !== '.' || _b !== '.')
+          if (_a !== '.' || _b !== '.') {
             throw 'Decimal alignment error';
+          }
           ret.unshift('.');
         } else {
-          ret.unshift((+_a) + (+_b) + _c);
+          ret.unshift((Number(_a)) + (Number(_b)) + _c);
           _c = Math.floor(ret[0] / 10);
           ret[0] = (ret[0] % 10).toString(10);
         }
@@ -220,20 +231,21 @@
       @return one half of the number represented in a, as a decimal notation string.
     */
     string_half: function (a) {
-      var i, _a,
-        _c = 0,
-        ret = [];
+      var i;
+      var _a;
+      var _c = 0;
+      var ret = [];
 
       if (!~a.indexOf('.')) {
-        a = a + '.';
+        a += '.';
       }
       for (i = 0; i < a.length; i++) {
         _a = a[i];
         if (_a === '.') {
           ret.push('.');
         } else {
-          _a = Math.floor((+_a + _c) / 2);
-          if (+a[i] % 2) {
+          _a = Math.floor((Number(_a) + _c) / 2);
+          if (Number(a[i]) % 2) {
             _c = 10;
           } else {
             _c = 0;
@@ -270,18 +282,18 @@
       @return true if the number represented in a is less than that in b, false otherwise
     */
     string_less_than: function (a, b) {
-      var i,
-        _a = ('' + a).replace(/^0*/, ''),
-        _b = ('' + b).replace(/^0*/, ''),
-        adi = _a.indexOf('.'),
-        bdi = _b.indexOf('.');
+      var i;
+      var _a = (String(a)).replace(/^0*/, '');
+      var _b = (String(b)).replace(/^0*/, '');
+      var adi = _a.indexOf('.');
+      var bdi = _b.indexOf('.');
 
       if (adi < 0) {
-        _a = _a + '.';
+        _a += '.';
         adi = _a.length - 1;
       }
       if (bdi < 0) {
-        _b = _b + '.';
+        _b += '.';
         bdi = _b.length - 1;
       }
       if (adi < bdi) {
@@ -294,9 +306,9 @@
         if (_a[i] === '.') {
         // continue
         } else {
-          if ((+_a[i] || 0) < (+_b[i] || 0)) {
+          if ((Number(_a[i]) || 0) < (Number(_b[i]) || 0)) {
             return true;
-          } else if ((+_a[i] || 0) > (+_b[i] || 0)) {
+          } else if ((Number(_a[i]) || 0) > (Number(_b[i]) || 0)) {
             return false;
           }
         }

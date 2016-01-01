@@ -15,10 +15,11 @@ if (typeof st === 'number') {
 window.st = Date.now();
 
 GGRC.Tracker.init = function () {
+  var i;
   GGRC.Tracker.ga = this._ga;
 
   //  Emit any events already recorded
-  for (var i = 0; i < this._pending_emit; i++) {
+  for (i = 0; i < this._pending_emit; i++) {
     this.emit(this._pending_emit[i]);
   }
   delete this._pending_emit;
@@ -27,17 +28,21 @@ GGRC.Tracker.init = function () {
 };
 
 GGRC.Tracker._ga = function (func, data) {
-  if (window.GoogleAnalyticsObject)
+  if (window.GoogleAnalyticsObject) {
     window[window.GoogleAnalyticsObject](func, data);
+  }
 };
 
 GGRC.Tracker.setup_jQuery = function () {
   //  Setup jQuery AJAX tracking once jQuery is available
   var that = this;
-  if (this._setup_jQuery_done)
+  if (this._setup_jQuery_done) {
     return;
+  }
   if (!window.jQuery) {
-    setTimeout(function () { that.setup_jQuery(); }, 20);
+    setTimeout(function () {
+      that.setup_jQuery();
+    }, 20);
   } else {
     $.ajaxTransport('json', this.api_timing_transport);
   }
@@ -56,32 +61,35 @@ GGRC.Tracker.emit = function (data) {
 
 GGRC.Tracker.event = function (category, action, label, value) {
   var data = {
-    'hitType': 'event',
-    'eventCategory': category,
-    'eventAction': action
+    hitType: 'event',
+    eventCategory: category,
+    eventAction: action
   };
-  if (label)
+  if (label) {
     data.eventLabel = label;
-  if (value)
-    data.eventValue = +value;
+  }
+  if (value) {
+    data.eventValue = Number(value);
+  }
   this.emit(data);
 };
 
 GGRC.Tracker.timing = function (category, variable, value, label) {
   var data = {
-    'hitType': 'timing'
+    hitType: 'timing'
   };
   data.timingCategory = category;
   data.timingVar = variable;
-  data.timingValue = +value;
-  if (label)
+  data.timingValue = Number(value);
+  if (label) {
     data.timingLabel = label;
+  }
   this.emit(data);
 };
 
 GGRC.Tracker.exception = function (description, fatal) {
   var data = {
-    'hitType': 'exception'
+    hitType: 'exception'
   };
   data.exDescription = description;
   if (arguments.length > 1) {
@@ -92,16 +100,19 @@ GGRC.Tracker.exception = function (description, fatal) {
 
 GGRC.Tracker.start = function (category, action, label) {
   var data;
-  if (!this._pending_timings)
+  if (!this._pending_timings) {
     this._pending_timings = {};
-  if (!this._pending_timings[category])
+  }
+  if (!this._pending_timings[category]) {
     this._pending_timings[category] = {};
+  }
   if (!this._pending_timings[category][action]) {
     data = {
       start: Date.now()
     };
-    if (label)
+    if (label) {
       data.label = label;
+    }
     this._pending_timings[category][action] = data;
     return function () {
       GGRC.Tracker.stop(category, action);
@@ -121,21 +132,26 @@ GGRC.Tracker.stop = function (category, action, label) {
         category, action, Date.now() - data.start, data.label || label);
       delete this._pending_timings[category][action];
     }
-    if (Object.keys(this._pending_timings[category]).length === 0)
+    if (Object.keys(this._pending_timings[category]).length === 0) {
       delete this._pending_timings[category];
-    if (Object.keys(this._pending_timings).length === 0)
+    }
+    if (Object.keys(this._pending_timings).length === 0) {
       delete this._pending_timings;
+    }
   }
 };
 
 GGRC.Tracker.api_timing_transport = function (options, _originalOptions, _jqXHR) {
+  var url;
+  var match;
+  var tracker_stop;
   if (_originalOptions._canonical_url) {
-    //console.debug("Found re-entrant request: " + _originalOptions._canonical_url);
+    // console.debug("Found re-entrant request: " + _originalOptions._canonical_url);
     return;
   }
 
-  var url = options.url,
-    match = url.match(/^(.*)([?&])_=\d+(?:([?&])(.*))?$/);
+  url = options.url;
+  match = url.match(/^(.*)([?&])_=\d+(?:([?&])(.*))?$/);
 
   if (match) {
     if (match[4]) {
@@ -147,7 +163,7 @@ GGRC.Tracker.api_timing_transport = function (options, _originalOptions, _jqXHR)
 
   _originalOptions._canonical_url = url;
 
-  var tracker_stop = null;
+  tracker_stop = null;
 
   return {
     send: function (headers, completeCallback) {

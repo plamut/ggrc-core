@@ -6,16 +6,17 @@
 */
 
 (function (root, GGRC, $, can) {
-  var doc = root.document,
-    body = doc.body,
-    $win = $(root),
-    $doc = $(doc),
-    $body = $(body);
+  var doc = root.document;
+  var body = doc.body;
+  var $win = $(root);
+  var $doc = $(doc);
+  var $body = $(body);
+  var _type;
 
   $win.on('hashchange', function () {
     GGRC.current_url_compute(window.location);
   });
-  $.migrateMute = true; //turn off console warnings for jQuery-migrate
+  $.migrateMute = true; // turn off console warnings for jQuery-migrate
 
   // Init ZeroConfig
   ZeroClipboard.config({swfPath: '/static/flash/ZeroClipboard.swf'});
@@ -28,7 +29,7 @@
   ModelError.prototype = Error.prototype;
   root.cms_singularize = function (type) {
     type = type.trim();
-    var _type = type.toLowerCase();
+    _type = type.toLowerCase();
     switch (_type) {
       case 'facilities':
         type = type[0] + 'acility'; break;
@@ -97,8 +98,8 @@
 
     // tree
     $body.on('click', 'ul.tree .item-title', function (e) {
-      var $this = $(this),
-        $content = $this.closest('li').find('.item-content');
+      var $this = $(this);
+      var $content = $this.closest('li').find('.item-content');
 
       if ($this.hasClass('active')) {
         $content.slideUp('fast');
@@ -107,7 +108,6 @@
         $content.slideDown('fast');
         $this.addClass('active');
       }
-
     });
     $body.on('change', '.rotate_control_assessment', function (ev) {
       ev.currentTarget.click(function () {
@@ -129,6 +129,7 @@
   });
 
   $win.load(function () {
+    var last_popover;
     // affix setup
     $win.scroll(function () {
       if ($('.header-content').hasClass('affix')) {
@@ -143,16 +144,16 @@
     });
     // Google Circle CTA Button
     $body.on('mouseenter', '.square-trigger', function () {
-      var $this = $(this),
-        $popover = $this.closest('.circle-holder').find('.square-popover');
+      var $this = $(this);
+      var $popover = $this.closest('.circle-holder').find('.square-popover');
 
       $popover.slideDown('fast');
       $this.addClass('active');
       return false;
     });
     $body.on('mouseleave', '.square-popover', function () {
-      var $this = $(this),
-        $trigger = $this.closest('.circle-holder').find('.square-trigger');
+      var $this = $(this);
+      var $trigger = $this.closest('.circle-holder').find('.square-trigger');
 
       $this.slideUp('fast');
       $trigger.removeClass('active');
@@ -168,10 +169,11 @@
 
     // Popover trigger for person tooltip in styleguide
     // The popover disappears if the show/hide isn't controlled manually
-    var last_popover;
     $body.on('mouseenter', '.person-tooltip-trigger', function (ev) {
-      var target = $(ev.currentTarget),
-        content = target.closest('.person-holder').find('.custom-popover-content').html();
+      var target = $(ev.currentTarget);
+      var content = target.closest('.person-holder')
+        .find('.custom-popover-content').html();
+      var popover;
 
       if (!content) {
         // Don't show tooltip if there is no content
@@ -189,20 +191,19 @@
             return content;
           }
         });
-        target.data('popover').tip().addClass('person-tooltip').css('z-index', 2000);
+        target.data('popover').tip()
+          .addClass('person-tooltip').css('z-index', 2000);
       }
-      var popover = target.data('popover');
+      popover = target.data('popover');
       if (last_popover && last_popover !== popover) {
         last_popover.hide();
       }
 
-      // If the popover is active, just refresh the timeout
+      // If the popover is active, just refresh the timeout, otherwise show popover
       if (popover.tip().is(':visible') && popover.timeout) {
         clearTimeout(popover.timeout);
         popover.hoverState = 'in';
-      }
-      // Otherwise show popover
-      else {
+      } else {
         clearTimeout(popover.timeout);
         popover.enter(ev);
       }
@@ -218,9 +219,8 @@
       }
     });
     $body.on('mouseleave', '.person-holder, .person-tooltip-trigger, .popover, .popover .square-popover', function (ev) {
-      var target = $(ev.currentTarget),
-        popover
-      ;
+      var target = $(ev.currentTarget);
+      var popover;
 
       if (target.is('.person-tooltip-trigger')) {
         target = target.closest('.person-holder');
@@ -229,12 +229,14 @@
       }
 
       // Hide the popover if we left for good
-      if (target.is('.person-holder') && (target = target.find('.person-tooltip-trigger')) && (popover = target.data('popover'))) {
+      if (target.is('.person-holder') &&
+        (target = target.find('.person-tooltip-trigger')) &&
+        (popover = target.data('popover'))) {
         ev.currentTarget = target[0];
         popover.leave(ev);
-      }
       // Check if this popover originated from the last person popover
-      else if (last_popover && target.is('.popover') && last_popover.tip()[0] === target[0]) {
+      } else if (last_popover && target.is('.popover') &&
+        last_popover.tip()[0] === target[0]) {
         ev.currentTarget = last_popover.$element[0];
         last_popover.leave(ev);
       }
@@ -243,9 +245,9 @@
     // Tab indexing form fields in modal
     $body.on('focus', '.modal', function () {
       $('.wysiwyg-area').each(function () {
-        var $this = $(this),
-          $textarea = $this.find('textarea.wysihtml5').attr('tabindex'),
-          $descriptionField = $this.find('iframe.wysihtml5-sandbox');
+        var $this = $(this);
+        var $textarea = $this.find('textarea.wysihtml5').attr('tabindex');
+        var $descriptionField = $this.find('iframe.wysihtml5-sandbox');
 
         function addingTabindex() {
           $descriptionField.attr('tabindex', $textarea);
@@ -266,8 +268,8 @@
 
     // Watermark trigger
     $body.on('click', '.watermark-trigger', function () {
-      var $this = $(this),
-        $showWatermark = $this.closest('.tree-item').find('.watermark-icon');
+      var $this = $(this);
+      var $showWatermark = $this.closest('.tree-item').find('.watermark-icon');
 
       $showWatermark.fadeIn('fast');
       $this.addClass('active');
@@ -278,12 +280,13 @@
 
     // top nav dropdown position
     function dropdownPosition() {
-      var $this = $(this),
-        $dropdown = $this.closest('.hidden-widgets-list').find('.dropdown-menu'),
-        $menu_item = $dropdown.find('.inner-nav-item').find('a'),
-        offset = $this.offset(),
-        win = $(window),
-        win_width = win.width();
+      var $this = $(this);
+      var $dropdown = $this.closest('.hidden-widgets-list')
+        .find('.dropdown-menu');
+      var $menu_item = $dropdown.find('.inner-nav-item').find('a');
+      var offset = $this.offset();
+      var win = $(window);
+      var win_width = win.width();
 
       if (win_width - offset.left < 322) {
         $dropdown.addClass('right-pos');
@@ -301,7 +304,8 @@
   root.getPageToken = function getPageToken() {
     return $(document.body).data('page-subtype') ||
       $(document.body).data('page-type') ||
-      window.location.pathname.substring(1, (window.location.pathname + '/').indexOf('/', 1));
+      window.location.pathname.substring(1, (window.location.pathname + '/')
+        .indexOf('/', 1));
   };
   // Make sure GGRC.config is defined (needed to run Karma tests)
   GGRC.config = GGRC.config || {};
