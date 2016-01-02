@@ -6,7 +6,10 @@
 */
 
 // Initialize delegated event handlers
-jQuery(function ($) {
+(function ($) {
+  var submit_import = 'form.import input[type=submit]';
+  var file_select_elem = 'form.import input[type=file]';
+
   window.natural_comparator = function (a, b) {
     var i;
     a = a.slug.toString();
@@ -91,15 +94,10 @@ jQuery(function ($) {
       $(target).tmpl_mergeitems([data]);
     }
   });
-});
 
-// This is only used by import to redirect on successful import
-// - this cannot use other response headers because it is proxied through
-//   an iframe to achieve AJAX file upload (using remoteipart)
-jQuery(function ($) {
-  var submit_import = 'form.import input[type=submit]';
-  var file_select_elem = 'form.import input[type=file]';
-
+  // This is only used by import to redirect on successful import
+  // - this cannot use other response headers because it is proxied through
+  //   an iframe to achieve AJAX file upload (using remoteipart)
   function onSubmitClick(ev) {
     if (typeof ev !== 'object') {
       // sometimes browser triggers submit, not the user -> ignore
@@ -207,36 +205,27 @@ jQuery(function ($) {
     }
   });
 
-  jQuery(function ($) {
-    $('body').on('ajax:success', 'form[data-remote][data-update-target]', function (e, data, status, xhr) {
-      var $container;
-      if (xhr.getResponseHeader('Content-Type') === 'text/html') {
-        $container = $($(this).data('update-target'));
-        $container.html(data);
-        $container.find('input[type=submit]').click(onSubmitClick);
-      }
-    });
+  $('body').on('ajax:success', 'form[data-remote][data-update-target]', function (e, data, status, xhr) {
+    var $container;
+    if (xhr.getResponseHeader('Content-Type') === 'text/html') {
+      $container = $($(this).data('update-target'));
+      $container.html(data);
+      $container.find('input[type=submit]').click(onSubmitClick);
+    }
   });
-});
 
-jQuery(function ($) {
   function refresh_page() {
     setTimeout(can.proxy(window.location.reload, window.location), 10);
   }
-
   $('body').on('ajax:complete', '[data-ajax-complete="refresh"]', refresh_page);
-});
 
-jQuery(function ($) {
   $('body').on('ajax:success', '#helpedit form', function (e, data, status, xhr) {
     var $modal = $(this).closest('.modal');
     $modal.find('.modal-header h1').html(data.help.title);
     $modal.find('.modal-body .help-content').html(data.help.content);
     $modal.find('.modal-body #helpedit').collapse('hide');
   });
-});
 
-jQuery(function ($) {
   // Used in object_list sidebars (References, People, Categories)
   $('body').on('modal:success', '.js-list-container-title a', function (e, data) {
     var $this = $(this);
@@ -256,9 +245,7 @@ jQuery(function ($) {
       $expander.click();
     }
   });
-});
 
-jQuery(function ($) {
   function checkActive(notification_configs) {
     var inputs = $('.notify-wrap').find('input');
     var active_notifications;
@@ -343,10 +330,8 @@ jQuery(function ($) {
       });
     });
   });
-});
 
-// Make all external links open in new window.
-jQuery(function ($) {
+  // Make all external links open in new window.
   $('body').on('click', 'a[href]:not([target])', function (e) {
     if (!e.isDefaultPrevented()) {
       if (/^http/.test(this.protocol) &&
@@ -356,96 +341,94 @@ jQuery(function ($) {
       }
     }
   });
-});
 
-function resize_areas(event, target_info_pin_height) {
-  var $window;
-  var $lhsHolder;
-  var $header;
-  var $footer;
-  var $topNav;
-  var $innerNav;
-  var $objectArea;
-  var $bar;
-  var $pin;
-  var winHeight;
-  var winWidth;
-  var objectWidth;
-  var lhsHeight;
-  var footerMargin;
-  var internavHeight;
-  var internavWidth;
+  function resize_areas(event, target_info_pin_height) {
+    var $window;
+    var $lhsHolder;
+    var $header;
+    var $footer;
+    var $topNav;
+    var $innerNav;
+    var $objectArea;
+    var $bar;
+    var $pin;
+    var winHeight;
+    var winWidth;
+    var objectWidth;
+    var lhsHeight;
+    var footerMargin;
+    var internavHeight;
+    var internavWidth;
 
-  $window = $(window);
-  $lhsHolder = $('.lhs-holder');
-  $footer = $('.footer');
-  $header = $('.header-content');
-  $innerNav = $('.inner-nav');
-  $objectArea = $('.object-area');
-  $topNav = $('.top-inner-nav');
-  $bar = $('.bar-v');
-  $pin = $('.pin-content');
+    $window = $(window);
+    $lhsHolder = $('.lhs-holder');
+    $footer = $('.footer');
+    $header = $('.header-content');
+    $innerNav = $('.inner-nav');
+    $objectArea = $('.object-area');
+    $topNav = $('.top-inner-nav');
+    $bar = $('.bar-v');
+    $pin = $('.pin-content');
 
-  winHeight = $window.height();
-  winWidth = $window.width();
-  lhsHeight = winHeight - 180; // new ui
-  footerMargin = lhsHeight + 130; // new UI
-  internavWidth = $innerNav.width() || 0; // || 0 for pages without inner-nav
-  objectWidth = winWidth;
-  internavHeight = object_area_height();
+    winHeight = $window.height();
+    winWidth = $window.width();
+    lhsHeight = winHeight - 180; // new ui
+    footerMargin = lhsHeight + 130; // new UI
+    internavWidth = $innerNav.width() || 0; // || 0 for pages without inner-nav
+    objectWidth = winWidth;
+    internavHeight = object_area_height();
 
-  $lhsHolder.css('height', lhsHeight);
-  $bar.css('height', lhsHeight);
-  $footer.css('margin-top', footerMargin);
-  $innerNav.css('height', internavHeight);
-  $objectArea
-    .css('margin-left', internavWidth)
-    .css('height', internavHeight)
-    .css('width', objectWidth);
+    $lhsHolder.css('height', lhsHeight);
+    $bar.css('height', lhsHeight);
+    $footer.css('margin-top', footerMargin);
+    $innerNav.css('height', internavHeight);
+    $objectArea
+      .css('margin-left', internavWidth)
+      .css('height', internavHeight)
+      .css('width', objectWidth);
 
-  function object_area_height() {
-    var height = winHeight - not_main_elements_height();
-    var nav_pos = $topNav.css('top') ?
-              Number($topNav.css('top').replace('px', '')) : 0;
+    function object_area_height() {
+      var height = winHeight - not_main_elements_height();
+      var nav_pos = $topNav.css('top') ?
+                Number($topNav.css('top').replace('px', '')) : 0;
 
-    if (nav_pos < $header.height()) {
-      height -= $topNav.height();
+      if (nav_pos < $header.height()) {
+        height -= $topNav.height();
+      }
+
+      return height;
     }
 
-    return height;
+    function not_main_elements_height() {
+      var margins = [$objectArea.css('margin-top'),
+                     $objectArea.css('margin-bottom'),
+                     $objectArea.css('padding-top'),
+                     $objectArea.css('padding-bottom')]
+                .map(function (margin) {
+                  if (!margin) {
+                    margin = '0';
+                  }
+                  return Number(margin.replace('px', ''));
+                })
+                .reduce(function (m, h) {
+                  return m + h;
+                }, 0);
+
+      var pin_height = $.isNumeric(target_info_pin_height) ?
+                target_info_pin_height : $pin.height();
+
+            // the 5 gives user peace of mind they've reached bottom
+      var UIHeight = [$topNav.height(), $header.height(),
+                        $footer.height(),
+                        margins, pin_height, 5]
+                .reduce(function (m, h) {
+                  return m + h;
+                }, 0);
+
+      return UIHeight;
+    }
   }
 
-  function not_main_elements_height() {
-    var margins = [$objectArea.css('margin-top'),
-                   $objectArea.css('margin-bottom'),
-                   $objectArea.css('padding-top'),
-                   $objectArea.css('padding-bottom')]
-              .map(function (margin) {
-                if (!margin) {
-                  margin = '0';
-                }
-                return Number(margin.replace('px', ''));
-              })
-              .reduce(function (m, h) {
-                return m + h;
-              }, 0);
-
-    var pin_height = $.isNumeric(target_info_pin_height) ?
-              target_info_pin_height : $pin.height();
-
-          // the 5 gives user peace of mind they've reached bottom
-    var UIHeight = [$topNav.height(), $header.height(),
-                      $footer.height(),
-                      margins, pin_height, 5]
-              .reduce(function (m, h) {
-                return m + h;
-              }, 0);
-
-    return UIHeight;
-  }
-}
-
-jQuery(function ($) {
   // Footer expander animation helper
   function expander(toggle, direction) {
     var $this = $(toggle);
@@ -527,7 +510,7 @@ jQuery(function ($) {
     $this.removeClass('active');
     $this.closest('li').removeClass('active');
   });
-});
 
-jQuery(window).on('load', resize_areas);
-jQuery(window).on('resize', resize_areas);
+  $(window).on('load', resize_areas);
+  $(window).on('resize', resize_areas);
+})(jQuery);

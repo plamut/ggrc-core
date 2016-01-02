@@ -23,26 +23,29 @@
   GGRC.RequestStore = (function () {
   // From https://www.artandlogic.com/blog/2013/06/ajax-caching-transports-compatible-with-jquery-deferred/
     var key;
-    var storage = (typeof (sessionStorage) === undefined) ?
-      (typeof (localStorage) === undefined) ? {
-        getItem: function (key) {
-          return this.store[key];
-        },
-        setItem: function (key, value) {
-          this.store[key] = value;
-        },
-        removeItem: function (key) {
-          delete this.store[key];
-        },
-        clear: function () {
-          for (key in this.store) {
-            if (this.store.hasOwnProperty(key)) {
-              delete this.store[key];
-            }
+    var localStorageFn = {
+      getItem: function (key) {
+        return this.store[key];
+      },
+      setItem: function (key, value) {
+        this.store[key] = value;
+      },
+      removeItem: function (key) {
+        delete this.store[key];
+      },
+      clear: function () {
+        for (key in this.store) {
+          if (this.store.hasOwnProperty(key)) {
+            delete this.store[key];
           }
-        },
-        store: {}
-      } : localStorage : sessionStorage;
+        }
+      },
+      store: {}
+    };
+    var _localStorage = _.isUndefined(localStorage) ? localStorageFn :
+      localStorage;
+    var storage = _.isUndefined(sessionStorage) ? _localStorage :
+      sessionStorage;
 
     // Transport layer for saving responses from API requests and short-
     // circuiting later, duplicate requests
@@ -54,11 +57,11 @@
 
       if (_originalOptions._canonical_url) {
         // console.debug("Found re-entrant request: " + _originalOptions._canonical_url);
-        return;
+        return undefined;
       }
 
       if (options.type !== 'GET') {
-        return;
+        return undefined;
       }
 
       url = options.url;
@@ -117,7 +120,6 @@
         enabled = true;
       }
     };
-
     // Initialize Ajax Transport if storage record or replay is enabled
     var recording = storage.getItem('RequestStore.record');
     var replaying = storage.getItem('RequestStore.replay');

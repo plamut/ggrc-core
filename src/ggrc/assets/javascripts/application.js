@@ -11,7 +11,6 @@
   var $win = $(root);
   var $doc = $(doc);
   var $body = $(body);
-  var _type;
 
   $win.on('hashchange', function () {
     GGRC.current_url_compute(window.location);
@@ -28,6 +27,7 @@
   }
   ModelError.prototype = Error.prototype;
   root.cms_singularize = function (type) {
+    var _type;
     type = type.trim();
     _type = type.toLowerCase();
     switch (_type) {

@@ -9,7 +9,7 @@
  * Extra scripts for beta designs
  * ========================================================= */
 
-jQuery(function ($) {
+(function (root, $) {
   // render out templates function
   var renderExternalTmpl = function (item) {
     var file = '/design/templates/' + item.name;
@@ -23,8 +23,16 @@ jQuery(function ($) {
   };
   var userHasPriviledge;
 
-  renderExternalTmpl({name: 'selectorSectionToControl', selector: '#templates', data: {}});
-  renderExternalTmpl({name: 'selectorSectionToControlNA', selector: '#templates', data: {}});
+  renderExternalTmpl({
+    name: 'selectorSectionToControl',
+    selector: '#templates',
+    data: {}
+  });
+  renderExternalTmpl({
+    name: 'selectorSectionToControlNA',
+    selector: '#templates',
+    data: {}
+  });
 
   $(document).on('click', '#expand_all', function (event) {
     // $('.row-fluid-slotcontent').show("fast");
@@ -409,27 +417,25 @@ jQuery(function ($) {
       }
     }
   });
-});
 
-function toggleGovernance() {
-  var interval = 200;
-  $('.govWidget').each(function (i) {
-    var el = $(this);
-    if (el.hasClass('active')) {
-      $('#grcbutton-governance').addClass('halfopacity').removeClass('active');
-      $.cookie('toggle_governance', null);
-      el.delay(i * interval).slideUp(interval);
-      el.removeClass('active');
-    } else {
-      $('#grcbutton-governance').removeClass('halfopacity').addClass('active');
-      $.cookie('toggle_governance', '1', {expires: 1, path: '/'});
-      el.delay(i * interval).slideDown(interval);
-      el.addClass('active');
-    }
-  });
-}
+  function toggleGovernance() {
+    var interval = 200;
+    $('.govWidget').each(function (i) {
+      var el = $(this);
+      if (el.hasClass('active')) {
+        $('#grcbutton-governance').addClass('halfopacity').removeClass('active');
+        $.cookie('toggle_governance', null);
+        el.delay(i * interval).slideUp(interval);
+        el.removeClass('active');
+      } else {
+        $('#grcbutton-governance').removeClass('halfopacity').addClass('active');
+        $.cookie('toggle_governance', '1', {expires: 1, path: '/'});
+        el.delay(i * interval).slideDown(interval);
+        el.addClass('active');
+      }
+    });
+  }
 
-jQuery(function ($) {
   if ($.cookie('toggle_governance') === '1') {
     toggleGovernance();
   } else {
@@ -440,8 +446,8 @@ jQuery(function ($) {
     toggleGovernance();
     e.preventDefault();
   });
-});
 
-$(document).load(function () {
-  $('#program_start_date').hide();
-});
+  $(document).load(function () {
+    $('#program_start_date').hide();
+  });
+})(window, jQuery);

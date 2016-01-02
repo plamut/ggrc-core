@@ -18,14 +18,16 @@
         }
       }
       return false;
-    }, is: function (instance, args) {
+    },
+    is: function (instance, args) {
       var value = Permission._resolve_permission_variable(args.value);
       var property_value = instance[args.property_name];
       if (property_value instanceof can.Stub) {
         property_value = property_value.reify();
       }
       return value === property_value;
-    }, 'in': function (instance, args) {
+    },
+    'in': function (instance, args) {
       var value = Permission._resolve_permission_variable(args.value);
       var property_value = instance[args.property_name];
       if (property_value instanceof can.Stub) {
@@ -37,20 +39,22 @@
   var permissions_compute = can.compute(GGRC.permissions);
 
   can.Construct('Permission', {
-
     _admin_permission_for_context: function (context_id) {
       return new Permission(
       ADMIN_PERMISSION.action, ADMIN_PERMISSION.resource_type, context_id);
-    }, _all_resource_permission: function (permission) {
+    },
+    _all_resource_permission: function (permission) {
       return new Permission(
       permission.action, ADMIN_PERMISSION.resource_type, permission.context_id);
-    }, _permission_match: function (permissions, permission) {
+    },
+    _permission_match: function (permissions, permission) {
       var resource_types = permissions[permission.action] || {};
       var resource_type = resource_types[permission.resource_type] || {};
       var contexts = resource_type.contexts || [];
 
       return (contexts.indexOf(permission.context_id) > -1);
-    }, _is_allowed: function (permissions, permission) {
+    },
+    _is_allowed: function (permissions, permission) {
       if (!permissions) {
         return false; // ?
       }
@@ -78,7 +82,8 @@
         return true;
       }
       return false;
-    }, _resolve_permission_variable: function (value) {
+    },
+    _resolve_permission_variable: function (value) {
       if ($.type(value) === 'string') {
         if (value[0] === '$') {
           if (value === '$current_user') {
@@ -88,7 +93,8 @@
         }
       }
       return value;
-    }, _is_allowed_for: function (permissions, instance, action) {
+    },
+    _is_allowed_for: function (permissions, instance, action) {
       var action_obj;
       var instance_type;
       var type_obj;
@@ -135,12 +141,15 @@
         }
       }
       return false;
-    }, is_allowed: function (action, resource_type, context_id) {
+    },
+    is_allowed: function (action, resource_type, context_id) {
       return this._is_allowed(
           permissions_compute(), new this(action, resource_type, context_id));
-    }, is_allowed_for: function (action, resource) {
+    },
+    is_allowed_for: function (action, resource) {
       return this._is_allowed_for(permissions_compute(), resource, action);
-    }, is_allowed_any: function (action, resource_type) {
+    },
+    is_allowed_any: function (action, resource_type) {
       var allowed = this.is_allowed(action, resource_type);
       var perms = permissions_compute();
 
@@ -148,11 +157,13 @@
         allowed = _.exists(perms, action, resource_type, 'contexts', 'length');
       }
       return !!allowed;
-    }, page_context_id: function () {
+    },
+    page_context_id: function () {
       var page_instance = GGRC.page_instance();
       return (page_instance && page_instance.context &&
         page_instance.context.id) || null;
-    }, refresh: function () {
+    },
+    refresh: function () {
       return $.ajax({
         url: '/permissions', type: 'get', dataType: 'json'
       }).then(function (perm) {

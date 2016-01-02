@@ -77,17 +77,6 @@
     infer_object_type: function (data) {
       var decision_tree = GGRC.get_object_type_decision_tree();
 
-      function resolve_by_key(subtree, data) {
-        var kind = data[subtree._key];
-        var model;
-        can.each(subtree, function (v, k) {
-          if (k !== '_key' && v.meta_kinds.indexOf(kind) >= 0) {
-            model = v;
-          }
-        });
-        return model;
-      }
-
       function resolve(subtree, data) {
         if (typeof subtree === 'undefined') {
           return null;
@@ -99,22 +88,20 @@
 
       if (!data) {
         return null;
-      } else {
-        return can.reduce(Object.keys(data), function (a, b) {
-          return a || resolve(decision_tree[b], data[b]);
-        }, null);
       }
+      return can.reduce(Object.keys(data), function (a, b) {
+        return a || resolve(decision_tree[b], data[b]);
+      }, null);
     },
     make_model_instance: function (data) {
       if (!data) {
         return null;
       } else if (!!GGRC.page_model && GGRC.page_object === data) {
         return GGRC.page_model;
-      } else {
-        return GGRC.page_model = GGRC.infer_object_type(data).model($.extend({}, data));
       }
+      GGRC.page_model = GGRC.infer_object_type(data).model($.extend({}, data));
+      return GGRC.page_model;
     },
-
     page_instance: function () {
       if (!GGRC._page_instance && GGRC.page_object) {
         GGRC._page_instance = GGRC.make_model_instance(GGRC.page_object);
@@ -207,7 +194,7 @@
         _b = b[i] || 0;
         if (_a === '.' || _b === '.') {
           if (_a !== '.' || _b !== '.') {
-            throw 'Decimal alignment error';
+            throw new Error('Decimal alignment error');
           }
           ret.unshift('.');
         } else {
@@ -305,16 +292,13 @@
       for (i = 0; i < _a.length - 1; i++) {
         if (_a[i] === '.') {
         // continue
-        } else {
-          if ((Number(_a[i]) || 0) < (Number(_b[i]) || 0)) {
-            return true;
-          } else if ((Number(_a[i]) || 0) > (Number(_b[i]) || 0)) {
-            return false;
-          }
+        } else if ((Number(_a[i]) || 0) < (Number(_b[i]) || 0)) {
+          return true;
+        } else if ((Number(_a[i]) || 0) > (Number(_b[i]) || 0)) {
+          return false;
         }
       }
-      return _b.length >= _a.length ? false : true;
+      return !(_b.length >= _a.length);
     }
-
   });
 })(jQuery, window.GGRC = window.GGRC || {});
