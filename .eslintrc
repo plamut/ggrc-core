@@ -24,12 +24,14 @@
 
     // TODO: Check why these vars are global
     "process_gapi_query": false,
+    "calculate_spinner_z_index": false,
     "resolve_computed": false,
     "rangy": false,
     "gapi": false,
     "oauth_dfd": false,
+    "getPageToken": false,
     "google": false,
-    "calculate_spinner_z_index": false,
+    "st": false,
     "wysihtml5ParserRules": false,
     "wysihtml5": false,
   },
