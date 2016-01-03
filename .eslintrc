@@ -15,6 +15,7 @@
     "moment": false,
     "Mustache": false,
     "MutationObserver": false,
+    "ModelRefreshQueue": false,
     "Permission": false,
     "PersistentNotifier", false,
     "RefreshQueue": false,
