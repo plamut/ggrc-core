@@ -6,16 +6,15 @@
 */
 
 (function (GGRC, can) {
-
-  var Proxy = GGRC.MapperHelpers.Proxy,
-    Direct = GGRC.MapperHelpers.Direct,
-    Indirect = GGRC.MapperHelpers.Indirect,
-    Search = GGRC.MapperHelpers.Search,
-    Multi = GGRC.MapperHelpers.Multi,
-    TypeFilter = GGRC.MapperHelpers.TypeFilter,
-    AttrFilter = GGRC.MapperHelpers.AttrFilter,
-    CustomFilter = GGRC.MapperHelpers.CustomFilter,
-    Cross = GGRC.MapperHelpers.Cross;
+  var Proxy = GGRC.MapperHelpers.Proxy;
+  var Direct = GGRC.MapperHelpers.Direct;
+  var Indirect = GGRC.MapperHelpers.Indirect;
+  var Search = GGRC.MapperHelpers.Search;
+  var Multi = GGRC.MapperHelpers.Multi;
+  var TypeFilter = GGRC.MapperHelpers.TypeFilter;
+  var AttrFilter = GGRC.MapperHelpers.AttrFilter;
+  var CustomFilter = GGRC.MapperHelpers.CustomFilter;
+  var Cross = GGRC.MapperHelpers.Cross;
   /*
     class GGRC.Mappings
     represents everything known about how GGRC objects connect to each other.
@@ -60,8 +59,9 @@
       can.each(this.modules, function (mod, name) {
         if (mod[object]) {
           can.each(mod[object], function (mapping, mapping_name) {
-            if (mapping_name === '_canonical')
+            if (mapping_name === '_canonical') {
               return;
+            }
             mappings[mapping_name] = mapping;
           });
         }
@@ -78,8 +78,10 @@
     get_canonical_mapping: function (object, option) {
       var mapping = null;
       can.each(this.modules, function (mod, name) {
-        if (mod._canonical_mappings && mod._canonical_mappings[object] && mod._canonical_mappings[object][option]) {
-          mapping = CMS.Models[object].get_mapper(mod._canonical_mappings[object][option]);
+        if (mod._canonical_mappings && mod._canonical_mappings[object] &&
+            mod._canonical_mappings[object][option]) {
+          mapping = CMS.Models[object].get_mapper(
+            mod._canonical_mappings[object][option]);
           return false;
         }
       });
@@ -95,7 +97,8 @@
     get_canonical_mapping_name: function (object, option) {
       var mapping_name = null;
       can.each(this.modules, function (mod, name) {
-        if (mod._canonical_mappings && mod._canonical_mappings[object] && mod._canonical_mappings[object][option]) {
+        if (mod._canonical_mappings && mod._canonical_mappings[object] &&
+          mod._canonical_mappings[object][option]) {
           mapping_name = mod._canonical_mappings[object][option];
           return false;
         }
@@ -112,9 +115,10 @@
       var mappings = {};
       can.each(this.modules, function (mod, name) {
         if (mod._canonical_mappings && mod._canonical_mappings[object]) {
-          can.each(mod._canonical_mappings[object], function (mapping_name, option) {
-            mappings[option] = CMS.Models[object].get_mapper(mapping_name);
-          });
+          can.each(mod._canonical_mappings[object],
+            function (mapping_name, option) {
+              mappings[option] = CMS.Models[object].get_mapper(mapping_name);
+            });
         }
       });
       return mappings;
@@ -127,12 +131,12 @@
       return: a string of the shortName of the join model (subclass of can.Model.Join) or null
     */
     join_model_name_for: function (model_name_a, model_name_b) {
-      var join_descriptor = this.get_canonical_mapping(model_name_a, model_name_b);
+      var join_descriptor = this.get_canonical_mapping(
+        model_name_a, model_name_b);
       if (join_descriptor instanceof GGRC.ListLoaders.ProxyListLoader) {
         return join_descriptor.model_name;
-      } else {
-        return null;
       }
+      return null;
     },
     /*
       make a new instance of the join model for the canonical mapping between two objects
@@ -144,15 +148,17 @@
       return: an instance of the join model (subclass of can.Model.Join) or null
     */
     make_join_object: function (object, option, join_attrs) {
-      var join_model, join_mapping = this.get_canonical_mapping(object.constructor.shortName, option.constructor.shortName),
-        object_attrs = {
-          id: object.id,
-          type: object.constructor.shortName
-        },
-        option_attrs = {
-          id: option.id,
-          type: option.constructor.shortName
-        };
+      var join_model;
+      var join_mapping = this.get_canonical_mapping(
+        object.constructor.shortName, option.constructor.shortName);
+      var object_attrs = {
+        id: object.id,
+        type: object.constructor.shortName
+      };
+      var option_attrs = {
+        id: option.id,
+        type: option.constructor.shortName
+      };
 
       if (join_mapping && join_mapping.model_name) {
         join_model = CMS.Models[join_mapping.model_name];
@@ -161,9 +167,8 @@
         join_attrs[join_mapping.object_attr] = object_attrs;
 
         return new join_model(join_attrs);
-      } else {
-        return null;
       }
+      return null;
     }
   }, {
     /*
@@ -171,7 +176,9 @@
       kick off the application of mixins to the mappings and resolve canonical mappings
     */
     init: function (name, opts) {
-      var created_mappings, that = this;
+      var created_mappings;
+      var that = this;
+
       this.constructor.modules[name] = this;
       this._canonical_mappings = {};
       if (this.groups) {
@@ -188,30 +195,34 @@
             that._canonical_mappings[object_type] = {};
           }
 
-          can.each(mappings._canonical || [], function (option_types, mapping_name) {
-            if (!can.isArray(option_types)) {
-              option_types = [option_types];
-            }
-            can.each(option_types, function (option_type) {
-              that._canonical_mappings[object_type][option_type] = mapping_name;
+          can.each(mappings._canonical || [],
+            function (option_types, mapping_name) {
+              if (!can.isArray(option_types)) {
+                option_types = [option_types];
+              }
+              can.each(option_types, function (option_type) {
+                that._canonical_mappings[object_type][option_type] = mapping_name;
+              });
             });
-          });
         }
       });
       $.extend(this, created_mappings);
     },
     // Recursively handle mixins -- this function should not be called directly.
     reify_mixins: function (definition, definitions) {
-      var that = this,
-        final_definition = {};
+      var that = this;
+      var final_definition = {};
+
       if (definition._mixins) {
         can.each(definition._mixins, function (mixin) {
           if (typeof (mixin) === 'string') {
             // If string, recursive lookup
-            if (!definitions[mixin])
+            if (!definitions[mixin]) {
               console.debug('Undefined mixin: ' + mixin, definitions);
-            else
-              can.extend(true, final_definition, that.reify_mixins(definitions[mixin], definitions));
+            } else {
+              can.extend(true, final_definition,
+                that.reify_mixins(definitions[mixin], definitions));
+            }
           } else if (can.isFunction(mixin)) {
             // If function, call with current definition state
             mixin(final_definition);
@@ -247,8 +258,9 @@
 
       can.each(definitions, function (definition, name) {
         // Only output the mappings if it's a model, e.g., uppercase first letter
-        if (name[0] === name[0].toUpperCase())
+        if (name[0] === name[0].toUpperCase()) {
           mappings[name] = this.reify_mixins(definition, definitions);
+        }
       }, this);
       return mappings;
     }
@@ -262,8 +274,8 @@
       _mixins: ['related_object', 'personable', 'ownable'],
       related_business_objects: Multi([
         'related_data_assets', 'related_facilities', 'related_markets',
-        'related_org_groups', 'related_vendors', 'related_processes', 'related_products',
-        'related_projects', 'related_systems'
+        'related_org_groups', 'related_vendors', 'related_processes',
+        'related_products', 'related_projects', 'related_systems'
       ]),
       related_and_able_objects: Multi([
         'objectives', 'related_business_objects',
@@ -272,7 +284,8 @@
       audits: Proxy(
         'Audit', 'audit', 'AuditObject', 'auditable', 'audit_objects'),
       orphaned_objects: Multi([
-        'related_objects', 'clauses', 'controls', 'programs', 'objectives', 'people'
+        'related_objects', 'clauses', 'controls', 'programs', 'objectives',
+        'people'
       ])
     },
     Objective: {
@@ -282,18 +295,19 @@
         'sections', 'clauses'
       ]),
       orphaned_objects: Multi([
-        'related_objects', 'clauses', 'contracts', 'controls', 'objectives', 'people', 'policies', 'programs', 'regulations', 'sections', 'standards'
+        'related_objects', 'clauses', 'contracts', 'controls', 'objectives',
+        'people', 'policies', 'programs', 'regulations', 'sections', 'standards'
       ])
     },
     Section: {
-      _mixins: ['related_object', 'personable', 'ownable'],
+      _mixins: ['related_object', 'personable', 'ownable']
     },
     Clause: {
-      _mixins: ['related_object', 'personable', 'ownable'],
+      _mixins: ['related_object', 'personable', 'ownable']
     },
     personable: {
       _canonical: {
-        'people': 'Person'
+        people: 'Person'
       },
       people: Proxy(
         'Person', 'person', 'ObjectPerson', 'personable', 'object_people')
@@ -304,25 +318,28 @@
     },
     documentable: {
       _canonical: {
-        'documents': 'Document'
+        documents: 'Document'
       },
       documents: Proxy(
-        'Document', 'document', 'ObjectDocument', 'documentable', 'object_documents')
+        'Document', 'document', 'ObjectDocument', 'documentable',
+        'object_documents')
     },
     related_object: {
       _canonical: {
-        'related_objects_as_source': [
-          'DataAsset', 'Facility', 'Market', 'OrgGroup', 'Vendor', 'Process', 'Product',
-          'Project', 'System', 'Regulation', 'Policy', 'Contract', 'Standard',
-          'Program', 'Issue', 'Control', 'Section', 'Clause', 'Objective',
-          'Audit', 'ControlAssessment', 'AccessGroup', 'Request', 'Document'
+        related_objects_as_source: [
+          'DataAsset', 'Facility', 'Market', 'OrgGroup', 'Vendor', 'Process',
+          'Product', 'Project', 'System', 'Regulation', 'Policy', 'Contract',
+          'Standard', 'Program', 'Issue', 'Control', 'Section', 'Clause',
+          'Objective', 'Audit', 'ControlAssessment', 'AccessGroup', 'Request',
+          'Document'
         ]
       },
       related_objects_as_source: Proxy(
         null, 'destination', 'Relationship', 'source', 'related_destinations'),
       related_objects_as_destination: Proxy(
         null, 'source', 'Relationship', 'destination', 'related_sources'),
-      related_objects: Multi(['related_objects_as_source', 'related_objects_as_destination']),
+      related_objects: Multi(['related_objects_as_source',
+        'related_objects_as_destination']),
       destinations: Direct('Relationship', 'source', 'related_destinations'),
       sources: Direct('Relationship', 'destination', 'related_sources'),
       relationships: Multi(['sources', 'destinations']),
@@ -339,7 +356,8 @@
       related_issues: TypeFilter('related_objects', 'Issue'),
       related_audits: TypeFilter('related_objects', 'Audit'),
       related_controls: TypeFilter('related_objects', 'Control'),
-      related_control_assessments: TypeFilter('related_objects', 'ControlAssessment'),
+      related_control_assessments: TypeFilter('related_objects',
+        'ControlAssessment'),
       related_requests: TypeFilter('related_objects', 'Request'),
       regulations: TypeFilter('related_objects', 'Regulation'),
       contracts: TypeFilter('related_objects', 'Contract'),
@@ -350,12 +368,18 @@
       sections: TypeFilter('related_objects', 'Section'),
       clauses: TypeFilter('related_objects', 'Clause'),
       objectives: TypeFilter('related_objects', 'Objective'),
-      related_documentation_responses: TypeFilter('related_objects', 'DocumentationResponse'),
-      related_interview_responses: TypeFilter('related_objects', 'InterviewResponse'),
-      related_population_sample_responses: TypeFilter('related_objects', 'PopulationSampleResponse'),
-      related_responses: Multi(['related_documentation_responses', 'related_interview_responses', 'related_population_sample_responses']),
-      related_requests_via_related_responses: Cross('related_responses', '_request'),
-      related_audits_via_related_responses: Cross('related_responses', 'audit_via_request')
+      related_documentation_responses: TypeFilter('related_objects',
+        'DocumentationResponse'),
+      related_interview_responses: TypeFilter('related_objects',
+        'InterviewResponse'),
+      related_population_sample_responses: TypeFilter('related_objects',
+        'PopulationSampleResponse'),
+      related_responses: Multi(['related_documentation_responses',
+        'related_interview_responses', 'related_population_sample_responses']),
+      related_requests_via_related_responses: Cross('related_responses',
+        '_request'),
+      related_audits_via_related_responses: Cross('related_responses',
+        'audit_via_request')
     },
     // Program
     Program: {
@@ -363,29 +387,33 @@
         'related_object', 'personable'
       ],
       _canonical: {
-        'audits': 'Audit',
-        'context': 'Context'
+        audits: 'Audit',
+        context: 'Context'
       },
       related_issues: TypeFilter('related_objects', 'Issue'),
       audits: Direct('Audit', 'program', 'audits'),
-      related_people_via_audits: TypeFilter('related_objects_via_audits', 'Person'),
+      related_people_via_audits: TypeFilter('related_objects_via_audits',
+        'Person'),
       authorizations_via_audits: Cross('audits', 'authorizations'),
       context: Direct('Context', 'related_object', 'context'),
       contexts_via_audits: Cross('audits', 'context'),
       program_authorized_people: Cross('context', 'authorized_people'),
       program_authorizations: Cross('context', 'user_roles'),
       authorization_contexts: Multi(['context', 'contexts_via_audits']),
-      authorizations_via_contexts: Cross('authorization_contexts', 'user_roles'),
+      authorizations_via_contexts: Cross('authorization_contexts',
+        'user_roles'),
       authorizations: Cross('authorization_contexts', 'user_roles'),
       authorized_people: Cross('authorization_contexts', 'authorized_people'),
       mapped_and_or_authorized_people: Multi([
         'people', 'authorized_people'
       ]),
-      owner_authorizations: CustomFilter('program_authorizations', function (auth_binding) {
-        return new RefreshQueue().enqueue(auth_binding.instance.role.reify()).trigger().then(function (roles) {
-          return roles[0].name === 'ProgramOwner';
-        });
-      }),
+      owner_authorizations: CustomFilter('program_authorizations',
+        function (auth_binding) {
+          return new RefreshQueue().enqueue(auth_binding.instance.role.reify())
+            .trigger().then(function (roles) {
+              return roles[0].name === 'ProgramOwner';
+            });
+        }),
       program_owners: Cross('owner_authorizations', 'person'),
       owners_via_object_owners: Proxy(
         'Person', 'person', 'ObjectOwner', 'ownable', 'object_owners'),
@@ -424,7 +452,8 @@
         'ownable'
       ],
       orphaned_objects: Multi([
-        'related_objects', 'people', 'controls', 'objectives', 'sections', 'clauses'
+        'related_objects', 'people', 'controls', 'objectives', 'sections',
+        'clauses'
       ])
     },
     AccessGroup: {
@@ -459,14 +488,14 @@
     },
     Person: {
       _canonical: {
-        'related_objects': [
+        related_objects: [
           'Program', 'Regulation', 'Contract', 'Policy', 'Standard',
           'AccessGroup', 'Objective', 'Control', 'Section', 'Clause',
           'DataAsset', 'Facility', 'Market', 'OrgGroup', 'Vendor', 'Process',
           'Product', 'Project', 'System', 'Issue', 'ControlAssessment',
           'Request'
         ],
-        'authorizations': 'UserRole'
+        authorizations: 'UserRole'
       },
       owned_programs: Indirect('Program', 'contact'),
       owned_regulations: Indirect('Regulation', 'contact'),
@@ -511,20 +540,28 @@
       related_issues: TypeFilter('related_objects', 'Issue'),
       authorizations: Direct('UserRole', 'person', 'user_roles'),
       programs_via_authorizations: Cross('authorizations', 'program_via_context'),
-      extended_related_programs: Multi(['related_programs', 'owned_programs', 'programs_via_authorizations']),
-      extended_related_regulations: Multi(['related_regulations', 'owned_regulations']),
-      extended_related_contracts: Multi(['related_contracts', 'owned_contracts']),
+      extended_related_programs: Multi(['related_programs', 'owned_programs',
+        'programs_via_authorizations']),
+      extended_related_regulations: Multi(['related_regulations',
+        'owned_regulations']),
+      extended_related_contracts: Multi(['related_contracts',
+        'owned_contracts']),
       extended_related_policies: Multi(['related_policies', 'owned_policies']),
-      extended_related_objectives: Multi(['related_objectives', 'owned_objectives']),
+      extended_related_objectives: Multi(['related_objectives',
+        'owned_objectives']),
       extended_related_controls: Multi(['related_controls', 'owned_controls']),
       extended_related_sections: Multi(['related_sections', 'owned_sections']),
       extended_related_clauses: Multi(['related_clauses', 'owned_clauses']),
-      extended_related_data_assets: Multi(['related_data_assets', 'owned_data_assets']),
-      extended_related_facilities: Multi(['related_facilities', 'owned_facilities']),
+      extended_related_data_assets: Multi(['related_data_assets',
+        'owned_data_assets']),
+      extended_related_facilities: Multi(['related_facilities',
+        'owned_facilities']),
       extended_related_markets: Multi(['related_markets', 'owned_markets']),
-      extended_related_org_groups: Multi(['related_org_groups', 'owned_org_groups']),
+      extended_related_org_groups: Multi(['related_org_groups',
+        'owned_org_groups']),
       extended_related_vendors: Multi(['related_vendors', 'owned_vendors']),
-      extended_related_processes: Multi(['related_processes', 'owned_processes']),
+      extended_related_processes: Multi(['related_processes',
+        'owned_processes']),
       extended_related_products: Multi(['related_products', 'owned_products']),
       extended_related_projects: Multi(['related_projects', 'owned_projects']),
       extended_related_systems: Multi(['related_systems', 'owned_systems']),
@@ -534,10 +571,10 @@
           'Section', 'Clause', 'Objective', 'Control', 'AccessGroup',
           'System', 'Process', 'DataAsset', 'Product', 'Project', 'Facility',
           'Market', 'OrgGroup', 'Vendor', 'Audit', 'Issue', 'ControlAssessment',
-          'Request' //, "Response"
+          'Request'
         ];
 
-        //checkfor window.location
+        // checkfor window.location
         if (/^\/objectBrowser\/?$/.test(window.location.pathname)) {
           return GGRC.Models.Search.search_for_types('', types, {})
             .pipe(function (mappings) {
@@ -586,8 +623,8 @@
     },
     Context: {
       _canonical: {
-        'user_roles': 'UserRole',
-        'authorized_people': 'Person'
+        user_roles: 'UserRole',
+        authorized_people: 'Person'
       },
       user_roles: Direct('UserRole', 'context', 'user_roles'),
       authorized_people: Proxy('Person', 'person', 'UserRole', 'context', 'user_roles')
@@ -602,10 +639,10 @@
     },
     Audit: {
       _canonical: {
-        'requests': 'Request',
-        '_program': 'Program',
-        'context': 'Context',
-        'related_objects_as_source': ['ControlAssessment', 'Issue']
+        requests: 'Request',
+        _program: 'Program',
+        context: 'Context',
+        related_objects_as_source: ['ControlAssessment', 'Issue']
       },
       folders: Proxy(
         'ObjectFolder', 'folderable', 'folder',
@@ -636,43 +673,57 @@
       }),
       auditors: Cross('auditor_authorizations', 'person'),
       related_owned_objects: CustomFilter('related_objects_via_requests', function (result) {
-        var person = GGRC.page_instance() instanceof CMS.Models.Person && GGRC.page_instance();
-        return !person || (result.instance.attr('contact') && result.instance.contact.id === person.id) || (result.instance.attr('assignee') && result.instance.assignee.id === person.id) || (result.instance.attr('requestor') && result.instance.requestor.id === person.id);
+        var person = GGRC.page_instance() instanceof CMS.Models.Person &&
+        GGRC.page_instance();
+        return !person || (result.instance.attr('contact') && result.instance.contact.id === person.id) ||
+          (result.instance.attr('assignee') && result.instance.assignee.id === person.id) ||
+          (result.instance.attr('requestor') && result.instance.requestor.id === person.id);
       }),
       related_owned_requests: TypeFilter('related_owned_objects', 'Request'),
       related_owned_documentation_responses: TypeFilter('related_owned_objects', 'DocumentationResponse'),
       related_owned_interview_responses: TypeFilter('related_owned_objects', 'InterviewResponse'),
       related_owned_population_sample_responses: TypeFilter('related_owned_objects', 'PopulationSampleResponse'),
-      related_owned_responses: Multi(['related_owned_documentation_responses', 'related_owned_interview_responses', 'related_owned_population_sample_responses']),
+      related_owned_responses: Multi(
+        ['related_owned_documentation_responses',
+        'related_owned_interview_responses',
+        'related_owned_population_sample_responses']),
       related_mapped_objects: CustomFilter('related_objects_via_requests', function (result) {
-        var page_instance = GGRC.page_instance(),
-          instance = result.instance,
-          is_mapped = function (responses) {
-            var i, j, response, relationships, relationship;
-            for (i = 0; response = responses[i]; i++) {
-              //  FIXME: This avoids script errors due to stubs, but causes
-              //    incorrect results.  `CustomFilter.filter_fn` should be
-              //    refactored to return a deferred, and then this function
-              //    should be cleaned up.
-              if (!('related_sources' in response)) continue;
-              relationships = new can.Observe.List().concat(response.related_sources.reify(), response.related_destinations.reify());
-              for (j = 0; relationship = relationships[j]; j++) {
-                if (relationship.source && relationship.source.reify && relationship.source.reify() === page_instance || relationship.destination && relationship.destination.reify() === page_instance) {
-                  return true;
-                }
+        var page_instance = GGRC.page_instance();
+        var instance = result.instance;
+        var is_mapped = function (responses) {
+          var i;
+          var j;
+          var response;
+          var relationships;
+          var relationship;
+          for (i = 0; (response = responses[i]); i++) {
+            //  FIXME: This avoids script errors due to stubs, but causes
+            //    incorrect results.  `CustomFilter.filter_fn` should be
+            //    refactored to return a deferred, and then this function
+            //    should be cleaned up.
+            if (!('related_sources' in response)) {
+              continue;
+            }
+            relationships = new can.Observe.List().concat(
+              response.related_sources.reify(), response.related_destinations.reify());
+            for (j = 0; (relationship = relationships[j]); j++) {
+              if (relationship.source && relationship.source.reify && relationship.source.reify() === page_instance ||
+                relationship.destination && relationship.destination.reify() === page_instance) {
+                return true;
               }
             }
-            return false;
-          };
-
-        if (instance instanceof CMS.Models.Request && instance.responses)
-          return is_mapped(instance.responses.reify());
-        else if (instance instanceof CMS.Models.Response)
-          return is_mapped([instance]);
-        else
+          }
           return false;
+        };
+
+        if (instance instanceof CMS.Models.Request && instance.responses) {
+          return is_mapped(instance.responses.reify());
+        } else if (instance instanceof CMS.Models.Response) {
+          return is_mapped([instance]);
+        }
+        return false;
       }),
-      //related_mapped_requests: TypeFilter("related_mapped_objects", "Request"),
+      // related_mapped_requests: TypeFilter("related_mapped_objects", "Request"),
       related_requests: TypeFilter('related_objects_via_relationship', 'Request'),
       related_mapped_documentation_responses: TypeFilter('related_mapped_objects', 'DocumentationResponse'),
       related_mapped_interview_responses: TypeFilter('related_mapped_objects', 'InterviewResponse'),
@@ -692,18 +743,20 @@
         'related_object', 'personable', 'ownable'
       ],
       _canonical: {
-        'control': 'Control',
+        control: 'Control'
       },
-      control: Direct('Control', 'controls', 'control_assessment'),
+      control: Direct('Control', 'controls', 'control_assessment')
     },
     Issue: {
       _mixins: [
         'related_object', 'personable', 'ownable'
-      ],
+      ]
     },
     Request: {
-      _mixins: ['related_object', 'personable', 'ownable', 'business_object', 'documentable'],
-      business_objects: Multi(['related_objects', 'controls', 'documents', 'people', 'sections', 'clauses']),
+      _mixins: ['related_object', 'personable', 'ownable', 'business_object',
+        'documentable'],
+      business_objects: Multi(['related_objects', 'controls', 'documents',
+        'people', 'sections', 'clauses']),
       audits: Direct('Audit', 'requests', 'audit'),
       extended_folders: Cross('audits', 'folders'),
       urls: TypeFilter('related_objects', 'Document'),
@@ -725,10 +778,10 @@
           'Section', 'Clause', 'Objective', 'Control', 'AccessGroup',
           'System', 'Process', 'DataAsset', 'Product', 'Project', 'Facility',
           'Market', 'OrgGroup', 'Vendor', 'Audit', 'Issue', 'ControlAssessment',
-          'Request' //, "Response"
+          'Request'
         ];
 
-        //checkfor window.location
+        // checkfor window.location
         if (/^\/objectBrowser\/?$/.test(window.location.pathname)) {
           return GGRC.Models.Search.search_for_types('', types, {})
               .pipe(function (mappings) {
@@ -741,8 +794,7 @@
             }).pipe(function (mappings) {
               return mappings.entries;
             });
-      }, 'Program,Regulation,Contract,Policy,Standard,Section,Clause,Objective,Control,System,Process,DataAsset,AccessGroup,Product,Project,Facility,Market,OrgGroup,Vendor,Audit,ControlAssessment,Request'),
-      //, responses : Multi(["documentation_responses", "interview_responses", "population_sample_responses"])
+      }, 'Program,Regulation,Contract,Policy,Standard,Section,Clause,Objective,Control,System,Process,DataAsset,AccessGroup,Product,Project,Facility,Market,OrgGroup,Vendor,Audit,ControlAssessment,Request')
     },
     Comment: {
       _mixins: ['related_object', 'documentable'],
@@ -763,7 +815,7 @@
     },
     InterviewResponse: {
       _canonical: {
-        'meetings': 'Meeting'
+        meetings: 'Meeting'
       },
       _mixins: ['response'],
       meetings: Direct('Meeting', 'response', 'meetings'),
@@ -771,7 +823,7 @@
     },
     PopulationSampleResponse: {
       _canonical: {
-        'population_samples': 'PopulationSample'
+        population_samples: 'PopulationSample'
       },
       _mixins: ['response'],
       business_objects: Multi(['related_objects', 'controls', 'people', 'documents', 'sections', 'clauses']),
@@ -783,15 +835,15 @@
     MultitypeSearch: {
       _mixins: ['directive_object'],
       _canonical: {
-        'audits': 'Audit',
-        'workflows': 'Workflow'
+        audits: 'Audit',
+        workflows: 'Workflow'
       },
       audits: Proxy(
         'Audit', 'audit', 'MultitypeSearchJoin'),
       workflows: Proxy(
         'Workflow', 'workflow', 'MultitypeSearchJoin'),
       sections: Proxy(
-        'Section', 'section', 'MultitypeSearchJoin'),
+        'Section', 'section', 'MultitypeSearchJoin')
     },
     AuditObject: {
       _auditable: Direct(null, null, 'auditable')
