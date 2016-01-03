@@ -5,7 +5,6 @@
     Maintained By: anze@reciprocitylabs.com
 */
 (function (can) {
-
   can.Model.Cacheable('CMS.Models.Issue', {
     root_object: 'issue',
     root_collection: 'issues',
@@ -30,13 +29,14 @@
       ])
     },
     init: function () {
-      this._super && this._super.apply(this, arguments);
+      if (this._super) {
+        this._super.apply(this, arguments);
+      }
       this.validateNonBlank('title');
     }
   }, {
     object_model: can.compute(function () {
       return CMS.Models[this.attr('object_type')];
-    }),
+    })
   });
-
 })(this.can);

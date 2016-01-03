@@ -13,15 +13,16 @@
  */
 
   can.Construct('ModelRefreshQueue', {
-}, {
-  init: function (model) {
-    this.model = model;
-    this.ids = [];
-    this.deferred = new $.Deferred();
-    this.triggered = false;
-    this.completed = false;
-    this.updated_at = Date.now();
-  }, enqueue: function (id) {
+  }, {
+    init: function (model) {
+      this.model = model;
+      this.ids = [];
+      this.deferred = new $.Deferred();
+      this.triggered = false;
+      this.completed = false;
+      this.updated_at = Date.now();
+    },
+    enqueue: function (id) {
       if (this.triggered) {
         return null;
       }
@@ -30,7 +31,8 @@
         this.updated_at = Date.now();
       }
       return this;
-    }, trigger: function () {
+    },
+    trigger: function () {
       var self = this;
       if (!this.triggered) {
         this.triggered = true;
@@ -47,44 +49,51 @@
         }
       }
       return this.deferred;
-    }, trigger_with_debounce: function (delay, manager) {
+    },
+    trigger_with_debounce: function (delay, manager) {
       var ms_to_wait = (delay || 0) + this.updated_at - Date.now();
 
       if (!this.triggered) {
-        if (ms_to_wait < 0 && (!manager || manager.triggered_queues().length < 6)) {
+        if (ms_to_wait < 0 &&
+          (!manager || manager.triggered_queues().length < 6)) {
           this.trigger();
         } else {
           setTimeout(this.proxy('trigger_with_debounce', delay, manager), ms_to_wait);
         }
       }
-
       return this.deferred;
     }
-});
+  });
 
   can.Construct('RefreshQueueManager', {
-  model_bases: {
-    // This won't work until Relatable/Documentable/etc mixins can handle
-    // queries with multiple `type` values.
-    //  Regulation: 'Directive'
-    //, Contract: 'Directive'
-    //, Policy: 'Directive'
-    //, Standard: 'Directive'
-    //, System: 'SystemOrProcess'
-    //, Process: 'SystemOrProcess'
-  }
-}, {
-  init: function () {
-    this.null_queue = new ModelRefreshQueue(null);
-    this.queues = [];
-  }, triggered_queues: function () {
+    model_bases: {
+      // This won't work until Relatable/Documentable/etc mixins can handle
+      // queries with multiple `type` values.
+      // Regulation: 'Directive'
+      // Contract: 'Directive'
+      // Policy: 'Directive'
+      // Standard: 'Directive'
+      // System: 'SystemOrProcess'
+      // Process: 'SystemOrProcess'
+    }
+  }, {
+    init: function () {
+      this.null_queue = new ModelRefreshQueue(null);
+      this.queues = [];
+    },
+    triggered_queues: function () {
       return can.map(this.queues, function (queue) {
-        if (queue.triggered)
+        if (queue.triggered) {
           return queue;
+        }
       });
-    }, enqueue: function (obj, force) {
-      var self = this, model = obj.constructor, model_name = model.shortName, found_queue = null, id = obj.id
-        ;
+    },
+    enqueue: function (obj, force) {
+      var self = this;
+      var model = obj.constructor;
+      var model_name = model.shortName;
+      var found_queue = null;
+      var id = obj.id;
 
       if (!obj.selfLink) {
         if (obj instanceof can.Model) {
@@ -101,13 +110,15 @@
         model = CMS.Models[model_name];
       }
 
-      if (!force)
+      if (!force) {
         // Check if the ID is already contained in another queue
         can.each(this.queues, function (queue) {
           if (!found_queue &&
-              queue.model === model && queue.ids.indexOf(id) > -1)
+              queue.model === model && queue.ids.indexOf(id) > -1) {
             found_queue = queue;
+          }
         });
+      }
 
       if (!found_queue) {
         can.each(this.queues, function (queue) {
@@ -123,32 +134,29 @@
           found_queue.enqueue(id);
           found_queue.deferred.done(function () {
             var index = self.queues.indexOf(found_queue);
-            if (index > -1)
+            if (index > -1) {
               self.queues.splice(index, 1);
+            }
           });
         }
       }
-
       return found_queue;
     }
-});
+  });
 
   can.Construct('RefreshQueue', {
-  refresh_queue_manager: new RefreshQueueManager(),
-  refresh_all: function (instance, props, force) {
-    var dfd = new $.Deferred();
+    refresh_queue_manager: new RefreshQueueManager(),
+    refresh_all: function (instance, props, force) {
+      var dfd = $.Deferred();
 
-    _refresh_all(instance, props, dfd);
-    return dfd;
-
-      // Helper function called recursively for each property
-    function _refresh_all(instance, props, dfd) {
-        var prop = props[0],
-          next_props = props.slice(1),
-          next = instance[prop],
-          refresh_queue = new RefreshQueue(),
-          dfds = [],
-          deferred;
+        // Helper function called recursively for each property
+      function _refresh_all(instance, props, dfd) {
+        var prop = props[0];
+        var next_props = props.slice(1);
+        var next = instance[prop];
+        var refresh_queue = new RefreshQueue();
+        var dfds = [];
+        var deferred;
 
         if (next) {
           refresh_queue.enqueue(next, force);
@@ -163,7 +171,7 @@
           deferred.then(function (refreshed_items) {
             if (next_props.length) {
               can.each(refreshed_items, function (item) {
-                var d = new $.Deferred();
+                var d = $.Deferred();
                 _refresh_all(item, next_props, d);
                 dfds.push(d);
               });
@@ -190,19 +198,24 @@
           console.warn('refresh_all failed at', prop);
         }
       }
-  },
-}, {
-  init: function () {
-    this.objects = [];
-    this.queues = [];
-    this.deferred = new $.Deferred();
-    this.triggered = false;
-    this.completed = false;
+      _refresh_all(instance, props, dfd);
+      return dfd;
+    }
+  }, {
+    init: function () {
+      this.objects = [];
+      this.queues = [];
+      this.deferred = $.Deferred();
+      this.triggered = false;
+      this.completed = false;
 
-    return this;
-  }, enqueue: function (obj, force) {
+      return this;
+    },
+    enqueue: function (obj, force) {
+      var queue;
+
       if (!obj) {
-        return;
+        return undefined;
       }
       if (this.triggered) {
         return null;
@@ -217,13 +230,15 @@
       this.objects.push(obj);
       if (force || !obj.selfLink) {
         queue = this.constructor.refresh_queue_manager.enqueue(obj, force);
-        if (this.queues.indexOf(queue) === -1)
+        if (this.queues.indexOf(queue) === -1) {
           this.queues.push(queue);
+        }
       }
       return this;
-    }, trigger: function (delay) {
-      var self = this, deferreds = []
-        ;
+    },
+    trigger: function (delay) {
+      var self = this;
+      var deferreds = [];
 
       if (!delay) {
         delay = 150;
@@ -231,7 +246,8 @@
 
       this.triggered = true;
       can.each(this.queues, function (queue) {
-        deferreds.push(queue.trigger_with_debounce(delay, self.constructor.refresh_queue_manager));
+        deferreds.push(queue.trigger_with_debounce(
+          delay, self.constructor.refresh_queue_manager));
       });
 
       if (deferreds.length) {
@@ -248,6 +264,5 @@
 
       return this.deferred;
     }
-});
-
+  });
 })(window.can, window.can.$);

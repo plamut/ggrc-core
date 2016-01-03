@@ -6,7 +6,6 @@
 */
 
 (function (can, $) {
-
   /*  GGRC.SaveQueue
    *
    *  SaveQueue is used by CMS.Models.Cacheable to prevent firing
@@ -22,43 +21,47 @@
    *  enqueue(obj: CMS.Models.Cacheable, save_args) -> null
    */
   can.Construct('GGRC.SaveQueue', {
-
     DELAY: 100, // Number of ms to wait before the first batch is fired
     BATCH: GGRC.config.MAX_INSTANCES || 3, // Maximum number of POST/PUT requests at any given time
     _queue: [],
     _buckets: {},
     _timeout: null,
-
     _enqueue_bucket: function (bucket) {
       var that = this;
       return function () {
-        var objs = bucket.objs.splice(0, 100),
-          body = _.map(objs, function (obj) {
-              var o = {};
-              o[bucket.type] = obj.serialize();
-              return o;
-            }),
-          dfd = $.ajax({
-              type: 'POST',
-              url: '/api/' + bucket.plural,
-              data: body
-            }).promise();
+        var objs = bucket.objs.splice(0, 100);
+        var body = _.map(objs, function (obj) {
+          var o = {};
+          o[bucket.type] = obj.serialize();
+          return o;
+        });
+        var dfd = $.ajax({
+          type: 'POST',
+          url: '/api/' + bucket.plural,
+          data: body
+        }).promise();
+
         dfd.always(function (data, type) {
+          var cb;
+          var i = 0;
+          var single;
+          var obj;
           if (type === 'error') {
             data = data.responseJSON;
             if (data === undefined) {
               return;
             }
           }
-          var cb = function (single) {
+          cb = function (single) {
             return function () {
               this.created(single[1][bucket.type]);
-              return $.when(can.Model.Cacheable.resolve_deferred_bindings(this));
+              return $.when(
+                can.Model.Cacheable.resolve_deferred_bindings(this));
             };
           };
-          for (var i = 0; i < objs.length; i++) {
-            var single = data[i],
-              obj = objs[i];
+          for (; i < objs.length; i++) {
+            single = data[i];
+            obj = objs[i];
             if (single[0] >= 200 && single[0] < 300) {
               obj._save(cb(single));
             } else {
@@ -76,7 +79,6 @@
         return dfd;
       };
     },
-
     _step: function (elem) {
       this._queue.push(elem);
       if (typeof this._timeout === 'number') {
@@ -88,14 +90,17 @@
     },
 
     enqueue: function (obj, args) {
+      var type;
+      var bucket;
+      var plural;
       var elem = function () {
         return obj._save.apply(obj, args);
       };
       if (obj.isNew()) {
-        var type = obj.constructor.table_singular;
-        var bucket = this._buckets[type];
+        type = obj.constructor.table_singular;
+        bucket = this._buckets[type];
         if (bucket === undefined) {
-          var plural = obj.constructor.table_plural;
+          plural = obj.constructor.table_plural;
           bucket = {
             objs: [],
             type: type,
@@ -112,22 +117,22 @@
         bucket.in_flight = true;
       }
       this._step(elem);
-    },
+    }
   }, {
     init: function (queue) {
       this._queue = queue;
       this._resolve();
     },
     _resolve: function () {
+      var objs;
       if (!this._queue.length) {
         // Finished
         return;
       }
-      var objs = this._queue.splice(0, this.constructor.BATCH);
+      objs = this._queue.splice(0, this.constructor.BATCH);
       $.when.apply($, objs.map(function (f) {
         return f.apply(this);
       }.bind(this.constructor))).always(this._resolve.bind(this)); // Move on to the next one
     }
   });
-
 })(window.can, window.can.$);

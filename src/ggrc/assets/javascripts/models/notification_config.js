@@ -5,11 +5,7 @@
     Maintained By: anze@reciprocitylabs.com
 */
 
-//= require can.jquery-all
-//= require models/cacheable
-
 (function (can) {
-
   can.Model.Cacheable('CMS.Models.NotificationConfig', {
     root_object: 'notification_config',
     root_collection: 'notification_configs',
@@ -20,7 +16,6 @@
     update: 'PUT /api/notification_config/{id}',
     destroy: 'DELETE /api/notification_config/{id}',
     active: 'POST /api/set_active_notifications',
-
     findActive: function () {
       if (GGRC.current_user === null || GGRC.current_user === undefined) {
         return $.when([]);
@@ -28,7 +23,9 @@
       return this.findAll({person_id: GGRC.current_user.id});
     },
     setActive: function (active) {
-      var existing_types, all_types, valid_types;
+      var existing_types;
+      var all_types;
+      var valid_types;
 
       if (!GGRC.current_user) {
         console.warn('User object is not set.');
@@ -40,7 +37,6 @@
       });
 
       return this.findActive().then(function (configs) {
-
         existing_types = $.map(configs, function (config) {
           return config.notif_type;
         });
@@ -61,7 +57,7 @@
           var enabled = active.indexOf(config.notif_type) !== -1;
           if (config.attr('enable_flag') === enabled) {
             // There was no change to this config object
-            return;
+            return undefined;
           }
           if (!config.id) {
             // This is a new object so no need for refresh()
@@ -76,5 +72,4 @@
       });
     }
   }, {});
-
 })(window.can);

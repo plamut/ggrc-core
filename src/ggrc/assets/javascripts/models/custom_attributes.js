@@ -5,10 +5,7 @@
     Maintained By: laran@reciprocitylabs.com
 */
 
-//= require can.jquery-all
-//= require models/cacheable
 (function (namespace, $) {
-
   /* function sortCustomAttributables
    *
    * Groups custom attributes by category.
@@ -63,7 +60,7 @@
     },
     links_to: {},
     defaults: {
-      'title': ''
+      title: ''
     },
     init: function () {
       this.validateNonBlank('title');
@@ -71,7 +68,6 @@
     }
   }, {
     init: function () {
-      var that = this;
       this._super.apply(this, arguments);
     }
   });
@@ -93,16 +89,14 @@
     },
     links_to: {},
     defaults: {
-      'title': ''
+      title: ''
     },
     init: function () {
       this._super.apply(this, arguments);
     }
   }, {
     init: function () {
-      var that = this;
       this._super.apply(this, arguments);
     }
   });
-
 })(this, can.$);
