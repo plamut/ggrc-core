@@ -180,7 +180,8 @@
       return value.is_hidden;
     },
     setTreeViewHeaders: function (model_name, display_list) {
-      var hdr = this.getObject(path, TREE_VIEW_HEADERS), obj = {};
+      var hdr = this.getObject(path, TREE_VIEW_HEADERS);
+      var obj = {};
       if (!hdr) {
         hdr = this.makeObject(path, TREE_VIEW_HEADERS);
       }

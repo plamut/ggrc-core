@@ -6,7 +6,6 @@
 */
 
 (function (ns, can) {
-
   can.Model.Cacheable('CMS.Models.Document', {
     root_object: 'document',
     root_collection: 'documents',

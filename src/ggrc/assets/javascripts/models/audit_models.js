@@ -376,7 +376,7 @@
         model: CMS.Models.Document,
         mapping: 'all_urls',
         show_view: GGRC.mustache_path + '/base_templates/urls.mustache'
-      },
+      }
     },
     tree_view_options: {
       show_view: GGRC.mustache_path + '/requests/tree.mustache',

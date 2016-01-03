@@ -6,7 +6,6 @@
 */
 
 (function (ns, can) {
-
   can.Model.Cacheable('CMS.Models.Person', {
     root_object: 'person',
     root_collection: 'people',
