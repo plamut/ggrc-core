@@ -30,7 +30,7 @@ describe('can.mustache.helper.file_type', function () {
       instance.type = 'FooBar';
       callWithInvalid = helper.bind(helper, instance);
 
-      expect(callWithInvalid).toThrow(errMsg);
+      expect(callWithInvalid).toThrow(new Error(errMsg));
     }
   );
 
@@ -41,7 +41,7 @@ describe('can.mustache.helper.file_type', function () {
     instance.title = undefined;
     callWithInvalid = helper.bind(helper, instance);
 
-    expect(callWithInvalid).toThrow(errMsg);
+    expect(callWithInvalid).toThrow(new Error(errMsg));
   });
 
   it('returns a default value if there is no file extension', function () {
