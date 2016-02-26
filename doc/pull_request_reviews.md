@@ -78,6 +78,12 @@ The meaning of the lables and their intended usage is as follows (sorted
 alphabetically):
 
 * `documentation` - a PR contains the updates of project documentation,
+* `in review` - somebody has already started reviewing this PR. Mainly used to
+  avoid unneccessary duplicate review work. However, if the PR seems more
+  complex, you are nevertheless still encouraged to start reviewing it by
+  yourself as well.
+  The person that added the label must make sure to remove it once done with
+  the reviewing.
 * `migration` - a PR contains a migration script that changes the database
   schema. Such pull requests require additional setup and verification steps,
 * `needs work` - a reviewer has concluded that the PR requires additional work
