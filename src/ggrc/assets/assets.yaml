@@ -121,6 +121,7 @@ dashboard-js-files:
   - components/paginate.js
   - components/tabs.js
   - components/assessment_attributes.js
+  - components/object_history/object_history.js
   #- d3.v2.js
   #- related_graph.js
 
@@ -221,6 +222,7 @@ dashboard-js-template-files:
   - issues/modal_content.mustache
   - issues/info.mustache
   - issues/remediation_plan.mustache
+  - components/object_history/object_history.mustache
   - custom_attributes/modal_content.mustache
   - custom_attributes/info.mustache
   - custom_attribute_definitions/modal_content.mustache
@@ -342,7 +344,6 @@ dashboard-js-template-files:
   - audits/tree_header.mustache
   - audits/search_result.mustache
   - audits/extended_info.mustache
-  - requests/change_log.mustache
   - requests/tree.mustache
   - requests/info.mustache
   - requests/tree_footer.mustache

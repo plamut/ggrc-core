@@ -5,7 +5,7 @@
   Maintained By: peter@reciprocitylabs.com
 */
 
-describe('can.mustache.helper.revisions_diff', function () {
+describe('GGRC.Components.objectHistory revisions_diff helper', function () {
   'use strict';
 
   var fakeOptions;  // fake mustache options object passed to the helper
@@ -15,8 +15,13 @@ describe('can.mustache.helper.revisions_diff', function () {
   var origModelAttrDefs;  // original user-friendly attribute name definitions
 
   beforeAll(function () {
-    helper = can.Mustache._helpers.revisions_diff.fn;
+    var Component = GGRC.Components.get('objectHistory');
 
+    helper = Component.prototype.helpers.revisions_diff;
+  });
+
+  beforeEach(function () {
+    // fake options used as an argument to the helper
     fakeOptions = {
       fn: jasmine.createSpy(),
       contexts: {
@@ -25,9 +30,10 @@ describe('can.mustache.helper.revisions_diff', function () {
         })
       }
     };
-  });
 
-  beforeEach(function () {
+    // create a fake object instance used as an argument to the helper
+    fakeRevHistory = [];
+
     instance = new can.Map({});
 
     instance.get_mapping = jasmine.createSpy().and.callFake(
@@ -39,17 +45,13 @@ describe('can.mustache.helper.revisions_diff', function () {
       }
     );
 
-    fakeRevHistory = [];
-
+    // mock global model attribute definitions
     origModelAttrDefs = GGRC.model_attr_defs;
     GGRC.model_attr_defs = {};
   });
 
   afterEach(function () {
     GGRC.model_attr_defs = origModelAttrDefs;
-
-    fakeOptions.fn.calls.reset();
-    fakeOptions.contexts.add.calls.reset();
   });
 
   it('computes an empty list on empty Revision history', function () {
