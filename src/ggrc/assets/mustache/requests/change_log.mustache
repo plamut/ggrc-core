@@ -5,48 +5,4 @@
   Maintained By: peter@reciprocitylabs.com
 }}
 
-{{#revisions_diff instance}}
-  <paginate list="objectChanges" per-page="10">
-    <ul class="entry-list">
-      {{#entries}}
-        <li>
-          <span class="person-label assignee"></span>
-
-          <div class="w-status">
-            <span class="entry-author">
-              <a href="javascript://">{{madeBy}}</a>
-              made changes &mdash; {{date updatedAt}}
-            </span>
-            <div class="clearfix">
-              <div class="third-col">
-                <p class="instruction">Field</p>
-              </div>
-              <div class="third-col">
-                <p class="instruction">Original value</p>
-              </div>
-              <div class="third-col">
-                <p class="instruction">New value</p>
-              </div>
-            </div>
-            {{#each changes}}
-            <div class="clearfix">
-              <div class="third-col">
-                {{fieldName}}
-              </div>
-              <div class="third-col">
-                {{origVal}}
-              </div>
-              <div class="third-col">
-                {{newVal}}
-              </div>
-            </div>
-            {{/each}}
-          </div>
-        </li>
-      {{/entries}}
-      {{^list}}
-        <li>The history of changes is currently empty.</li>
-      {{/list}}
-    </ul>
-  </paginate>
-{{/revision_diff}}
+<revision-log instance="instance"></revision-log>
