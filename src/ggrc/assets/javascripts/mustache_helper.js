@@ -3392,4 +3392,8 @@ Mustache.registerHelper("un_camel_case", function (str, options) {
   }
   return newval;
 });
+
+Mustache.registerHelper('helper_foo', function () {
+  console.log('global helper_foo invokeeeeed!');
+});
 })(this, jQuery, can);

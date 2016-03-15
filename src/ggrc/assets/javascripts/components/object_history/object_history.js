@@ -100,6 +100,8 @@
     var i;
     var newContext;
 
+    console.log('helper revisions_diff invoked :)');
+
     var instance2 = Mustache.resolve(instance);  // TODO: rename variable
 
     var revisions = instance2.get_mapping('revision_history');
