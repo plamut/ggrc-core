@@ -118,7 +118,13 @@
 
       <div class="tabs-wrap">
         <tabs instance="instance">
-          <tab-panel panels="panels" title="Comments and Responses" instance="instance">
+          <tab-panel
+            panels="panels"
+            title="Comments and Responses"
+            instance="instance"
+          >
+            <comments instance="instance"></comments>
+
             {{#if_helpers '\
               ^if_equals' status 'Verified' '\
               and ^if_equals' status 'Final' }}
@@ -130,9 +136,11 @@
             {{/if_equals}}
             {{{render "/static/mustache/base_templates/comment_list.mustache" instance=instance update_count="false"}}}
           </tab-panel>
+
           <tab-panel panels="panels" title="Request log" instance="instance">
             <revision-log instance="instance"></revision-log>
           </tab-panel>
+
         </tabs>
     </div>
   </section>
