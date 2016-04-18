@@ -53,15 +53,15 @@ def upgrade():
 
 def downgrade():
   """Remove notification type entries for requests and assessments."""
-  notification_names = tuple([notif["name"] for notif in NOTIFICATIONS])
+  notification_names = tuple(notif["name"] for notif in NOTIFICATIONS)
   op.execute(
       """
       DELETE n
       FROM notifications AS n
       LEFT JOIN notification_types AS nt
         ON n.notification_type_id = nt.id
-      WHERE nt.name IN {}
-      """.format(str(notification_names))
+      WHERE nt.name IN ({})
+      """.format(", ".join(notification_names))
   )
   op.execute(
       NOTIFICATION_TYPES.delete().where(
