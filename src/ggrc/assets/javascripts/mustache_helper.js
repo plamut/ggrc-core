@@ -2429,12 +2429,29 @@ Mustache.registerHelper("if_verifiers_defined", function (instance, options) {
     return '';
   }
 
+  if (instance.id === 3091) {
+    var myId = 3091;
+    console.log('---------- if_verifiers_defined invoked for instance 3091');
+  }
+
   verifiers = instance.get_binding('related_verifiers');
 
   return defer_render('span', function(list) {
     if (list.length) {
+      /////////////////////////////
+      if (myId === 3091) {
+        console.log('verifiers list.length > 0');  // TODO: remove
+      }
+      /////////////////////////777
       return options.fn(options.contexts);
     }
+
+    ///////////////////
+    if (myId === 3091) {
+      console.log('verifiers list.length === 0');  // TODO: remove
+    }
+    ////////////////////
+
     return options.inverse(options.contexts);
   }, verifiers.refresh_instances());
 });

@@ -12,7 +12,7 @@ GGRC.Controllers.Modals("GGRC.Controllers.QuickForm", {
     instance: null
   }
 }, {
-  init: function () {
+  init: function () { // TODO: accepts $element, options
     if(this.options.instance && !this.options.model) {
       this.options.model = this.options.instance.constructor;
     }
@@ -21,6 +21,30 @@ GGRC.Controllers.Modals("GGRC.Controllers.QuickForm", {
       this.options.instance.refresh();
     }
   },
+  "{document} custom_event": function (el, ev) {
+    console.log('handling custom_event');  // this works... like  this listen for change!
+  },
+
+  // TODO: docstring... and tests
+  // explain what paraemtrs represent,
+  // TODO_: test how it affects other quick
+  // ev - event object describing the change event
+  // the name of  the attribute whose value has changed
+  // how - how the value was changed, e.g. ("set", "add" etc.)
+  // newVal - new value of the changed attribute,
+  // oldVal - previou attrbute value, before the change
+  "{instance} change": function (instance, ev, attr, how, newVal, oldVal) {
+    console.log('{instance} change', attr);
+    // if (attr === 'custom_attribute_values') {
+    //   debugger;
+    // } else if (attr === 'task_group_objects') {
+    //   debugger;
+    // }
+    if (attr.indexOf('custom_attribute_values') > -1) {
+      debugger;
+    }
+  },
+
   "input, textarea, select change": function (el, ev) {
     if (el.data("toggle") === "datepicker") {
       var val = el.datepicker("getDate"),
