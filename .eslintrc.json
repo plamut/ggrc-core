@@ -35,7 +35,7 @@
     "google": false,
     "st": false,
     "wysihtml5ParserRules": false,
-    "wysihtml5": false,
+    "wysihtml5": false
   },
 
   "rules": {
@@ -59,7 +59,7 @@
       "ignoreComments": true,
       "ignoreUrls": true
     }],
-    "quotes": [2, "single", {
+    "quotes": [1, "single", {
       "avoidEscape": true
     }],
     "no-implicit-coercion": [2, {"boolean": false}],
@@ -81,8 +81,8 @@
     // party libraries' APIs might expect object arguments with properties
     // following a different naming conventions, and trying to work around
     // that just to make the linter happy is simply not worth it.
-    "camelcase":  [1, {properties: "never"}],
+    "camelcase":  [1, {"properties": "never"}],
     "new-cap": 0,
-    "no-new": 0,
+    "no-new": 0
   }
 }
