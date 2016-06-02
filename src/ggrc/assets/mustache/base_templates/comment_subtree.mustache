@@ -16,7 +16,14 @@
       added a response - {{date created_at}}
     </span>
     <div class="rtf-block">
-      {{{firstnonempty description '<em>No comment was entered</em>'}}}
+      <inline-edit
+        type="input"
+        instance="instance"
+        property="description"
+        value="description"
+        can-on-save="updateDescription"
+        empty-text="No comment was entered"
+      ></inline-edit>
     </div>
     <mapping-tree-view
       parent-instance="instance"

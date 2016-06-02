@@ -858,7 +858,6 @@ CMS.Controllers.TreeLoader('CMS.Controllers.TreeView', {
     original._child_options_prepared = v;
     return v;
   },
-
   el_position: function (el) {
     var se = this.options.scroll_element;
     var se_o = se.offset().top;
@@ -1515,7 +1514,41 @@ can.Control('CMS.Controllers.TreeViewNode', {
         this.draw_placeholder();
       }
     }.bind(this), 0);
+
+    // expose the event handler to the template
+    this.options.attr('updateDescription', this.updateDescription);
   },
+
+  /**
+   * Update the description of an instance. Mainly used as an event handler for
+   * updating Requests' and Audits' comments.
+   *
+   * @param {can.Map} instance - the (Comment) instance to update
+   * @param {jQuery.Element} $el - the source of the event `ev`
+   * @param {jQuery.Event} ev - the onUpdate event object
+   */
+  updateDescription: function (instance, $el, ev) {
+    var $body = $(document.body);
+
+    // for some reson the instance must be refreshed before saving to avoid
+    // the HTTP "precondition reqired" error
+    instance.refresh()
+      .then(function () {
+        instance.attr('description', ev.newVal);
+        return instance.save();
+      })
+      .done(function () {
+        $body.trigger('ajax:flash', {success: 'Saved.'});
+      })
+      .fail(function () {
+        $body.trigger(
+          'ajax:flash',
+          {error: 'There was a problem with saving.'}
+        );
+        instance.attr('description', ev.oldVal);
+      });
+  },
+
   '{instance} change': function (inst, ev, prop) {
     if (prop === 'custom_attribute_values') {
       this.draw_node();

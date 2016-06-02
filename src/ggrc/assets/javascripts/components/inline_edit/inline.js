@@ -30,7 +30,11 @@
 
       emptyText: '@',
 
-      enableEdit: function (scope, $el, ev) {
+      $rootEl: null,
+
+      _EV_INSTANCE_SAVE: 'on-save',
+
+      enableEdit: function (scope, el, ev) {
         ev.preventDefault();
 
         this.attr('context.isEdit', true);
@@ -45,10 +49,28 @@
         var property = this.attr('property');
         var instance = this.attr('instance');
         var oldValue = this.attr('value');
+        var onSaveHandler = this.$rootEl.attr('can-' + this._EV_INSTANCE_SAVE);
         var value = this.attr('context.value');
         var type = this.attr('type');
 
         ev.preventDefault();
+
+        // If a custom onSave handler is provided, trigger it, otherwise use
+        // the component's onSave logic (deprecated, should be moved out of the
+        // component as it is not the latter's resposnisiblity).
+        if (onSaveHandler) {
+          // CAUTION: triggering the event must come before changing any of the
+          // scope attributes, otherwise the event gets lost for some reason
+          this.$rootEl.triggerHandler({
+            type: this._EV_INSTANCE_SAVE,
+            oldVal: oldValue,
+            newVal: value
+          });
+
+          this.attr('context.isEdit', false);
+          return;
+        }
+
         this.attr('context.isEdit', false);
         if (oldValue === value) {
           return;
@@ -85,13 +107,15 @@
         }.bind(this));
       }
     },
-    init: function () {
+    init: function (element, options) {
       var scope = this.scope;
       var value = scope.attr('value');
       var values = scope.attr('values');
       var property = scope.attr('property');
       var instance = scope.attr('instance');
       var type = scope.attr('type');
+
+      scope.attr('$rootEl', $(element));
 
       if (scope.attr('caId')) {
         if (type === 'checkbox') {
@@ -107,6 +131,7 @@
           scope.attr('emptyText', 'None');  // default for custom attributes
         }
       }
+
       if (property) {
         value = instance.attr(property);
       }
