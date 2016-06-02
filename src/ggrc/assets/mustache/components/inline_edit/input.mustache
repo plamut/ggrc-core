@@ -10,6 +10,10 @@
   <input type="text" can-value="context.value" autofocus>
 {{else}}
   <p class="inline-edit__text">
-    {{{firstnonempty context.value '<span class="empty-message">None</span>'}}}
+    {{#if context.value}}
+      {{context.value}}
+    {{else}}
+      <span class="empty-message">{{emptyText}}</span>
+    {{/if}}
   </p>
 {{/if}}
