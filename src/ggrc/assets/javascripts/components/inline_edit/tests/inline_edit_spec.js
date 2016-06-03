@@ -44,19 +44,35 @@ describe('GGRC.Components.inlineEdit', function () {
         preventDefault: jasmine.createSpy()
       };
       scope = new can.Map({
-        context: {
-          isEdit: false
-        }
+        context: {}
       });
     });
 
-    it('enableEdit() enters edit mode', function () {
-      var enableEdit = Component.prototype.scope.enableEdit;
-      scope.attr('context.isEdit', false);
+    describe('enableEdit() method', function () {
+      var enableEdit;
 
-      enableEdit.call(scope, scope, $el, ev);
-      expect(scope.attr('context.isEdit')).toEqual(true);
+      beforeEach(function () {
+        enableEdit = Component.prototype.scope.enableEdit;
+        enableEdit = enableEdit.bind(scope);
+      });
+
+      it('enters the edit mode if editing allowed', function () {
+        scope.attr('context.isEdit', false);
+        scope.attr('readonly', false);
+
+        enableEdit(scope, $el, ev);
+        expect(scope.attr('context.isEdit')).toEqual(true);
+      });
+
+      it('does not enter the edit mode if editing not allowed', function () {
+        scope.attr('context.isEdit', false);
+        scope.attr('readonly', true);
+
+        enableEdit(scope, $el, ev);
+        expect(scope.attr('context.isEdit')).toEqual(false);
+      });
     });
+
     it('onCancel() exits edit mode', function () {
       var onCancel = Component.prototype.scope.onCancel;
       scope.attr('context.isEdit', true);

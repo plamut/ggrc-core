@@ -21,6 +21,7 @@
       property: '@',
       value: null,
       values: null,
+      readonly: false,  // whether or not the value can be edited
       isSaving: false,
       context: {
         isEdit: false,
@@ -34,11 +35,22 @@
 
       _EV_INSTANCE_SAVE: 'on-save',
 
-      enableEdit: function (scope, el, ev) {
+      /**
+       * Enter the edit mode if editing is allowed (i.e. the readonly option is
+       * not set). If the readonly option is enabled, do not do anything.
+       *
+       * @param {can.Map} scope - the scope object itself (this)
+       * @param {jQuery.Element} $el - the DOM element that triggered the event
+       * @param {jQuery.Event} ev - the event object
+       */
+      enableEdit: function (scope, $el, ev) {
         ev.preventDefault();
 
-        this.attr('context.isEdit', true);
+        if (!this.attr('readonly')) {
+          this.attr('context.isEdit', true);
+        }
       },
+
       onCancel: function (ctx, el, ev) {
         ev.preventDefault();
         this.attr('context.isEdit', false);

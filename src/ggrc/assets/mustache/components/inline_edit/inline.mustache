@@ -5,7 +5,9 @@
   Maintained By: ivan@reciprocitylabs.com
 }}
 
-<div class="inline-edit inline-edit--{{type}} {{#if context.isEdit}}inline-edit--active{{/if}}">
+<div class="inline-edit inline-edit--{{type}}
+            {{#if context.isEdit}}inline-edit--active{{/if}}
+            {{#if readonly}}inline-edit--readonly{{/if}}">
   <h6 class="inline-edit__title">
     {{firstnonempty title label}}
     {{#helptext}}<i class="fa fa-question-circle" rel="tooltip" title="{{helptext}}"></i>{{/helptext}}
@@ -39,10 +41,12 @@
     {{/switch}}
     <ul class="inline-edit__controls {{#if context.isEdit}}inline-edit__controls--edit-mode{{/if}}">
       {{#if context.isEdit}}
-      <li><a can-click="onSave" href="#"><i class="fa fa-check"></i></a></li>
-      <li><a can-click="onCancel" href="#"><i class="fa fa-times"></i></a></li>
+        <li><a can-click="onSave" href="#"><i class="fa fa-check"></i></a></li>
+        <li><a can-click="onCancel" href="#"><i class="fa fa-times"></i></a></li>
       {{else}}
-      <li><a can-click="enableEdit" href="#"><i class="fa fa-pencil"></i></a></li>
+        {{^if readonly}}
+          <li><a can-click="enableEdit" href="#"><i class="fa fa-pencil"></i></a></li>
+        {{/if}}
       {{/if}}
     </ul>
   </div>
