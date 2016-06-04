@@ -7,8 +7,13 @@
 
 {{#instance.class.info_pane_options.comments}}
 {{#add_to_current_scope parent_instance=instance}}
-  <ul class="entry-list" {{data 'options'}} data-disable-lazy-loading="true" data-update-count="{{update_count}}"
-    {{ (el) -> el.cms_controllers_tree_view(el.data("options")).control("tree_view").display() }}>
-  </ul>
+  <mapping-tree-view
+    parent-instance="instance"
+    is-loading="isLoading"
+    mapping="comments"
+    tree-view-class="comment-list"
+    item-template="/static/mustache/base_templates/comment_subtree.mustache"
+    >
+  </mapping-tree-view>
 {{/add_to_current_scope}}
 {{/instance}}
