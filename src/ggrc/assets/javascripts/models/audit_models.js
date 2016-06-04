@@ -337,6 +337,36 @@
     form_preload: function (new_object_form) {
       var page_instance = GGRC.page_instance();
       this.attr('comment', page_instance);
+    },
+    /**
+     * Update the description of an instance. Mainly used as an event handler for
+     * updating Requests' and Audits' comments.
+     *
+     * @param {can.Map} instance - the (Comment) instance to update
+     * @param {jQuery.Element} $el - the source of the event `ev`
+     * @param {jQuery.Event} ev - the onUpdate event object
+     */
+    updateDescription: function (instance, $el, ev) {
+      var $body = $(document.body);
+
+      // for some reson the instance must be refreshed before saving to avoid
+      // the HTTP "precondition reqired" error
+      this.refresh()
+        .then(function () {
+          this.attr('description', ev.newVal);
+          return this.save();
+        }.bind(this))
+        .done(function () {
+          $body.trigger('ajax:flash', {
+            success: 'Saved.'
+          });
+        })
+        .fail(function () {
+          $body.trigger('ajax:flash', {
+            error: 'There was a problem with saving.'
+          });
+          this.attr('description', ev.oldVal);
+        }.bind(this));
     }
   });
 
