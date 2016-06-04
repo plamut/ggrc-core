@@ -25,6 +25,16 @@
         return expandable;
       }
     },
+    init: function (element) {
+      var el = $(element);
+
+      _.each(['mapping', 'itemTemplate'], function (prop) {
+        if (!this.scope.attr(prop)) {
+          this.scope.attr(prop,
+            el.attr(can.dashCaseToCamelCase(prop)));
+        }
+      }, this);
+    },
     events: {
       '[data-toggle=unmap] click': function (el, ev) {
         var instance = el.find('.result').data('result');
