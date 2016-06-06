@@ -23,8 +23,79 @@
           return expandable === 'true';
         }
         return expandable;
+      },
+
+      // TODO: ali se to avtomatično osveži v templateu?
+
+      // TODO: tests, docstrings,
+
+      // instance either a Request or an Assessment... the underlying object
+      // We need to check whether the current user is allowed to edit a
+      // particular comment or not
+      commentReadonly: function () {
+        // the instance the comment is posted on
+        var instance = this.parentInstance;
+
+
+        // TODO: check baseInstance
+        //debugger; // TODO: check for base instance
+
+        var END_STATES = Object.freeze({
+          'Verified': true,
+          'Completed': true
+        });
+
+        var user = GGRC.current_user;
+
+        // administrators can always edit comments
+        if (user.system_wide_role === 'Superuser') {
+          return false;
+        }
+
+        // non-administrators cannot edit comments if the underlying object is
+        // in final or verfiied state
+        if (instance.status in END_STATES) {
+          return true;
+        }
+
+        // TODO:
+        // how to get the actual comment object in order to find its creator?
+
+
+        // a non-administrator can only edit a comment on a "non-finished"
+        // object if he/she created the comment in the first place
+        // TODO
+        // else {
+
+        //    var isOwner = false; // TODO: how to determine?
+
+        //   var instance = this.options.instance;
+        //   if (instance.type !== "Comment") {
+        //     return;  // nothing to do, irrelevant for a non-comment
+        //   }
+
+        //   // now we have a comment, get the underlying object
+        //  var relation = comment.related_sources[0];  // TODO: can be also destination
+        //   if (relationy.type !== 'Relationship') {
+        //     return;
+        //   }
+
+        //   var relatedObj = relation.reify().source;  // or destination if reverse
+        //   if (!(relatedObj.type in {'Assessment': 1, 'Request': 1})) {
+        //     return;
+        //   }
+
+        //   relatedObj = relatedObj.reify();
+        // }
+
+        // if  comment owner: yes, unless the underlying object is in
+        // verified/final state
+
+        // TODO: react when the underlying object's state changes!
+        // add a listener? (make it can.Observable?)
       }
     },
+
     init: function (element) {
       var el = $(element);
 
@@ -35,6 +106,7 @@
         }
       }, this);
     },
+
     events: {
       '[data-toggle=unmap] click': function (el, ev) {
         var instance = el.find('.result').data('result');

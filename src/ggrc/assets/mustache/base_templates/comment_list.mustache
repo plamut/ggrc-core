@@ -7,6 +7,7 @@
 
 {{#instance.class.info_pane_options.comments}}
 {{#add_to_current_scope parent_instance=instance}}
+ {{log parent_instance}}
   <mapping-tree-view
     parent-instance="instance"
     is-loading="isLoading"

@@ -9,7 +9,7 @@
   {{#expose reusable=reusable reusedObjects=reusedObjects reuseMethod=reuseMethod mapping=mapping baseInstance=baseInstance isLoading=isLoading isExpandable=isExpandable}}
   {{#with_mapping mapping parentInstance}}
     {{#results}}
-      {{{render itemTemplate baseInstance=baseInstance parentInstance=parentInstance reusable=reusable reusedObjects=reusedObjects reuseMethod=reuseMethod mapping=mapping isLoading=isLoading isExpandable=isExpandable}}}
+      {{{render itemTemplate baseInstance=baseInstance parentInstance=parentInstance reusable=reusable reusedObjects=reusedObjects reuseMethod=reuseMethod mapping=mapping isLoading=isLoading isExpandable=isExpandable commentReadonly=commentReadonly}}}
     {{/results}}
   {{/with_mapping}}
   {{/expose}}
