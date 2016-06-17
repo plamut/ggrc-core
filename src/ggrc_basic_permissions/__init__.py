@@ -389,6 +389,7 @@ def query_memcache(key):
     # If the key is both in permissions:list and in memcache itself
     # it is safe to return the cached permissions
     return cache, permissions_cache
+  return cache, None
 
 
 def load_default_permissions(permissions):
