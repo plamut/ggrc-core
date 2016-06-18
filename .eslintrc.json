@@ -46,9 +46,10 @@
       // i, j, k - Loop indexes
       // k, v - Key, Value
       // a, b - common parameter names in sorting comparison helper functions
+      // n - a common name for an integer parameter
       // e - exception
       // $, _ - libraries
-      "exceptions": ["x", "y", "z", "i", "j", "k", "v", "a", "b", "e", "$", "_"]
+      "exceptions": ["x", "y", "z", "i", "j", "k", "v", "a", "b", "n", "e", "$", "_"]
     }],
     "require-jsdoc": 0,
     "space-before-function-paren": [2, {

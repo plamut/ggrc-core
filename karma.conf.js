@@ -21,7 +21,9 @@ module.exports = function (config) {
       'src/ggrc/static/dashboard-templates.js',
       'src/ggrc/static/dashboard.js',
       'src/ggrc/static/dashboard-spec-helpers.js',
-      'src/**/*_spec.js'
+      //'src/**/*_spec.js'
+      'src/ggrc/assets/javascripts/training_session/utils/calculator.js',
+      'src/**/training_session/**/*_spec.js'
     ],
 
     // list of files to exclude
