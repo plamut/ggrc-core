@@ -152,6 +152,9 @@ dashboard-js-files:
   #- d3.v2.js
   #- related_graph.js
 
+training-session-files:
+  - training_session/utils/caclulator.js
+
 app-init-files:
   - apps/dashboard.js
   - dashboard.js
