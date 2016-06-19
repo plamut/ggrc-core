@@ -13,8 +13,12 @@
 
   /**
    * The Calculator constructor function. Should be invoked with "new".
+   *
+   * @param {Number} [secretVal=42] - the value to store as a "secret" value
    */
-  function Calculator() {}
+  function Calculator(secretVal) {
+    this._SECRET = _.isUndefined(secretVal) ? 42 : Number(secretVal);
+  }
 
   /**
    * Return the absolute value of a number.
@@ -23,7 +27,7 @@
    * @return {Number} - the absolute value
    */
   Calculator.prototype.abs = function (n) {
-    if (n => 0) {  // <--- WARNING: bug here!
+    if (n >= 0) {
       return n;
     }
     return -n;
@@ -37,11 +41,24 @@
    *   0 for the number zero itself.
    */
   Calculator.prototype.sign = function (n) {
-    // WARNING: contains a bug
     if (n > 0) {
       return 1;
+    } else if (n < 0) {
+      return -1;
     }
-    return -1;
+    return 0;
+  };
+
+  /**
+   * Determine whether the given number is strictly greater than the magic
+   * secret value.
+   *
+   * @param {Number} n - the number
+   * @return {Boolean} - true if the number is strictly greater than the
+   *   secret, false otherwise
+   */
+  Calculator.prototype.greaterThanSecret = function (n) {
+    return (n > this._SECRET);
   };
 
   // publicly expose math utility instance if not exposed yet
