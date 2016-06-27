@@ -61,6 +61,58 @@
     return (n > this._SECRET);
   };
 
+  /**
+   * Caclulate the area of a circle with the given radius.
+   *
+   * @param {Number} radius - the circle radius
+   * @return {can.Defferred} - a deferred object resolved with the circle area
+   *   on success, and rejected with a server error message if fetching  the
+   *   value of the PI constant fails.
+   */
+  Calculator.prototype.circleArea = function (radius) {
+    var URL = 'https://newton.ex.ac.uk/research/qsystems/collabs/pi/pi6.txt';
+
+    var pi;  // let's just pretend the value of this constant is unknown
+    var dfd = new can.Deferred();
+
+    can.ajax({
+      url: URL
+    })
+    .done(function (response) {
+      pi = Number(response.data.substring(0, 8));
+      dfd.resolve(pi * radius * radius);
+    })
+    .fail(function (error) {
+      var msg = 'Could not fetch the value of PI: ' + error;
+      dfd.reject(msg);
+    });
+
+    return dfd;
+  };
+
+   /**
+    * Populate the given list in-place with the first N natural numbers
+    * starting with zero.
+    *
+    * The existing list items are discarded in the process.
+    * The list is populated asynchronously after some modest delay.
+    *
+    * @param {Array} list - the list to populate
+    * @param {Number} n - the number of items to put in the list
+    */
+  Calculator.prototype.populateWithDelay = function (list, n) {
+    var DELAY = 2000;
+
+    list.length = 0;
+
+    setTimeout(function () {
+      var i;
+      for (i = 0; i < n; i++) {
+        list.push(i);
+      }
+    }, DELAY);
+  };
+
   // publicly expose math utility instance if not exposed yet
   GGRC.utils = GGRC.utils || {};
   GGRC.utils.Calculator = GGRC.utils.Calculator || Calculator;

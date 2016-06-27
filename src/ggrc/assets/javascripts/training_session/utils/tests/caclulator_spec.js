@@ -8,111 +8,85 @@
 describe('GGRC.utils.Calculator', function () {
   'use strict';
 
-  var LOG_CALLS = false;  // whther or not to log before*/after*() calls
-
   var calc;
 
-  beforeAll(function () {
-    if (LOG_CALLS) {
-      console.log('beforeAll(): TOP level');
-    }
-  });
-
-  afterAll(function () {
-    if (LOG_CALLS) {
-      console.log('afterAll(): TOP level');
-    }
-  });
-
   beforeEach(function () {
-    if (LOG_CALLS) {
-      console.log('        beforeEach(): TOP level');
-    }
-    calc = new GGRC.utils.Calculator();  // <--- moved out of every test case
+    calc = new GGRC.utils.Calculator();
   });
 
-  afterEach(function () {
-    if (LOG_CALLS) {
-      console.log('        afterEach(): TOP level');
-    }
-  });
-
-  describe('sign() method', function () {
-    beforeAll(function () {
-      if (LOG_CALLS) {
-        console.log('    beforeAll(): sign() method level');
-      }
-    });
-
-    afterAll(function () {
-      if (LOG_CALLS) {
-        console.log('    afterAll(): sign() method level');
-      }
-    });
+  describe('circleArea() method', function () {
+    var dfdServerResponse;
 
     beforeEach(function () {
-      if (LOG_CALLS) {
-        console.log('            beforeEach(): sign() method level');
-      }
+      dfdServerResponse = new can.Deferred();
+
+      spyOn(can, 'ajax').and.returnValue(dfdServerResponse);
+
+      // ...or call a fake function that can also contain extra logic:
+      // spyOn(can, 'ajax').and.callFake(function () {
+      //   return dfdServerResponse;
+      // });
+
+      // ...if we only want to spy on the calls, but otherwise not interfere:
+      // spyOn(can, 'ajax').and.callThrough();
+
+      // NOTE: for mocking network calls, there is also can.fixture():
+      // https://canjs.com/docs/can.fixture.html
     });
 
-    afterEach(function () {
-      if (LOG_CALLS) {
-        console.log('            afterEach(): sign() method level');
-      }
+    it('fetches the value of PI from a trustworthy location', function () {
+      var callArgs;
+      var trustedLocation = 'https://newton.ex.ac.uk/';
+
+      calc.circleArea(2.0);
+
+      // now inspect the mocked method's calls
+      expect(can.ajax).toHaveBeenCalled();
+      callArgs = can.ajax.calls.mostRecent().args;
+
+      expect(callArgs.length).toBe(1);
+      expect(callArgs[0].url).toContain(trustedLocation);
+      // NOTE: should test for an equivalent of "toStartWith" in real code
     });
 
-    it('returns 1 for positive numbers', function () {
-      // calc = new GGRC.utils.Calculator();
-      var result = calc.sign(6);
-      expect(result).toEqual(1);
-    });
+    it('correctly calculates an area of a circle', function (done) {
+      var result = calc.circleArea(2.0);
 
-    it('returns -1 for negative numbers', function () {
-      // calc = new GGRC.utils.Calculator();
-      var result = calc.sign(-7);
-      expect(result).toEqual(-1);
-    });
+      dfdServerResponse.resolve({
+        status: 200,
+        data: '3.1415926535'
+      });
 
-    it('returns 0 for zero', function () {
-      // calc = new GGRC.utils.Calculator();
-      var result = calc.sign(0.0);
-      expect(result).toEqual(0);
+      result.then(function (computedArea) {
+        var rounded = Number(computedArea.toFixed(2));
+        expect(rounded).toEqual(12.57);
+        done();  // tell Jasmine that an async test has done all the work
+      });
+
+      // NOTE: "done" is needed, otherwise a test would pass even if the
+      // returned deferred object was not resolved!
     });
   });
 
-  describe('greaterThanSecret() method', function () {
-    beforeEach(function () {
-      if (LOG_CALLS) {
-        console.log(
-          '            beforeEach(): greaterThanSecret() method level');
+  xdescribe('populateWithDelay() method', function () {
+    // NOTE: incorrect implementation of the test!
+    it('[BAD] populates given list with first N natural numbers', function () {
+      var numbers = [17, -4, 99, 0];
+      calc.populateWithDelay(numbers, 6);
+      expect(numbers).toEqual([0, 1, 2, 3, 4, 5]);
+    });
+
+    xit('populates given with list with first N natural numbers',
+      function (done) {
+        var numbers = [17, -4, 99, 0];
+        calc.populateWithDelay(numbers, 6);
+
+        // NOTE: in practice, be careful with tests that rely on timing!
+        setTimeout(function () {
+          expect(numbers).toEqual([0, 1, 2, 3, 4, 5]);
+          done();
+        }, 2500);
       }
-      calc._SECRET = 7;
-    });
-
-    afterEach(function () {
-      if (LOG_CALLS) {
-        console.log(
-          '            afterEach(): greaterThanSecret() method level');
-      }
-    });
-
-    it('returns true for a number greater than the secret', function () {
-      // calc = new GGRC.utils.Calculator(7);
-      var result = calc.greaterThanSecret(7.0001);
-      expect(result).toBe(true);
-    });
-
-    it('returns false for a number less than the secret', function () {
-      // calc = new GGRC.utils.Calculator(7);
-      var result = calc.greaterThanSecret(6.999);
-      expect(result).toBe(false);
-    });
-
-    it('returns false for the number equal to the secret', function () {
-      // calc = new GGRC.utils.Calculator(7);
-      var result = calc.greaterThanSecret(7);
-      expect(result).toBe(false);
-    });
+    );
   });
 });
