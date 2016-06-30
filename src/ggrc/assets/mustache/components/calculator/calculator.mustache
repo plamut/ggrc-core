@@ -1,0 +1,72 @@
+{{!
+  Copyright (C) 2016 Google Inc., authors, and contributors <see AUTHORS file>
+  Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
+  Created By: peter@reciprocitylabs.com
+  Maintained By: peter@reciprocitylabs.com
+}}
+
+<div>
+  <p class="hint">
+    {{#if displayHint}}
+      Click the button to see the result.
+    {{else}}
+      &nbsp;
+    {{/displayHint}}
+  </p>
+
+  <input type="number"
+    name="txtOperand"
+    can-value="operand"
+    placeholder="Number...">
+
+  <input type="text"
+    name="txtOperator"
+    can-value="operator"
+    {{#errUnknownOperator}}class="error"{{/errUnknownOperator}}
+    placeholder="+ or - or * or / ">
+
+  <input type="number"
+    name="txtOperand2"
+    can-value="operand2"
+    placeholder="Number...">
+
+  <a name="btnResult" href="#" can-click="getResult">=</a>
+
+  <label>{{result}}</label>
+
+  <hr>
+
+  <h3>History of results (most recent first)</h3>
+  <ul>
+    {{#resultsHistory}}<li>{{.}}</li>{{/resultsHistory}}
+    {{^resultsHistory}}<li>(no computations yet)</li>{{/resultsHistory}}
+  </ul>
+</div>
+
+<!-- just for the demo, otherwise do not place styling here -->
+<style type="text/css">
+  calculator {
+    font-size: 22px;
+  }
+
+  calculator .hint {
+    margin-left: 750px;
+  }
+
+  calculator a {
+    color: black;
+    text-decoration: none;
+    font-size: 22px;
+    font-weight: bold;
+  }
+
+  calculator input {
+    text-align: center;
+    font-weight: bold;
+    font-size: 22px;
+  }
+
+  calculator input.error {
+    background-color: red;
+  }
+</style>

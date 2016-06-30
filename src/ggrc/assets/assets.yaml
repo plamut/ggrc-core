@@ -149,6 +149,7 @@ dashboard-js-files:
   - components/rich_text/rich_text.js
   - components/add_comment/add_comment.js
   - components/object_cloner/object_cloner.js
+  - training_session/utils/calculator_component.js
   #- d3.v2.js
   #- related_graph.js
 
@@ -267,6 +268,7 @@ dashboard-js-template-files:
   - components/inline_edit/person.mustache
   - components/inline_edit/datepicker.mustache
   - components/autocomplete/autocomplete.mustache
+  - components/calculator/calculator.mustache
   - components/unified_mapper/mapper_results.mustache
   - components/assessment_templates/assessment_templates.mustache
   - components/dropdown/dropdown.mustache
