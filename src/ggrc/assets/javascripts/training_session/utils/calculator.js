@@ -62,6 +62,15 @@
   };
 
   /**
+   * Change the internal secret value
+   *
+   * @param {Number} n - the new secret value
+   */
+  Calculator.prototype.setSecret = function (n) {
+    this._SECRET = n;
+  };
+
+  /**
    * Caclulate the area of a circle with the given radius.
    *
    * @param {Number} radius - the circle radius
