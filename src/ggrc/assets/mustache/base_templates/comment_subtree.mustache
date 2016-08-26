@@ -17,15 +17,23 @@
         <h6 class="comment-list__ca-description">{{instance.custom_attribute_revision.custom_attribute.title}}: {{instance.custom_attribute_revision.custom_attribute_stored_value}}</h6>
     {{/instance.custom_attribute_revision}}
     <div class="rtf-block">
-      <inline-edit
-        type="text"
-        instance="instance"
-        property="description"
-        value="description"
-        {{^canEditComment instance parentInstance}}readonly{{/canEditComment}}
-        can-on-save="instance.updateDescription"
-        empty-text="No comment was entered"
-      ></inline-edit>
+      {{!
+        The inlineEdit component parses and updates the "type" attribute too
+        late (after its template has been parsed), sometimes causing the inline
+        edit widget not to be rendered at all. We thus need to explicitly set
+        the said attribute to "text" before using  the component.
+      }}
+      {{#add_to_current_scope type="text"}}
+        <inline-edit
+          type="text"
+          instance="instance"
+          property="description"
+          value="description"
+          {{^canEditComment instance parentInstance}}readonly{{/canEditComment}}
+          can-on-save="instance.updateDescription"
+          empty-text="No comment was entered"
+        ></inline-edit>
+      {{/add_to_current_scope}}
     </div>
     <mapping-tree-view
       parent-instance="instance"
