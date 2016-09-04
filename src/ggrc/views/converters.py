@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # Copyright (C) 2016 Google Inc.
 # Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
 
@@ -49,7 +51,11 @@ def parse_export_request():
 def handle_export_request():
   try:
     data = parse_export_request()
-    query_helper = QueryHelper(data)
+
+    ca_filtering_disabled = any(
+        query for query in data if query.get(u'object_name') == u'Assessment')
+
+    query_helper = QueryHelper(data, ca_disabled=ca_filtering_disabled)
     converter = Converter(ids_by_type=query_helper.get_ids())
     csv_data = converter.to_array()
     csv_string = generate_csv_string(csv_data)
