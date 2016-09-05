@@ -112,6 +112,10 @@ class CustomAttributeDefinition(mixins.Base, mixins.Titled, db.Model):
     """Strip spaces around options in dropdown options."""
     # pylint: disable=no-self-use
     # TODO: this should be "if value is not None" to disallow value == ""
+
+    if self.attribute_type != self.ValidTypes.DROPDOWN:
+      return None  # multi choice options are irrelevant for other types
+
     if value:
       value_list = [part.strip() for part in value.split(",")]
       value_set = set(value_list)

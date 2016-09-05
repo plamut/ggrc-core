@@ -73,15 +73,31 @@
       </div>
     </div>
   {{/case}}
+
   {{#case "Dropdown"}}
     <div class='row-fluid'>
-      <div class="span12">
+      <div
+        class="span12 {{#if instance.computed_errors.multi_choice_options}}field-failure{{/if}}">
         <label>
           Possible values (separated by comma ",")
+          <span class="required">*</span>
           <i class="fa fa-question-circle" rel="tooltip"
             title="Provide a list of values from which users will be able to choose."></i>
         </label>
-        <input tabindex="4" class="input-block-level" placeholder="Enter possible values" name="multi_choice_options" type="text" value="{{multi_choice_options}}">
+
+        {{#instance.computed_errors.multi_choice_options}}
+           <label class="help-inline warning">
+               {{this}}
+           </label>
+         {{/instance.computed_errors.multi_choice_options}}
+
+        <input
+          tabindex="4"
+          class="input-block-level"
+          placeholder="Enter possible values"
+          name="multi_choice_options"
+          type="text"
+          value="{{multi_choice_options}}">
       </div>
     </div>
     <div class='row-fluid'>
@@ -95,6 +111,7 @@
       </div>
     </div>
   {{/case}}
+
   {{#case "Checkbox"}}
   <div class='row-fluid'>
     <div class="span6">
