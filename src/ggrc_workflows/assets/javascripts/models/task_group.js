@@ -212,7 +212,7 @@
       }
     },
 
-    response_options_csv: can.compute(function (val) {
+    response_options_csv: function (val) {
       var isSet = val && val.length;
       var responseOptions = this.attr('response_options');
       var options = isSet ?
@@ -226,6 +226,6 @@
       } else {
         return options.join(', ');
       }
-    })
+    }
   });
 })(window.can);

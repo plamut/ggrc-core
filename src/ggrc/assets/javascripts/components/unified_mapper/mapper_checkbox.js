@@ -11,7 +11,7 @@
     template: '<content />',
     scope: {
       instance: null,
-      checkbox: can.compute(function (status) {
+      checkbox: function (status) {
         if (this.attr('mapper.getList') && !this.attr('appended')) {
           return false;
         }
@@ -20,7 +20,7 @@
           this.attr('select_state') ||
           this.attr('appended')
         );
-      }),
+      },
       define: {
         isMapped: {
           type: 'boolean',

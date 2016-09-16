@@ -4,7 +4,7 @@
 */
 
 (function (can, $, CMS) {
-  var ApprovalWorkflowErrors = can.compute(function () {
+  var ApprovalWorkflowErrors = function () {
     var errors = null;
     if (!this.attr('contact')) {
       errors = {
@@ -17,7 +17,7 @@
       });
     }
     return errors;
-  });
+  };
 
   can.Observe('CMS.ModelHelpers.CycleTask', {
     findInCacheById: function () {
@@ -65,7 +65,7 @@
           return CycleTask.save();
         }.bind(this));
     },
-    computed_errors: can.compute(function () {
+    computed_errors: function () {
       var errors = null;
       if (!this.attr('title')) {
         errors = {
@@ -73,7 +73,7 @@
         };
       }
       return errors;
-    })
+    }
   });
 
   can.Observe('CMS.ModelHelpers.ApprovalWorkflow', {

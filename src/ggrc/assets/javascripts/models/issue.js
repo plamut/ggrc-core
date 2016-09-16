@@ -36,8 +36,8 @@
       this.validateNonBlank('title');
     }
   }, {
-    object_model: can.compute(function () {
+    object_model: function () {
       return CMS.Models[this.attr('object_type')];
-    })
+    }
   });
 })(this.can);

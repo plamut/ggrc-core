@@ -7,7 +7,7 @@
   var _mustachePath;
   var overdueCompute;
 
-  overdueCompute = can.compute(function (val) {
+  overdueCompute = function (val) {
     var date;
     var today = moment().startOf('day');
     var startOfDate;
@@ -21,7 +21,7 @@
       return '';
     }
     return 'overdue';
-  });
+  };
 
   function refreshAttr(instance, attr) {
     if (instance.attr(attr).reify().selfLink) {
@@ -471,7 +471,7 @@
         return object;
       });
     },
-    response_options_csv: can.compute(function (val) {
+    response_options_csv: function (val) {
       if (val != null) {
         this.attr(
           'response_options',
@@ -480,9 +480,9 @@
       } else {
         return (this.attr('response_options') || []).join(', ');
       }
-    }),
+    },
 
-    selected_response_options_csv: can.compute(function (val) {
+    selected_response_options_csv: function (val) {
       if (val != null) {
         this.attr(
           'selected_response_options',
@@ -491,6 +491,6 @@
       } else {
         return (this.attr('selected_response_options') || []).join(', ');
       }
-    })
+    }
   });
 })(window.can);

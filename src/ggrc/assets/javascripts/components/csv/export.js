@@ -36,9 +36,9 @@
         edit_filename: false,
         only_relevant: false,
         filename: "Export Objects",
-        get_filename: can.compute(function () {
+        get_filename: function () {
           return this.attr("filename").replace(/\s+/, "_").toLowerCase() + ".csv";
-        })
+        }
       });
 
 
