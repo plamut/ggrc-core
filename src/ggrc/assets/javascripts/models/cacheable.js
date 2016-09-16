@@ -869,17 +869,17 @@
         this.custom_attributes.attr(attrId, 'Person:None');
       }
     },
-    computed_errors: can.compute(function () {
+    computed_errors: function () {
       var errors = this.errors();
       if (this.attr('_suppress_errors')) {
         return null;
       } else {
         return errors;
       }
-    }),
-    computed_unsuppressed_errors: can.compute(function () {
+    },
+    computed_unsuppressed_errors: function () {
       return this.errors();
-    }),
+    },
     get_list_counter: function (name) {
       var binding = this.get_binding(name);
       if (!binding) {

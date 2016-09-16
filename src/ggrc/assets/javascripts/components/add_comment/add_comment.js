@@ -42,7 +42,7 @@
           joins.splice(index, 1);
         });
       },
-      get_assignee_type: can.compute(function () {
+      get_assignee_type: function () {
         var types = new Map([
           ['related_verifiers', 'verifier'],
           ['related_assessors', 'assessor'],
@@ -71,7 +71,7 @@
           }
         });
         return user_type;
-      })
+      }
     },
     events: {
       inserted: function () {
@@ -112,7 +112,7 @@
           description: description,
           send_notification: this.scope.attr('sendNotification'),
           context: source.context,
-          assignee_type: this.scope.attr('get_assignee_type')
+          assignee_type: this.scope.get_assignee_type()
         };
 
         this.scope.attr('isSaving', true);

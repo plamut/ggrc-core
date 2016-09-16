@@ -76,12 +76,12 @@
         *                     pageNum: `True page number that gets passed to setPage function`
         *                   }
         */
-      totalPages: can.compute(function () {
+      totalPages: function () {
         var list = this.attr('list');
         var perPage = Number(this.attr('perPage'));
 
         return Math.ceil(list.length / perPage);
-      })
+      }
     }
   });
 })(window.can, window.can.$);

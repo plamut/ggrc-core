@@ -35,7 +35,7 @@
           model_name: menu[0].model_singular
         });
       },
-      menu: can.compute(function () {
+      menu: function () {
         var type = this.attr('type');
         var mappings;
         var models;
@@ -58,7 +58,7 @@
         return _.sortBy(_.compact(_.map(_.keys(mappings), function (mapping) {
           return CMS.Models[mapping];
         })), 'model_singular');
-      })
+      }
     },
     events: {
       init: function () {
