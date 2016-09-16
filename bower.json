@@ -7,10 +7,10 @@
   "private": true,
   "ignore": [],
   "dependencies": {
-    "canjs": "2.0.7",
+    "canjs": "2.3.27",
     "bootstrap": "2.0.4",
-    "jquery-ui": "1.11.4",
-    "jquery": "1.11.3",
+    "jquery-ui": "1.12.1",
+    "jquery": "1.12.4",
     "lodash": "3.10.1",
     "mousetrap": "1.5.3",
     "moment": "2.15.0",
