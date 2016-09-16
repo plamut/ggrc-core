@@ -371,7 +371,7 @@
         dashboardCtr.show_widget_area();
         widget.siblings().addClass('hidden').trigger('widget_hidden');
         widget.removeClass('hidden').trigger('widget_shown');
-        $('[href$=' + panel + ']')
+        $('[href$="' + panel + '"]')
         .closest('li').addClass('active')
         .siblings().removeClass('active');
       }
