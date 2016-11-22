@@ -961,7 +961,7 @@
 
       // remove the groups that have ended up being empty
       objectTypes = _.pick(objectTypes, function (objGroup) {
-        return objGroup.items.length > 0;
+        return objGroup.items && objGroup.items.length > 0;
       });
 
       return objectTypes;
