@@ -78,7 +78,7 @@ describe("display prefs model", function() {
         display_prefs.setTopNavHidden("this arg is ignored", true);
             
         expect(
-          display_prefs.attr([exp.path, exp.TOP_NAV].join(".")).top_nav.is_hidden
+          display_prefs.attr(exp.path).top_nav.is_hidden
         ).toBe(true);
       });
         
@@ -98,7 +98,7 @@ describe("display prefs model", function() {
         display_prefs.setTopNavWidgets("this arg is ignored", {a:1, b: 2});
 
         expect(
-          display_prefs.attr([exp.path, exp.TOP_NAV].join(".")).top_nav.widget_list.serialize()
+          display_prefs.attr(exp.path).top_nav.widget_list.serialize()
         ).toEqual({a: 1, b: 2});
       });
         
@@ -123,7 +123,7 @@ describe("display prefs model", function() {
        display_prefs.setFilterHidden(true);
          
        expect(
-         display_prefs.attr([exp.path, exp.FILTER_WIDGET].join(".")).filter_widget.is_hidden
+         display_prefs.attr(exp.path).filter_widget.is_hidden
        ).toBe(true);
      });
         
