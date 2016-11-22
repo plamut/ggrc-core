@@ -5,7 +5,7 @@
 
 
 describe("display prefs model", function() {
-  
+
   var display_prefs, exp;
   beforeAll(function() {
     display_prefs = new CMS.Models.DisplayPrefs();
@@ -28,7 +28,7 @@ describe("display prefs model", function() {
     beforeEach(function() {
       display_prefs.attr("foo", "bar");
     });
-    
+
     afterEach(function() {
       display_prefs.removeAttr("foo");
       display_prefs.removeAttr("baz");
@@ -76,22 +76,21 @@ describe("display prefs model", function() {
     describe("hiddenness", function () {
       it("sets nav hidden", function() {
         display_prefs.setTopNavHidden("this arg is ignored", true);
-            
         expect(
           display_prefs.attr(exp.path).top_nav.is_hidden
         ).toBe(true);
       });
-        
+
       it("gets nav hidden", function () {
         display_prefs.setTopNavHidden("this arg is ignored", true);
-            
+
         expect(display_prefs.getTopNavHidden()).toBe(true);
       });
-        
+
       it("returns false by default", function () {
         expect(display_prefs.getTopNavHidden()).toBe(false);
       });
-    }); 
+    });
 
     describe("widget list", function () {
       it("sets widget list", function () {
@@ -101,7 +100,7 @@ describe("display prefs model", function() {
           display_prefs.attr(exp.path).top_nav.widget_list.serialize()
         ).toEqual({a: 1, b: 2});
       });
-        
+
       it("gets widget list", function () {
         display_prefs.setTopNavWidgets("this arg is ignored", {a: 1, b: 2});
 
@@ -116,26 +115,26 @@ describe("display prefs model", function() {
 
    describe("filter hiding", function () {
      afterEach(function() {
-       display_prefs.resetPagePrefs(); 
+       display_prefs.resetPagePrefs();
      });
 
      it("sets filter hidden", function() {
        display_prefs.setFilterHidden(true);
-         
+
        expect(
          display_prefs.attr(exp.path).filter_widget.is_hidden
        ).toBe(true);
      });
-        
+
      it("gets filter hidden", function () {
        display_prefs.setFilterHidden(true);
-            
+
        expect(display_prefs.getFilterHidden()).toBe(true);
      });
-        
+
      it("returns false by default", function () {
        expect(display_prefs.getFilterHidden()).toBe(false);
-     }); 
+     });
    });
 
 
@@ -160,7 +159,7 @@ describe("display prefs model", function() {
       function getTest() {
         var fooActual = display_prefs[func]("unit_test", "foo");
         var barActual = display_prefs[func]("unit_test", "bar");
-       
+
         expect(fooActual.serialize ? fooActual.serialize() : fooActual)[fooMatcher](fooValue);
         expect(barActual.serialize ? barActual.serialize() : barActual)[barMatcher](barValue);
       }
@@ -220,7 +219,7 @@ describe("display prefs model", function() {
         display_prefs.removeAttr(exp.path);
       });
 
-      
+
       it("sets the value for a widget", function() {
         display_prefs[func]("this arg is ignored", "foo", fooValue);
         var fooActual  = display_prefs.attr([exp.path, exp_token, "foo"].join("."));
@@ -339,7 +338,7 @@ describe("display prefs model", function() {
         expect(dps).not.toContain(dp_noversion);
         expect(dp_noversion.destroy).toHaveBeenCalled();
       });
-        
+
       waitsFor(function() { //sanity check --ensure deferred resolves/rejects
         return dfd.state() !== "pending";
       }, done);
