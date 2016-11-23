@@ -1085,11 +1085,14 @@
     serialize: function () {
       var that = this;
       var serial = {};
+      var fnName;
+      var val;
+      var name;
       if (arguments.length) {
         return this._super.apply(this, arguments);
       }
-      this.each(function (val, name) {
-        var fnName;
+      for (name in this._data) {
+        val = this[name];
         if (that.constructor.attributes && that.constructor.attributes[name]) {
           fnName = that.constructor.attributes[name];
           fnName = fnName.substr(fnName.lastIndexOf('.') + 1);
@@ -1103,7 +1106,7 @@
           fnName === 'model' || fnName === 'get_instance') {
             serial[name] = (val ? val.stub().serialize() : null);
           } else {
-            serial[name] = that._super(name);
+            serial[name] = val;
           }
         } else if (val && typeof val.save === 'function') {
           serial[name] = val.stub().serialize();
@@ -1120,10 +1123,10 @@
           } else {
             serial[name] = that[name] && that[name].serialize ?
             that[name].serialize() :
-            that._super(name);
+            serial[name] = val;
           }
         }
-      });
+      }
       return serial;
     },
     display_name: function () {
