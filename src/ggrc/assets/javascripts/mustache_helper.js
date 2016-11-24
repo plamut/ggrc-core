@@ -1493,11 +1493,13 @@ Mustache.registerHelper("json_escape", function (obj, options) {
 
 function localizeDate(date, options, tmpl) {
   if (!options) {
-    date = new Date();
-  } else {
-    date = resolve_computed(date);
+    return moment().format(tmpl);
   }
-  return date ? moment(date).format(tmpl) : '';
+  date = resolve_computed(date);
+  if (date) {
+    return moment(new Date(date)).format(tmpl);
+  }
+  return '';
 }
 
 can.each({
