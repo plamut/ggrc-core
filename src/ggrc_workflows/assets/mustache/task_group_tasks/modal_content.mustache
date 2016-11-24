@@ -102,9 +102,9 @@
             Starts every
             <span class="required">*</span>
           </span>
-          <select name="relative_start_day" class="input-medium" tabindex="4">
-            {{#iterate 1 "Monday" 2 "Tuesday" 3 "Wednesday" 4 "Thursday" 5 "Friday" step=2 listen=instance.relative_start_day}}
-            <option value="{{iterator_0}}" {{#if_equals instance.relative_start_day iterator_0}}selected="true"{{/if_equals}}>{{iterator_1}}</option>
+          <select name="relative_start_day" class="input-medium" can-value="instance.relative_start_day" tabindex="4">
+            {{#iterate 1 "Monday" 2 "Tuesday" 3 "Wednesday" 4 "Thursday" 5 "Friday" step=2}}
+            <option value="{{iterator_0}}">{{iterator_1}}</option>
             {{/iterate}}
           </select>
         </label>
@@ -113,9 +113,9 @@
             Due every
             <span class="required">*</span>
           </span>
-          <select name="relative_end_day" class="input-medium" tabindex="5">
-            {{#iterate 1 "Monday" 2 "Tuesday" 3 "Wednesday" 4 "Thursday" 5 "Friday" step=2 listen=instance.relative_end_day}}
-            <option value="{{iterator_0}}" {{#if_equals instance.relative_end_day iterator_0}}selected="true"{{/if_equals}}>{{iterator_1}}</option>
+          <select name="relative_end_day" class="input-medium" can-value="instance.relative_end_day" tabindex="5">
+            {{#iterate 1 "Monday" 2 "Tuesday" 3 "Wednesday" 4 "Thursday" 5 "Friday" step=2}}
+            <option value="{{iterator_0}}">{{iterator_1}}</option>
             {{/iterate}}
           </select>
         </label>
@@ -132,9 +132,9 @@
             Starts every
             <span class="required">*</span>
           </span>
-          <select name="relative_start_day" class="input-small" tabindex="4">
-            {{#iterate 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 listen=instance.relative_start_day}}
-            <option {{#if_equals instance.relative_start_day iterator}}selected="selected"{{/if_equals}}>{{iterator}}</option>
+          <select name="relative_start_day" class="input-small" can-value="instance.relative_start_day" tabindex="4">
+            {{#iterate 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31}}
+            <option value="{{iterator}}">{{iterator}}</option>
             {{/iterate}}
           </select>
         </label>
@@ -143,9 +143,9 @@
             Due every
             <span class="required">*</span>
           </span>
-          <select name="relative_end_day" class="input-small" tabindex="5">
-            {{#iterate 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 listen=instance.relative_end_day}}
-            <option {{#if_equals instance.relative_end_day iterator}}selected="selected"{{/if_equals}}>{{iterator}}</option>
+          <select name="relative_end_day" class="input-small" can-value="instance.relative_end_day" tabindex="5">
+            {{#iterate 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31}}
+            <option value="{{iterator}}">{{iterator}}</option>
             {{/iterate}}
           </select>
         </label>
@@ -162,14 +162,14 @@
             Starts
             <span class="required">*</span>
           </span>
-          <select name="relative_start_month" class="input-medium" tabindex="4">
-            {{#iterate 1 "Jan, Apr, Jul, Oct" 2 "Feb, May, Aug, Nov" 3 "Mar, Jun, Sep, Dec" step=2 listen=instance.relative_start_month}}
-            <option value="{{iterator_0}}" {{#if_equals instance.relative_start_month iterator_0}}selected="selected"{{/if_equals}}>{{iterator_1}}</option>
+          <select name="relative_start_month" class="input-medium" can-value="instance.relative_start_month" tabindex="4">
+            {{#iterate 1 "Jan, Apr, Jul, Oct" 2 "Feb, May, Aug, Nov" 3 "Mar, Jun, Sep, Dec" step=2}}
+            <option value="{{iterator_0}}">{{iterator_1}}</option>
             {{/iterate}}
           </select>
-          <select name="relative_start_day" class="input-mini" tabindex="5">
-            {{#iterate 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 listen=instance.relative_start_day}}
-            <option {{#if_equals instance.relative_start_day iterator}}selected="selected"{{/if_equals}}>{{iterator}}</option>
+          <select name="relative_start_day" class="input-mini" can-value="instance.relative_start_day" tabindex="5">
+            {{#iterate 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31}}
+            <option value="{{iterator}}">{{iterator}}</option>
             {{/iterate}}
           </select>
         </label>
@@ -178,14 +178,14 @@
             Due
             <span class="required">*</span>
           </span>
-          <select name="relative_end_month" class="input-medium" tabindex="6">
-            {{#iterate 1 "Jan, Apr, Jul, Oct" 2 "Feb, May, Aug, Nov" 3 "Mar, Jun, Sep, Dec" step=2 listen=instance.relative_end_month}}
-            <option value="{{iterator_0}}" {{#if_equals instance.relative_end_month iterator_0}}selected="selected"{{/if_equals}}>{{iterator_1}}</option>
+          <select name="relative_end_month" class="input-medium" can-value="instance.relative_end_month" tabindex="6">
+            {{#iterate 1 "Jan, Apr, Jul, Oct" 2 "Feb, May, Aug, Nov" 3 "Mar, Jun, Sep, Dec" step=2}}
+            <option value="{{iterator_0}}">{{iterator_1}}</option>
             {{/iterate}}
           </select>
-          <select name="relative_end_day" class="input-mini" tabindex="7">
-            {{#iterate 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 listen=instance.relative_end_day}}
-            <option {{#if_equals instance.relative_end_day iterator}}selected="selected"{{/if_equals}}>{{iterator}}</option>
+          <select name="relative_end_day" class="input-mini" can-value="instance.relative_end_day" tabindex="7">
+            {{#iterate 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31}}
+            <option value="{{iterator}}">{{iterator}}</option>
             {{/iterate}}
           </select>
         </label>
@@ -202,14 +202,14 @@
             Starts every
             <span class="required">*</span>
           </span>
-          <select name="relative_start_month" class="input-small" tabindex="4">
-            {{#iterate 1 "January" 2 "February" 3 "March" 4 "April" 5 "May" 6 "June" 7 "July" 8 "August" 9 "September" 10 "October" 11 "November" 12 "December" step=2 listen=instance.relative_start_month}}
-              <option value="{{iterator_0}}" {{#if_equals iterator_0 instance.relative_start_month}}selected="selected"{{/if_equals}}>{{iterator_1}}</option>
+          <select name="relative_start_month" class="input-small" can-value="instance.relative_start_month" tabindex="4">
+            {{#iterate 1 "January" 2 "February" 3 "March" 4 "April" 5 "May" 6 "June" 7 "July" 8 "August" 9 "September" 10 "October" 11 "November" 12 "December" step=2}}
+              <option value="{{iterator_0}}">{{iterator_1}}</option>
             {{/iterate}}
           </select>
-          <select name="relative_start_day" class="input-mini" tabindex="5">
-            {{#iterate 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 listen=instance.relative_start_day}}
-            <option {{#if_equals instance.relative_start_day iterator}}selected="selected"{{/if_equals}}>{{iterator}}</option>
+          <select name="relative_start_day" class="input-mini" can-value="instance.instance.relative_start_day" tabindex="5">
+            {{#iterate 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31}}
+            <option value="{{iterator}}">{{iterator}}</option>
             {{/iterate}}
           </select>
         </label>
@@ -218,14 +218,14 @@
             Due every
             <span class="required">*</span>
           </span>
-          <select name="relative_end_month" class="input-small" tabindex="6">
-            {{#iterate 1 "January" 2 "February" 3 "March" 4 "April" 5 "May" 6 "June" 7 "July" 8 "August" 9 "September" 10 "October" 11 "November" 12 "December" step=2 listen=instance.relative_end_month}}
-              <option value="{{iterator_0}}" {{#if_equals iterator_0 instance.relative_end_month}}selected="selected"{{/if_equals}}>{{iterator_1}}</option>
+          <select name="relative_end_month" class="input-small" can-value="instance.relative_end_month" tabindex="6">
+            {{#iterate 1 "January" 2 "February" 3 "March" 4 "April" 5 "May" 6 "June" 7 "July" 8 "August" 9 "September" 10 "October" 11 "November" 12 "December" step=2}}
+              <option value="{{iterator_0}}">{{iterator_1}}</option>
             {{/iterate}}
           </select>
-          <select name="relative_end_day" class="input-mini" tabindex="7">
-            {{#iterate 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 listen=instance.relative_end_day}}
-            <option {{#if_equals instance.relative_end_day iterator}}selected="selected"{{/if_equals}}>{{iterator}}</option>
+          <select name="relative_end_day" class="input-mini" can-value="instance.relative_end_day" tabindex="7">
+            {{#iterate 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31}}
+            <option value="{{iterator}}">{{iterator}}</option>
             {{/iterate}}
           </select>
         </label>
