@@ -139,28 +139,28 @@
               start = moment().isoWeekday(task.relative_start_day);
               end = moment().isoWeekday(task.relative_end_day);
               if (_afterOrSame(start, end)) {
-                end.add('w', 1);
+                end.add(1, 'w');
               }
               break;
             case "monthly":
               start = moment().date(task.relative_start_day);
               end = moment().date(task.relative_end_day);
               if (_afterOrSame(start, end)) {
-                end.add('M', 1);
+                end.add(1, 'M');
               }
               break;
             case "quarterly":
-              start = _currentQuarter().date(task.relative_start_day).add('M', task.relative_start_month-1);
-              end = _currentQuarter().date(task.relative_end_day).add('M', task.relative_end_month-1);
+              start = _currentQuarter().date(task.relative_start_day).add(task.relative_start_month-1, 'M');
+              end = _currentQuarter().date(task.relative_end_day).add(task.relative_end_month-1, 'M');
               if (_afterOrSame(start, end)) {
-                end.add('q', 1);
+                end.add(1, 'q');
               }
               break;
             case "annually":
               start = moment().date(task.relative_start_day).month(task.relative_start_month-1);
               end = moment().date(task.relative_end_day).month(task.relative_end_month-1);
               if (_afterOrSame(start, end)) {
-                end.add('y', 1);
+                end.add(1, 'y');
               }
               break;
           }
