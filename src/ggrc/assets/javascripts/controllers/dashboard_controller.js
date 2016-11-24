@@ -316,7 +316,7 @@
       // Find and make active the widget specified by `step`
       var widget = this.find_widget_by_target('#' + step);
       // If widget was not found and it's not info - try to select info
-      if (!widget && step !== 'info') {
+      if (!widget && step !== 'info' && this.find_widget_by_target('#info_widget')) {
         return this.display_path('info_widget');
       }
       if (!widget && widget_list.length) {
