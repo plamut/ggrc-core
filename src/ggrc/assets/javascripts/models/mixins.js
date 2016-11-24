@@ -51,6 +51,7 @@
             key.substr(0, key.indexOf(':')) :
             'after';
           var oldfn;
+          var key;
 
           key = ~key.indexOf(':') ? key.substr(key.indexOf(':') + 1) : key;
           if (fn !== can.Model.Mixin[key] && !~can.inArray(key, blockedKeys)) {
@@ -92,8 +93,11 @@
       if (!~can.inArray(this.fullName, cls._mixins)) {
         cls._mixins = cls._mixins || [];
         cls._mixins.push(this.fullName);
-
-        can.each(this, setupfns(cls));
+        for (key in this) {
+          if (this.hasOwnProperty(key)) {
+            setupfns(cls).call(null, this[key], key);
+          }
+        }
         can.each(this.prototype, setupfns(cls.prototype));
       }
     }
