@@ -8,7 +8,7 @@
     <section class="info{{#is_info_pin}} sticky-info-panel{{/is_info_pin}}">
 
       {{#is_info_pin}}
-        <info-pin-buttons class="details-wrap" maximized="maximized" on-change-maximized-state="onChangeMaximizedState" on-close="onClose"></info-pin-buttons>
+        <info-pin-buttons class="details-wrap" maximized="maximized" on-change-maximized-state="@onChangeMaximizedState" on-close="@onClose"></info-pin-buttons>
       {{/is_info_pin}}
 
       <div class="info-pane-utility">
