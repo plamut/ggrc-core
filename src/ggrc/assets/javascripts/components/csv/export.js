@@ -18,12 +18,7 @@
         relevant: can.compute(function () {
           return new can.List();
         }),
-        columns: function () {
-          return _.filter(GGRC.model_attr_defs[this.attr("type")], function (el) {
-            return (!el.import_only) &&
-                   (el.display_name.indexOf("unmap:") === -1);
-          });
-        }
+        columns: [],
       }),
       panelsModel = can.Map({
         items: new can.List()
@@ -203,7 +198,15 @@
 
         this.scope.attr("_index", index);
         data.index = index;
-        return this.scope.attr("panels.items").push(new panelModel(data));
+        var pm = new panelModel(data);
+        pm.attr('columns', can.compute(function() {
+          var definitions = GGRC.model_attr_defs[pm.attr('type')];
+          return _.filter(definitions, function (el) {
+            return (!el.import_only) &&
+                   (el.display_name.indexOf("unmap:") === -1);
+          });
+        }));
+        return this.scope.attr("panels.items").push(pm);
       },
       getIndex: function (el) {
         return +el.closest("export-panel").control().scope.attr("item.index");
