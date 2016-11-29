@@ -43,7 +43,7 @@
     {{/if_equals}}
     <span class="entry-author">
       Modified by
-      {{#using person=instance.modified_by}}{{{render '/static/mustache/people/popover.mustache' person=person}}}{{/using}}
+      {{#using person=instance.modified_by}}{{>'/static/mustache/people/popover.mustache'}}{{/using}}
       {{#if instance.created_at}}on {{date instance.created_at}}{{/if}}
     </span>
   </div>

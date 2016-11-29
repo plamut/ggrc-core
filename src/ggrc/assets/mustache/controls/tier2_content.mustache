@@ -6,8 +6,8 @@
 {{> /static/mustache/base_objects/dropdown_menu_tier2.mustache}}
 
 <div class="tier-content">
-  {{{render '/static/mustache/base_objects/general_info.mustache' instance=instance }}}
-  {{{render '/static/mustache/base_objects/description.mustache' instance=instance}}}
+  {{>'/static/mustache/base_objects/general_info.mustache'}}
+  {{>'/static/mustache/base_objects/description.mustache'}}
   {{{renderLive '/static/mustache/base_objects/notes_and_code.mustache' instance=instance}}}
   {{{renderLive '/static/mustache/base_objects/mappings_detail.mustache' result=result parent_instance=parent_instance}}}
   {{{renderLive '/static/mustache/base_objects/contacts.mustache' instance=instance}}}

@@ -8,7 +8,7 @@
   <div class="w-status">
     <span class="entry-author">
       {{#using person=modified_by}}
-        {{{render '/static/mustache/people/popover.mustache' person=person}}}
+        {{>'/static/mustache/people/popover.mustache'}}
       {{/using}}
       {{assignee_types assignee_type}} added a response - {{date created_at}}
     </span>

@@ -12,7 +12,7 @@
         Reviewed on {{instance.updated_at}} <br />
         and approved by
         {{#using person=instance.modified_by}}
-          {{{> '/static/mustache/people/popover.mustache'}}}
+          {{>'/static/mustache/people/popover.mustache'}}
         {{/using}}
       </span>
       {{/last_approved}}

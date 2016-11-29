@@ -12,8 +12,8 @@
   {{> /static/mustache/base_objects/info-pane-utility.mustache}}
 
   <div class="tier-content">
-    {{{render '/static/mustache/base_objects/general_info.mustache' instance=instance}}}
-    {{{render '/static/mustache/base_objects/description.mustache' instance=instance}}}
+    {{>'/static/mustache/base_objects/general_info.mustache'}}
+    {{>'/static/mustache/base_objects/description.mustache'}}
 
     <div class="row-fluid wrap-row">
       <div class="span12">
@@ -41,13 +41,13 @@
       <div class="span4">
         <h6>Risk Manager</h6>
         {{#using person=instance.ra_manager}}
-          {{{render '/static/mustache/people/popover.mustache'}}}
+          {{>'/static/mustache/people/popover.mustache'}}
         {{/using}}
       </div>
       <div class="span4">
         <h6>Risk Counsel</h6>
         {{#using person=instance.ra_counsel}}
-          {{{render '/static/mustache/people/popover.mustache'}}}
+          {{>'/static/mustache/people/popover.mustache'}}
         {{/using}}
       </div>
     </div>
@@ -104,5 +104,5 @@
 
   </div>
 
-  {{{render '/static/mustache/custom_attributes/info.mustache' instance=instance}}}
+  {{>'/static/mustache/custom_attributes/info.mustache'}}
 </div>

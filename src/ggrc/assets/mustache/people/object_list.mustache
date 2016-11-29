@@ -168,7 +168,9 @@
               </div>
             </div>
           </div>
-          {{{render '/static/mustache/custom_attributes/info.mustache' instance=this}}}
+          {{#using instance=this}}
+          {{>'/static/mustache/custom_attributes/info.mustache'}}
+          {{/using}}
         </div>
       </div><!-- tier 2 end -->
     </li>

@@ -12,7 +12,7 @@
     {{/is_info_pin}}
 
     <div class="tier-content">
-      {{{render '/static/mustache/base_objects/general_info.mustache' instance=instance}}}
+      {{>'/static/mustache/base_objects/general_info.mustache'}}
       <div class="row-fluid wrap-row">
         <div class="span12">
           <h6>{{instance.class.title_singular}} description</h6>

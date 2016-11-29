@@ -80,8 +80,8 @@
 {{/if_helpers}}
 
 <div class="tier-content">
-  {{{render '/static/mustache/base_objects/general_info.mustache' instance=instance }}}
-  {{{render '/static/mustache/base_objects/description.mustache' instance=instance}}}
+  {{>'/static/mustache/base_objects/general_info.mustache'}}
+  {{>'/static/mustache/base_objects/description.mustache'}}
   <div class="row-fluid wrap-row">
     <div class="span12">
       <h6>

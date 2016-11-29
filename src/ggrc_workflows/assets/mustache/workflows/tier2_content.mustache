@@ -6,8 +6,8 @@
 {{> /static/mustache/base_objects/dropdown_menu_tier2.mustache}}
 
 <div class="tier-content">
-  {{{render '/static/mustache/base_objects/general_info.mustache' instance=instance }}}
-  {{{render '/static/mustache/base_objects/description.mustache' instance=instance}}}
+  {{>'/static/mustache/base_objects/general_info.mustache'}}
+  {{>'/static/mustache/base_objects/description.mustache'}}
 
   <div class="row-fluid wrap-row">
     <div class="span6">
@@ -24,8 +24,8 @@
         {{#each authorizations}}
           {{#using role=instance.role}}
             {{#if_equals role.name 'WorkflowOwner'}}
-              {{#using contact=instance.person}}
-                {{{renderLive '/static/mustache/people/popover.mustache' person=contact}}}
+              {{#using person=instance.person}}
+                {{>'/static/mustache/people/popover.mustache'}}
               {{/using}}
             {{/if_equals}}
           {{/using}}

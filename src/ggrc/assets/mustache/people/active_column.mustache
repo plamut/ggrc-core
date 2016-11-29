@@ -13,7 +13,7 @@
     <li class="{{#if _removed}}removed{{/if}}">
       <a class="jump-to-control" href="javascript://">
         <span>
-          {{{render '/static/mustache/people/popover.mustache' person=person}}}
+          {{>'/static/mustache/people/popover.mustache'}}
           &nbsp;
         </span>
       </a>
