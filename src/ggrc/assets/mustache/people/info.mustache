@@ -68,7 +68,7 @@
       </div>
     </div><!-- tier-content end -->
 
-  {{{render '/static/mustache/custom_attributes/info.mustache' instance=instance}}}
+  {{>'/static/mustache/custom_attributes/info.mustache'}}
 
   </section>
 
@@ -78,7 +78,7 @@
         <em>
           Created at {{date created_at}}
             &nbsp;&nbsp;&nbsp;&nbsp;
-          Modified by {{#using person=modified_by}}{{{render '/static/mustache/people/popover.mustache' person=person}}}{{/using}} on {{date updated_at}}
+          Modified by {{#using person=modified_by}}{{>'/static/mustache/people/popover.mustache'}}{{/using}} on {{date updated_at}}
         </em>
         </small>
       </p>

@@ -13,11 +13,11 @@
     {{> /static/mustache/base_objects/info-pane-utility.mustache}}
 
     <div class="tier-content">
-      {{{render '/static/mustache/base_objects/general_info.mustache' instance=instance}}}
-      {{{render '/static/mustache/base_objects/description.mustache' instance=instance}}}
-      {{{render '/static/mustache/base_objects/notes.mustache' instance=instance}}}
-      {{{render '/static/mustache/base_objects/contacts.mustache' instance=instance}}}
-      {{{render '/static/mustache/base_objects/urls.mustache' instance=instance}}}
+      {{>'/static/mustache/base_objects/general_info.mustache'}}
+      {{>'/static/mustache/base_objects/description.mustache'}}
+      {{>'/static/mustache/base_objects/notes.mustache'}}
+      {{>'/static/mustache/base_objects/contacts.mustache'}}
+      {{>'/static/mustache/base_objects/urls.mustache'}}
 
       <div class="custom-attr-wrap">
         <div class="row-fluid">
@@ -70,7 +70,7 @@
       </div><!-- custom-attr-wrap end -->
     </div><!-- tier-content end -->
 
-  {{{render '/static/mustache/custom_attributes/info.mustache' instance=instance}}}
+  {{>'/static/mustache/custom_attributes/info.mustache'}}
 
   </section>
 
@@ -80,7 +80,7 @@
         <em>
           Created at {{date created_at}}
           &nbsp;&nbsp;&nbsp;&nbsp;
-          Modified by {{#using person=modified_by}}{{{render '/static/mustache/people/popover.mustache' person=person}}}{{/using}} on {{date updated_at}}
+          Modified by {{#using person=modified_by}}{{>'/static/mustache/people/popover.mustache'}}{{/using}} on {{date updated_at}}
         </em>
       </small>
     </p>

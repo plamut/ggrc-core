@@ -46,7 +46,7 @@
     </div>
 
     <div class="tier-content">
-      {{{render '/static/mustache/base_objects/general_info.mustache' instance=instance}}}
+      {{>'/static/mustache/base_objects/general_info.mustache'}}
 
       <div class="row-fluid wrap-row">
         <div class="span6">
@@ -115,7 +115,7 @@
 
       <div class="row-fluid wrap-row">
         <div class="span12">
-          {{{render "/static/mustache/base_templates/mapped_objects.mustache" instance=instance }}}
+          {{>'/static/mustache/base_templates/mapped_objects.mustache'}}
         </div>
       </div>
 
@@ -209,7 +209,7 @@
           {{/with_mapping_count}}
 
           <ul class="add-task-comment">
-            {{{render '/static/mustache/cycle_task_entries/tree_footer.mustache' parent_instance=instance}}}
+            {{>'/static/mustache/cycle_task_entries/tree_footer.mustache'}}
           </ul>
         </div>
       </div>

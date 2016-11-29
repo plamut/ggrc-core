@@ -55,7 +55,7 @@
   {{/if_equals}}
 
   {{^if_equals instance.class.table_singular 'person'}}
-    {{{render '/static/mustache/base_objects/contacts.mustache' instance=instance}}}
+    {{>'/static/mustache/base_objects/contacts.mustache'}}
   {{/if_equals}}
 
   <div class="row-fluid">
