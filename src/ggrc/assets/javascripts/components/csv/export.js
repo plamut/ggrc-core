@@ -30,10 +30,7 @@
         type: url.model_type || "Program",
         edit_filename: false,
         only_relevant: false,
-        filename: "Export Objects",
-        get_filename: function () {
-          return this.attr("filename").replace(/\s+/, "_").toLowerCase() + ".csv";
-        }
+        filename: "export_objects.csv"
       });
 
 
@@ -162,7 +159,7 @@
         GGRC.Utils.export_request({
           data: query
         }).then(function (data) {
-          GGRC.Utils.download(this.scope.attr("export.get_filename"), data);
+          GGRC.Utils.download(this.scope.attr("export.filename"), data);
         }.bind(this))
         .fail(function (data) {
           $("body").trigger("ajax:flash", {
