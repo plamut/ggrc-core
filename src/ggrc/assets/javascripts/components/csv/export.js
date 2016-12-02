@@ -28,7 +28,6 @@
         loading: false,
         url: "/_service/export_csv",
         type: url.model_type || "Program",
-        edit_filename: false,
         only_relevant: false,
         filename: "export_objects.csv"
       });
@@ -107,11 +106,6 @@
       };
     },
     events: {
-      ".btn-title-change click": function (el, ev) {
-        ev.preventDefault();
-        this.scope.attr("export.edit_filename", !this.scope.attr("export.edit_filename"));
-      },
-
       toggleIndicator: function (currentFilter) {
         var isExpression =
             !!currentFilter &&
