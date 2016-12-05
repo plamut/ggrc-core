@@ -17,7 +17,7 @@
       relevant_menu_item: '@',
       show_all: '@',
       addFilter: function () {
-        var menu = this.attr('menu');
+        var menu = this.menu();
 
         if (this.attr('relevant_menu_item') === 'parent' &&
              Number(this.attr('panel_number')) !== 0 &&
