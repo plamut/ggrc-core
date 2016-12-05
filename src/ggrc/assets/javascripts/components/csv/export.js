@@ -188,7 +188,6 @@
         }
 
         this.scope.attr("_index", index);
-        data.index = index;
         var pm = new panelModel(data);
         pm.attr('columns', can.compute(function() {
           var definitions = GGRC.model_attr_defs[pm.attr('type')];
