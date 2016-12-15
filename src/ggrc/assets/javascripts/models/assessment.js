@@ -42,7 +42,8 @@
       context: 'CMS.Models.Context.stub',
       modified_by: 'CMS.Models.Person.stub',
       finished_date: 'date',
-      verified_date: 'date'
+      verified_date: 'date',
+      custom_attribute_values: 'CMS.Models.CustomAttributeValue.models'
     },
     defaults: {
       status: 'Not Started'

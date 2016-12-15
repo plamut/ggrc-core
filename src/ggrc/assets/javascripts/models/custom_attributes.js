@@ -147,8 +147,45 @@
     mixins: [],
     attributes: {
       definition: 'CMS.Models.CustomAttributeDefinition.stub',
-      modified_by: 'CMS.Models.Person.stub'
+      modified_by: 'CMS.Models.Person.stub',
+      attribute_value: 'mixedType'
     },
+
+    // TODO: tests, docstring
+    serialize : {
+      mixedType: function (val, type) {
+        // TODO: remove console.log
+        console.log('serializing CAV.attribute_value', val, type);
+        if (moment.isMoment(val)) {
+          val = val.format('YYYY-MM-DD');
+        }
+        return val;
+      }
+    },
+
+    // TODO: tests, docstring... and what is the 3rd argument?
+    // @this === CMS.Models.CustomAttributeValue
+    convert: {
+      mixedType: function convertMixedType(val, oldVal, fn, type) {
+        var grandCaller = convertMixedType.caller.caller.caller.caller;
+        var attrType = grandCaller.arguments[0].attribute_type;
+        var dateUTC;
+
+        if (attrType !== 'Date') {
+          return val;
+        }
+
+        if (val && typeof val === 'string') {
+          // TODO: check for format?
+          dateUTC = moment.utc(val);
+          // TODO: remove console.log
+          console.log('converting CAV from', val, 'to', dateUTC);
+          return dateUTC;
+        }
+        return val;
+      }
+    },
+
     links_to: {},
     init: function () {
       this._super.apply(this, arguments);

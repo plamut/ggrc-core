@@ -29,6 +29,7 @@ class CustomAttributeValue(Base, db.Model):
       'attributable_id',
       'attributable_type',
       'attribute_value',
+      PublishOnly('attribute_type'),
       'attribute_object',
       PublishOnly('preconditions_failed'),
   ]
@@ -46,6 +47,10 @@ class CustomAttributeValue(Base, db.Model):
   attributable_type = db.Column(db.String)
   attribute_value = db.Column(db.String)
 
+  @computed_property
+  def attribute_type(self):
+    return self.custom_attribute.attribute_type
+
   # When the attibute is of a mapping type this will hold the id of the mapped
   # object while attribute_value will hold the type name.
   # For example an instance of attribute type Map:Person will have a person id
@@ -61,9 +66,6 @@ class CustomAttributeValue(Base, db.Model):
       "Map:Person": lambda self: self._validate_map_person(),
   }
 
-  _custom_publish = {
-      "attribute_value": lambda self: self._publish_attribute_value(),
-  }
   _custom_update = {
       "attribute_value": lambda self, val: self._update_attribute_value(val),
   }
@@ -408,29 +410,6 @@ class CustomAttributeValue(Base, db.Model):
           (make_flags(mask)
            for mask in cad.multi_choice_mandatory.split(",")),
       ))
-
-  def _publish_attribute_value(self):
-    """Return value serialized for JSON.
-
-    If self is a Date-type CAV, convert it to MM/DD/YYYY.
-    """
-
-    from ggrc.models import CustomAttributeDefinition
-
-    result = self.attribute_value
-    literal_date = CustomAttributeDefinition.ValidTypes.DATE
-
-    self_is_date = self.custom_attribute.attribute_type == literal_date
-    if self_is_date and self.attribute_value:
-      try:
-        result = utils.convert_date_format(self.attribute_value,
-                                           self.DATE_FORMAT_DB,
-                                           self.DATE_FORMAT_JSON)
-      except ValueError:
-        # invalid format or not a date, don't convert
-        pass
-
-    return result
 
   def _update_attribute_value(self, new_value):
     """Update value from received JSON.
