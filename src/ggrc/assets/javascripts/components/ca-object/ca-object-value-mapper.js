@@ -44,6 +44,11 @@
         var value = this.attr('value');
         var valueObj = this.attr('valueObj');
 
+        // TODO: tests, don't hardcode the format
+        if (type === 'date' && moment.isMoment(value)) {
+          return value.format('MM/DD/YYYY');
+        }
+
         if (type === 'checkbox') {
           return value === '1';
         }
@@ -75,6 +80,21 @@
         this.attr('value', value);
       },
       formatValueByType: function (value, type) {
+        var date;
+
+        // TODO: tests, don't hardcode the format
+        if (type === 'date') {
+          if (typeof value === 'string') {
+            value = value.trim();
+          }
+
+          date = moment.utc(value, 'MM/DD/YYYY', true);
+          if (date.isValid()) {
+            return date;
+          }
+          return value;  // let the validation handle the incorrect value
+        }
+
         if (type === 'checkbox') {
           return value ? 1 : 0;
         }
