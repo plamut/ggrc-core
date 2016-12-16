@@ -1128,6 +1128,16 @@
           fnName = fnName.substr(fnName.lastIndexOf('.') + 1);
           if (fnName === 'stubs' || fnName === 'get_stubs' ||
           fnName === 'models' || fnName === 'get_instances') {
+            ///////////////
+            if (fnName === 'models') {
+              var x = true;
+              if (x) {
+                serial[name] = val.serialize();
+              }
+              continue;
+            }
+            ////////////////
+
           // val can be null in some cases
             if (val) {
               serial[name] = val.stubs().serialize();
@@ -1135,7 +1145,14 @@
           } else if (fnName === 'stub' || fnName === 'get_stub' ||
           fnName === 'model' || fnName === 'get_instance') {
             serial[name] = (val ? val.stub().serialize() : null);
-          } else {
+          /////////////////
+          // TODO: tests... mixedType  is used for CustomAttributeValues
+          } else if (fnName === 'mixedType') {
+            serial[name] = that.serialize(name);
+            continue;
+          }
+          ///////////////////
+          else {
             serial[name] = val;
           }
         } else if (val && typeof val.save === 'function') {
