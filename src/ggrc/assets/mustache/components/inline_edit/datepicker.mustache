@@ -7,6 +7,10 @@
   <datepicker persistent="true" date="context.value"></datepicker>
 {{else}}
   <p class="inline-edit__text">
-    {{{firstnonempty context.value '<span class="empty-message">None</span>'}}}
+    {{#if context.value}}
+      {{date context.value true}}
+    {{else}}
+      <span class="empty-message">None</span>
+    {{/if}}
   </p>
 {{/if}}
