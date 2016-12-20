@@ -20,7 +20,7 @@
         if (_.isEmpty(val)) {
           return;
         }
-        if (!moment(val, 'MM/DD/YYYY', true).isValid()) {
+        if (!moment(val, 'YYYY-MM-DD', true).isValid()) {
           this.scope.attr('context.value', undefined);
         }
       }
