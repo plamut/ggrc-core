@@ -149,7 +149,7 @@
                   <div class="span12">
                     <label><input
                       type="checkbox"
-                      {{^if_can_edit_response instance instance.status}}
+                      {{^if instance.responseOptionsEditable}}
                         disabled="disabled"
                       {{/if}}
                       multiple="multiple"
