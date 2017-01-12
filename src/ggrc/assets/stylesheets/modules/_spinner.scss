@@ -10,6 +10,9 @@
     left: 49%;  // not 50% to roughly compensate for the spinner's own width
     top: 205px;
     color: gray;
+    &.refreshing {  // when refreshing an already loaded LHN tab content
+      top: 110px;
+    }
   }
   &.tree-items {
     position: absolute;

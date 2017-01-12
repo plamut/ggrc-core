@@ -195,6 +195,8 @@
           .find('spinner[extra-css-class="initial-spinner"]')
           .remove();
 
+        GGRC.spinnerInjector.remove();
+
         this.init_spinner();  // the tree view's own items loading spinner
         this.element.trigger('loading');
       }

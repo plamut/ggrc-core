@@ -239,7 +239,8 @@
           newEntries: parentScope.attr('newEntries')
         })),
         template: parentScope.attr('template'),
-        draw_children: true
+        draw_children: true,
+        $opener: attrs['%root'].$trigger  // the button used to open the modal
       };
     },
 
@@ -396,6 +397,7 @@
           }.bind(this));
 
           $.when.apply($, defer)
+            .done(this._handleSuccessfulMap.bind(this))
             .fail(function (response, message) {
               $('body').trigger('ajax:flash', {error: message});
             })
@@ -404,6 +406,25 @@
               this.closeModal();
             }.bind(this));
         }.bind(this));
+      },
+
+      /**
+       * A callback for when objects have been successfully mapped to another
+       * object.
+       *
+       * @param {...CMS.Models.Relationship} relationship - one or more
+       *   Relationship instances that were created
+       */
+      _handleSuccessfulMap: function () {
+        var $container;
+
+        // Inject the spinner only when using the "main" Map button, i.e. the
+        // one not specific to any tree items.
+        if (!this.scope.joinObjectId) {
+          $container = this.scope.$opener.closest('section.content');
+          GGRC.spinnerInjector.inject(
+            $container, 'large', 'initial-spinner refreshing');
+        }
       },
 
       setBinding: function () {
