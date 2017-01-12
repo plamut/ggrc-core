@@ -112,6 +112,7 @@ dashboard-js-files:
   - models/system.js
   - models/join_models.js
   # Controllers
+  - controllers/spinner_injector_controller.js
   - controllers/filterable_controller.js
   - controllers/dashboard_widgets_controller.js
   - controllers/info_widget_controller.js
