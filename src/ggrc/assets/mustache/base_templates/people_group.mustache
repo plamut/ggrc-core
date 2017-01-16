@@ -3,7 +3,6 @@
     Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
 }}
 
-
 <label class="people-group">
     <span {{#boldTitle}}class="people-group_title"{{/boldTitle}}>
       {{heading}}
@@ -25,6 +24,9 @@
       {{/has_permissions}}
     {{/editable}}
 </label>
+
+<spinner toggle="fetchingData" size="normal"></spinner>
+
 <ul class="inner-count-list">
   {{^if results.length}}
     <li><i> No {{type}}s</i></li>

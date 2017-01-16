@@ -12,6 +12,53 @@ describe('GGRC.Components.peopleGroup', function () {
     Component = GGRC.Components.get('peopleGroup');
   });
 
+  describe('init() method', function () {
+    var dfdFetchData;
+    var init;  // the method under test
+    var context;
+
+    beforeEach(function () {
+      dfdFetchData = new can.Deferred();
+
+      context = new can.Map({
+        updateMappedResult: jasmine.createSpy(),
+        scope: {
+          get_mapped_deferred:
+            jasmine.createSpy().and.returnValue(dfdFetchData),
+          get_pending: jasmine.createSpy(),
+          validate: jasmine.createSpy(),
+          instance: {
+            isNew: jasmine.createSpy()
+          }
+        }
+      });
+      init = Component.prototype.events.init.bind(context);
+    });
+
+    it('initially sets the fetchingData flag', function () {
+      var scope = context.scope;
+      scope.attr('fetchingData', false);
+      init();
+      expect(scope.attr('fetchingData')).toBe(true);
+    });
+
+    it('clears the fetchingData flag when data has been fetched', function () {
+      var scope = context.scope;
+      scope.attr('fetchingData', true);
+      init();
+      dfdFetchData.resolve();
+      expect(scope.attr('fetchingData')).toBe(false);
+    });
+
+    it('clears the fetchingData flag if fetching data fails', function () {
+      var scope = context.scope;
+      context.scope.attr('fetchingData', true);
+      init();
+      dfdFetchData.reject();
+      expect(scope.attr('fetchingData')).toBe(false);
+    });
+  });
+
   describe('get_pending() method', function () {
     var getPending;  // the method under test
     var scope;

@@ -83,6 +83,7 @@
       results: [],
       list_pending: [],
       list_mapped: [],
+      fetchingData: false,  // fetching data currently in progress or not
       computed_mapping: false,
       forbiddenForUnmap: [],
       /**
@@ -405,8 +406,13 @@
       }
     },
     events: {
-      inserted: function () {
-        this.scope.get_mapped_deferred().then(function (data) {
+      init: function () {
+        // NOTE: If the logic below is executed was inserted() instead, the
+        // view might initially not update itself correctly (i.e. the
+        // fetchingData flag) due to race conditions.
+        this.scope.attr('fetchingData', true);
+
+        this.scope.get_mapped_deferred().done(function (data) {
           this.scope.attr('list_pending', this.scope.get_pending());
           this.scope.attr('list_mapped', data);
           this.updateMappedResult(data);
@@ -417,6 +423,9 @@
           if (this.scope.instance.isNew() && this.scope.validate) {
             this.validate();
           }
+        }.bind(this))
+        .always(function () {
+          this.scope.attr('fetchingData', false);
         }.bind(this));
       },
       validate: function () {
