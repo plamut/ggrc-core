@@ -22,6 +22,12 @@
           skip_refresh: true
         }, function () {
           var instance = this.instance;
+
+          var notificationSettings = {
+            progress: 'Updating objects to the latest version in progress.'
+          };
+          $('body').trigger('ajax:flash', notificationSettings);
+
           instance.refresh().then(function () {
             var data = {
               operation: 'upsert'
