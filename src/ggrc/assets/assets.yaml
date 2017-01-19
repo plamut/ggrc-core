@@ -136,6 +136,7 @@ dashboard-js-files:
   - apps/business_objects.js
   - apps/custom_attributes.js
   # Components
+  - components/click_counter/click_counter.js
   - components/spinner/spinner.js
   - components/modal-connector.js
   - components/collapsible-panel/collapsible-panel.js
@@ -386,6 +387,7 @@ dashboard-js-template-files:
   - components/dropdown/dropdown.mustache
   - components/object_history/object_history.mustache
   - components/person/person.mustache
+  - components/click_counter/click_counter.mustache
   - components/spinner/spinner.mustache
   - components/rich_text/rich_text.mustache
   - components/datepicker/datepicker.mustache

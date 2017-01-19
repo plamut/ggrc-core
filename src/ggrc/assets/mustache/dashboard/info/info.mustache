@@ -21,4 +21,12 @@
     </div>
     {{/system_role}}
     {{{render_hooks 'Dashboard.Widgets'}}}
+
+    <click-counter-wrapper style="border: 1px solid black;
+                                  min-height: 40px;
+                                  display: block;
+                                  clear: both;
+                                  padding: 20px">
+      <click-counter count="initialClickCount"></click-counter>
+    </click-counter-wrapper>
   </div>
