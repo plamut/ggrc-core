@@ -50,7 +50,9 @@
           or #if' instance.constructor.obj_nav_options.show_all_tabs '\
           or #in_array' internav_display instance.constructor.obj_nav_options.force_show_list}}
 
-          {{#if_target_modal_match model.shortName 'modal-ajax-form'}}
+          {{#if_helpers '\
+            #if_page_type' 'programs' '\
+            and #if_equals' model.shortName 'Audit'}}
             <a
               href="{{urlPath}}{{selector}}"
               rel="tooltip"
