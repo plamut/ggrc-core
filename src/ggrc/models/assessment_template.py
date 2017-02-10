@@ -80,11 +80,11 @@ class AssessmentTemplate(assessment.AuditRelationship, relationship.Relatable,
           "filter_by": "_nop_filter",
       },
       "default_test_plan": {
-          "display_name": "Default Test Plan",
+          "display_name": "Default Evidence Collection Guidance",
           "filter_by": "_nop_filter",
       },
       "test_plan_procedure": {
-          "display_name": "Use Control Test Plan",
+          "display_name": "Use Control Evidence Collection Guidance",
           "mandatory": False,
       },
       "template_object_type": {

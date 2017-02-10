@@ -9,19 +9,19 @@ attribute name: any single line string without commas. Leading and trailing spac
 list of attribute values: comma separetd list, only used if attribute type is ""Dropdown"".
 
 Limitations: Dropdown values can not start with either ""(a)"" or ""(c)"" and attribute names can not contain commas "","".",,,,,,,,
-Assessment Template,Code,Audit,Title,Object under assessment,Use control test plan,Default Test Plan,Default Assessors,Default Verifier,Custom Attributes,,,,,,,,
+Assessment Template,Code,Audit,Title,Object under assessment,Use control evidence collection guidance,Default Evidence Collection Guidance,Default Assessors,Default Verifier,Custom Attributes,,,,,,,,
 ,T-1,Audit,Template 1,Control,yes,this will be ignored,Object owners,Auditors,"Text, my text name
 mandatory Text, Some Other text name
 Rich text, custom description
 Mandatory Date, date of birth
 Checkbox, dashie?
 peRson, santa clause",,,,,,,,
-,T-2,Audit,Template 2,Control,,Some test plan,Audit lead,"user3@a.com
+,T-2,Audit,Template 2,Control,,Some evidence collection guidance,Audit lead,"user3@a.com
 user1@a.com",,,,,,,,,
-,T-3,Audit,Template 2,Market,,Market test plan,principal assessor,primary contact,"Dropdown, my dropdown, value 1, value 2, value 3
+,T-3,Audit,Template 2,Market,,Market evidence collection guidance,principal assessor,primary contact,"Dropdown, my dropdown, value 1, value 2, value 3
 mandatory dropdown, my second dropdown, value1, value2
 Dropdown, dropdown with mandatory attachments and comments, (a) value1, (a)(c) value 2, (c)  (a)  value3, (c) value cc, valueeee",,,,,,,,
-,T-4,Audit,Template 3,Org Group,yes,Control test plan value will be ignored,principal assessor,primary contact,,,,,,,,,
+,T-4,Audit,Template 3,Org Group,yes,Control evidence collection guidance value will be ignored,principal assessor,primary contact,,,,,,,,,
 ,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,
