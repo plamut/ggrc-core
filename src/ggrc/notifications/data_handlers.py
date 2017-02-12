@@ -33,6 +33,7 @@ def get_object_url(obj):
   return urlparse.urljoin(utils.get_url_root(), url)
 
 
+# just a test comment
 def _get_assignable_dict(people, notif):
   """Get dict data for assignable object in notification.
 
