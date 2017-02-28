@@ -13,30 +13,31 @@
     // be  prioritized use order values below 100. An order value of 0 is
     // reserved for the "info" widget which always comes first.
   var defaultOrderTypes = {
-    Assessment: 8,
-    Regulation: 20,
-    Contract: 30,
-    Section: 40,
-    Objective: 50,
-    Control: 60,
+    Standard: 7,
+    Regulation: 10,
+    Section: 15,
+    Objective: 20,
+    Control: 30,
+    Product: 35,
+    System: 40,
+    Process: 45,
+    Audit: 50,
+    Person: 55,
     AccessGroup: 100,
-    Audit: 120,
-    Clause: 130,
+    Assessment: 110,
+    Clause: 120,
+    Contract: 130,
     DataAsset: 140,
     Facility: 160,
     Issue: 170,
     Market: 180,
     OrgGroup: 190,
-    Person: 200,
     Policy: 210,
-    Process: 220,
-    Product: 230,
     Program: 240,
     Project: 250,
-    Standard: 260,
-    System: 270,
     Vendor: 280
   };
+
   var allTypes = Object.keys(defaultOrderTypes).sort();
   // Items allowed for mapping via snapshot.
   var snapshotWidgetsConfig = GGRC.config.snapshotable_objects || [];

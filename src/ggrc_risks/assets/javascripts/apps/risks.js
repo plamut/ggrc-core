@@ -242,7 +242,7 @@
       widget_id: CMS.Models.Risk.table_singular,
       widget_name: CMS.Models.Risk.title_plural,
       widget_icon: CMS.Models.Risk.table_singular,
-      order: 265,
+      order: 25,
       content_controller_options: {
         child_options: relatedObjectsChildOptions,
         draw_children: true,

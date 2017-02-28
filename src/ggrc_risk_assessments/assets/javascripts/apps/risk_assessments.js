@@ -79,6 +79,7 @@
         risk_assessments: {
           widget_id: 'risk_assessments',
           widget_name: 'Risk Assessments',
+          order: 257,
           content_controller: GGRC.Controllers.TreeView,
           content_controller_options: {
             add_item_view: GGRC.mustache_path +

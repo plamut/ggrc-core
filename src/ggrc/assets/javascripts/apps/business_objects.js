@@ -241,40 +241,49 @@
           AssessmentTemplate: {
             order: 40
           },
-          Contract: {
-            order: 133  // between default Clause (130) and DataAsset (140)
-          },
+
+          // other widgets are sorted alphabetically, some of them need their
+          // default value reset
           Control: {
-            order: 137  // between default Clause (130) and DataAsset (140)
+            order: 135  // between default Contract (130) and DataAsset (140)
           },
           Objective: {
-            order: 182  // between default Market (180) and OrgGroup (190)
-          },
-          Regulation: {
-            order: 257  // between default Project (250) and Request (260)
-          },
-          program: {
-            widget_id: 'program',
-            widget_name: 'Program',
-            widget_icon: 'program'
-          },
-          Section: {
-            order: 263  // between default Request (260) and System (270)
-          },
-          Standard: {
-            order: 267  // between default Request (260) and System (270)
+            order: 185  // between default Market (180) and OrgGroup (190)
           },
           Person: {
             widget_id: 'person',
             widget_name: 'People',
             widget_icon: 'person',
-            // NOTE: "order" not overridden
+            order: 195,  // between default OrgGroup (190) and Policy (210)
             content_controller: GGRC.Controllers.TreeView,
             content_controller_options: {
               mapping: 'authorized_people',
               allow_mapping: false,
               allow_creating: false
             }
+          },
+          Process: {
+            order: 215  // between default Policy (210) and Program (240)
+          },
+          Product: {
+            order: 220  // between default Policy (210) and Program (240)
+          },
+          Regulation: {
+            order: 255  // between default Project (250) and Vendor (280)
+          },
+          Section: {
+            order: 260  // between default Project (250) and Vendor (280)
+          },
+          Standard: {
+            order: 265  // between default Project (250) and Vendor (280)
+          },
+          System: {
+            order: 270  // between default Project (250) and Vendor (280)
+          },
+          program: {
+            widget_id: 'program',
+            widget_name: 'Program',
+            widget_icon: 'program'
           }
         }
       };
