@@ -27,3 +27,12 @@ class AccessControlRole(mixins.Base, db.Model):
     return (
         db.UniqueConstraint('name', 'object_type'),
     )
+
+  _publish_attrs = [
+      "name",
+      "object_type",
+      "tooltip",
+      "read",
+      "update",
+      "delete"
+  ]

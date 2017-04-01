@@ -13,6 +13,7 @@ def contributed_services():
   """
   import ggrc.models.all_models as models
   from ggrc.services.relationship_resource import RelationshipResource
+  from ggrc.access_control.access_control_role import AccessControlRole
 
   return [
       service('background_tasks', models.BackgroundTask),
@@ -66,6 +67,7 @@ def contributed_services():
       service('notification_configs', models.NotificationConfig),
       service('issues', models.Issue),
       service('snapshots', models.Snapshot),
+      service('access_control_roles', AccessControlRole)
   ]
 
 
