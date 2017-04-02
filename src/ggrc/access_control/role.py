@@ -5,9 +5,10 @@
 
 from ggrc import db
 from ggrc.models import mixins
+from ggrc.fulltext.mixin import Indexed
 
 
-class AccessControlRole(mixins.Base, db.Model):
+class AccessControlRole(Indexed, mixins.Base, db.Model):
   """Access Control Role"""
   __tablename__ = 'access_control_roles'
 
@@ -27,6 +28,10 @@ class AccessControlRole(mixins.Base, db.Model):
     return (
         db.UniqueConstraint('name', 'object_type'),
     )
+
+  @classmethod
+  def eager_query(cls):
+    return super(AccessControlRole, cls).eager_query()
 
   _publish_attrs = [
       "name",
