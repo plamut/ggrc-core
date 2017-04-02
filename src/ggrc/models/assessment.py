@@ -9,6 +9,7 @@ from sqlalchemy.orm import remote
 from sqlalchemy.orm import validates
 
 from ggrc import db
+from ggrc.access_control.roleable import Roleable
 from ggrc.models import reflection
 from ggrc.models.comment import Commentable
 from ggrc.models.custom_attribute_definition import CustomAttributeDefinition
@@ -73,7 +74,7 @@ def reindex_by_relationship(relationship):
   return []
 
 
-class Assessment(statusable.Statusable, AuditRelationship,
+class Assessment(Roleable, statusable.Statusable, AuditRelationship,
                  AutoStatusChangeable, Assignable, HasObjectState, TestPlanned,
                  CustomAttributable, EvidenceURL, Commentable, Personable,
                  reminderable.Reminderable, Timeboxed, Relatable,

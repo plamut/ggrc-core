@@ -4,6 +4,7 @@
 """Issue Model."""
 
 from ggrc import db
+from ggrc.access_control.roleable import Roleable
 from ggrc.models.mixins.audit_relationship import AuditRelationship
 from ggrc.models.mixins import (
     BusinessObject, Timeboxed, CustomAttributable, TestPlanned
@@ -17,9 +18,9 @@ from ggrc.models.track_object_state import HasObjectState
 from ggrc.fulltext.mixin import Indexed
 
 
-class Issue(HasObjectState, TestPlanned, CustomAttributable, EvidenceURL,
-            Personable, Timeboxed, Ownable, Relatable, AuditRelationship,
-            BusinessObject, Indexed, db.Model):
+class Issue(Roleable, HasObjectState, TestPlanned, CustomAttributable,
+            EvidenceURL, Personable, Timeboxed, Ownable, Relatable,
+            AuditRelationship, BusinessObject, Indexed, db.Model):
   """Issue Model."""
 
   __tablename__ = 'issues'
