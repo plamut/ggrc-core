@@ -2,6 +2,7 @@
 # Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
 
 from ggrc import db
+from ggrc.access_control.roleable import Roleable
 from ggrc.fulltext.mixin import Indexed
 from sqlalchemy.orm import validates
 from ggrc.models.deferred import deferred
@@ -14,7 +15,7 @@ from ggrc.models.utils import validate_option
 from ggrc.models.track_object_state import HasObjectState
 
 
-class Product(HasObjectState, CustomAttributable, Personable,
+class Product(Roleable, HasObjectState, CustomAttributable, Personable,
               Relatable, Timeboxed, Ownable, BusinessObject, Indexed,
               db.Model):
   __tablename__ = 'products'

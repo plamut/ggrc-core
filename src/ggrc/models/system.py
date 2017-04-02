@@ -4,6 +4,7 @@
 from sqlalchemy.orm import validates
 
 from ggrc import db
+from ggrc.access_control.roleable import Roleable
 from ggrc.fulltext.mixin import Indexed
 from ggrc.models.deferred import deferred
 from ggrc.models.mixins import BusinessObject, Timeboxed, CustomAttributable
@@ -14,7 +15,7 @@ from ggrc.models.utils import validate_option
 from ggrc.models import track_object_state
 
 
-class SystemOrProcess(track_object_state.HasObjectState, Timeboxed,
+class SystemOrProcess(Roleable, track_object_state.HasObjectState, Timeboxed,
                       BusinessObject, db.Model):
   # Override model_inflector
   _table_plural = 'systems_or_processes'

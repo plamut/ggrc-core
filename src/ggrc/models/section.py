@@ -2,6 +2,7 @@
 # Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
 
 from ggrc import db
+from ggrc.access_control.roleable import Roleable
 from ggrc.fulltext.mixin import Indexed
 from ggrc.models.directive import Directive
 from ggrc.models.mixins import CustomAttributable
@@ -16,8 +17,9 @@ from ggrc.models.relationship import Relationship
 from ggrc.models.track_object_state import HasObjectState
 
 
-class Section(HasObjectState, Hierarchical, db.Model, CustomAttributable,
-              Personable, Ownable, Relatable, Indexed, BusinessObject):
+class Section(Roleable, HasObjectState, Hierarchical, db.Model,
+              CustomAttributable, Personable, Ownable, Relatable, Indexed,
+              BusinessObject):
 
   __tablename__ = 'sections'
   _table_plural = 'sections'
