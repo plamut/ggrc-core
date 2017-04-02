@@ -11,6 +11,11 @@ class AccessControlList(mixins.Base, db.Model):
   """Access Control List"""
   __tablename__ = 'access_control_list'
 
+  _publish_attrs = [
+      "person",
+      "ac_role_id"
+  ]
+
   person_id = db.Column(db.Integer, db.ForeignKey('people.id'), nullable=False)
   ac_role_id = db.Column(db.Integer, db.ForeignKey(
       'access_control_roles.id'), nullable=False)
