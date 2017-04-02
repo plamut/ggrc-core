@@ -3,7 +3,7 @@
 
 """Test Access Control Role"""
 
-from ggrc.access_control.access_control_role import AccessControlRole
+from ggrc.access_control.role import AccessControlRole
 from integration.ggrc import TestCase
 from integration.ggrc.api_helper import Api
 from integration.ggrc.models.factories import random_str
