@@ -2,6 +2,7 @@
 # Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
 
 from ggrc import db
+from ggrc.access_control.roleable import Roleable
 from ggrc.models.deferred import deferred
 from ggrc.models.mixins import BusinessObject, Timeboxed, CustomAttributable
 from ggrc.fulltext.mixin import Indexed
@@ -14,7 +15,7 @@ from sqlalchemy.orm import validates
 from .track_object_state import HasObjectState
 
 
-class Directive(HasObjectState, Timeboxed, BusinessObject, db.Model):
+class Directive(Roleable, HasObjectState, Timeboxed, BusinessObject, db.Model):
   __tablename__ = 'directives'
 
   version = deferred(db.Column(db.String), 'Directive')

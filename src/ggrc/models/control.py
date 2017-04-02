@@ -8,6 +8,7 @@ from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import validates
 
 from ggrc import db
+from ggrc.access_control.roleable import Roleable
 from ggrc.models.audit_object import Auditable
 from ggrc.models.categorization import Categorizable
 from ggrc.models.category import CategoryBase
@@ -108,7 +109,7 @@ class AssertionCategorized(Categorizable):
     )
 
 
-class Control(WithLastAssessmentDate, HasObjectState, Relatable,
+class Control(WithLastAssessmentDate, HasObjectState, Roleable, Relatable,
               CustomAttributable, Personable, ControlCategorized,
               AssertionCategorized, Hierarchical, Timeboxed, Ownable,
               Auditable, TestPlanned, BusinessObject, Indexed, db.Model):
