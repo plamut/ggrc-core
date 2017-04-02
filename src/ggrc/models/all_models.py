@@ -5,6 +5,8 @@
 
 import sys
 
+from ggrc.access_control.role import AccessControlRole
+from ggrc.access_control.list import AccessControlList
 from ggrc.models import inflector
 from ggrc.models.access_group import AccessGroup
 from ggrc.models.assessment import Assessment
@@ -60,6 +62,8 @@ from ggrc.models.system import SystemOrProcess
 from ggrc.models.vendor import Vendor
 
 all_models = [
+    AccessControlRole,
+    AccessControlList,
     AccessGroup,
     Assessment,
     AssessmentTemplate,
