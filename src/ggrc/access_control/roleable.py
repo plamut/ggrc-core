@@ -5,18 +5,20 @@
 
 from sqlalchemy import orm
 from sqlalchemy.ext.declarative import declared_attr
+from sqlalchemy.ext.hybrid import hybrid_property
+from ggrc.access_control.list import AccessControlList
 from ggrc import db
 
 
 class Roleable(object):
   """Roleable"""
 
-  _include_links = _publish_attrs = [
+  _update_raw = _include_links = _publish_attrs = [
       'access_control_list'
   ]
 
   @declared_attr
-  def access_control_list(self):
+  def _access_control_list(self):
     """access_control_list"""
     joinstr = 'and_(remote(AccessControlList.object_id) == {type}.id, '\
         'remote(AccessControlList.object_type) == "{type}")'
@@ -27,6 +29,27 @@ class Roleable(object):
         foreign_keys='AccessControlList.object_id',
         backref='{0}_object'.format(self.__name__),
         cascade='all, delete-orphan')
+
+  @hybrid_property
+  def access_control_list(self):
+    return self._access_control_list
+
+  @access_control_list.setter
+  def access_control_list(self, values):
+    """Setter function for access control list.
+
+    Args:
+      value: List of access control roles or dicts containing json
+        representation of custom attribute values.
+    """
+    if not values:
+      return
+    for value in values:
+      AccessControlList(
+          object=self,
+          person_id=value.get('person').get('id'),
+          ac_role_id=value.get('ac_role_id')
+      )
 
   @classmethod
   def eager_query(cls):
