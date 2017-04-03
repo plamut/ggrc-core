@@ -25,7 +25,7 @@ class Roleable(object):
         'AccessControlList',
         primaryjoin=joinstr,
         foreign_keys='AccessControlList.object_id',
-        backref='{0}_access_control_list'.format(self.__name__),
+        backref='{0}_object'.format(self.__name__),
         cascade='all, delete-orphan')
 
   @classmethod
