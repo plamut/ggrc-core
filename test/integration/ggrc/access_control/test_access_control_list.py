@@ -22,11 +22,25 @@ class TestAccessControlList(TestCase):
         object_type="Control",
         read=True
     )
+    self.second_acr = factories.AccessControlRoleFactory(
+        object_type="Control",
+        read=True
+    )
     self.acl = factories.AccessControlListFactory(
         object=self.control,
         ac_role_id=self.acr.id,
         person=self.person
     )
+
+  def _acl_json(self, role_id, person_id):
+    """Helper function for setting acl json"""
+    return {
+        "ac_role_id": role_id,
+        "person": {
+            "type": "Person",
+            "id": person_id
+        }
+    }
 
   def test_object_roles(self):
     """Test if roles are fetched with the object"""
@@ -56,13 +70,9 @@ class TestAccessControlList(TestCase):
             "title": title,
             "type": "Control",
             "context": None,
-            "access_control_list": [{
-                "ac_role_id": id_,
-                "person": {
-                    "type": "Person",
-                    "id": person_id
-                }
-            }]
+            "access_control_list": [
+                self._acl_json(id_, person_id)
+            ]
         },
     })
     assert response.status_code == 201, \
@@ -80,3 +90,19 @@ class TestAccessControlList(TestCase):
 
     assert acl[0]["person"]["id"] == person_id, \
         "Access control list does not include person id"
+
+  def test_put_object_roles(self):
+    """Test if PUTing object roles saves them correctly"""
+    id_2, person_id = self.second_acr.id, self.person.id
+
+    response = self.api.get(all_models.Control, self.control.id)
+    assert response.status_code == 200, \
+        "Failed to fetch created control {}".format(response.status)
+    control = response.json['control']
+    control['access_control_list'].append(self._acl_json(id_2, person_id))
+    response = self.api.put(self.control, {"control": control})
+    assert response.status_code == 200, \
+        "PUTing control failed {}".format(response.status)
+    acl = response.json['control']['access_control_list']
+    assert len(acl) == 2, \
+        "Access control list not correctly updated {}".format(acl)
