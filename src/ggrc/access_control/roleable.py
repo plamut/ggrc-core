@@ -34,6 +34,19 @@ class Roleable(object):
   def access_control_list(self):
     return self._access_control_list
 
+  def _set_value(self, value):
+    """Helper function for setting value of acl"""
+    for itm in self.access_control_list:
+      acr_id = value['ac_role_id']
+      person_id = value['person']['id']
+      if itm.ac_role_id == acr_id and itm.person_id == person_id:
+        return
+    AccessControlList(
+        object=self,
+        person_id=value.get('person').get('id'),
+        ac_role_id=value.get('ac_role_id')
+    )
+
   @access_control_list.setter
   def access_control_list(self, values):
     """Setter function for access control list.
@@ -45,11 +58,7 @@ class Roleable(object):
     if not values:
       return
     for value in values:
-      AccessControlList(
-          object=self,
-          person_id=value.get('person').get('id'),
-          ac_role_id=value.get('ac_role_id')
-      )
+      self._set_value(value)
 
   @classmethod
   def eager_query(cls):
