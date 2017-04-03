@@ -11,7 +11,7 @@ from ggrc import db
 class Roleable(object):
   """Roleable"""
 
-  _include_links = [
+  _include_links = _publish_attrs = [
       'access_control_list'
   ]
 
@@ -34,3 +34,11 @@ class Roleable(object):
     query = super(Roleable, cls).eager_query()
     return cls.eager_inclusions(query, Roleable._include_links).options(
         orm.subqueryload('access_control_list'))
+
+  def log_json(self):
+    """Log custom attribute values."""
+    # pylint: disable=not-an-iterable
+    res = super(Roleable, self).log_json()
+    res["access_control_list"] = [
+        value.log_json() for value in self.access_control_list]
+    return res
