@@ -111,7 +111,7 @@ class UpdateAttrHandler(object):
     equivalent in ``obj`` and ``json_obj``.
     """
     class_attr = getattr(obj.__class__, attr)
-    update_raw = attr in getattr(obj.__class__, "_update_raw", [])
+    update_raw = attr in AttributeInfo.gather_update_raw(obj.__class__)
     if update_raw:
       # The attribute has a special setter that can handle raw json fields
       # properly. This is used for special mappings such as custom attribute
