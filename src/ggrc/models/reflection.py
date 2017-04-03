@@ -165,6 +165,7 @@ class AttributeInfo(object):
     self._update_attrs = AttributeInfo.gather_update_attrs(tgt_class)
     self._create_attrs = AttributeInfo.gather_create_attrs(tgt_class)
     self._include_links = AttributeInfo.gather_include_links(tgt_class)
+    self._update_raw = AttributeInfo.gather_update_raw(tgt_class)
     self._aliases = AttributeInfo.gather_aliases(tgt_class)
 
   @classmethod
@@ -236,6 +237,10 @@ class AttributeInfo(object):
   @classmethod
   def gather_include_links(cls, tgt_class):
     return cls.gather_attrs(tgt_class, ['_include_links'])
+
+  @classmethod
+  def gather_update_raw(cls, tgt_class):
+    return cls.gather_attrs(tgt_class, ['_update_raw'])
 
   @classmethod
   def _generate_mapping_definition(cls, rules, prefix, display_name_tmpl):
