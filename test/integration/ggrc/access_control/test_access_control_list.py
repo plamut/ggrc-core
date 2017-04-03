@@ -6,6 +6,7 @@
 from ggrc.models import all_models
 from integration.ggrc import TestCase
 from integration.ggrc.models import factories
+from integration.ggrc.models.factories import random_str
 from integration.ggrc.api_helper import Api
 
 
@@ -24,7 +25,7 @@ class TestAccessControlList(TestCase):
     self.acl = factories.AccessControlListFactory(
         object=self.control,
         ac_role_id=self.acr.id,
-        person_id=self.person.id
+        person=self.person
     )
 
   def test_object_roles(self):
@@ -45,3 +46,37 @@ class TestAccessControlList(TestCase):
         "ac_role_id not properly set {}".format(ac_list[0].get("ac_role_id"))
     assert ac_list[0]["person"]["id"] == person_id, \
         "Person stub not properly set {}".format(ac_list[0]["person"])
+
+  def test_post_object_roles(self):
+    """Test if roles are stored correctly when POSTed with the object"""
+    id_, person_id = self.acr.id, self.person.id
+    title = random_str(prefix="Control - ")
+    response = self.api.post(all_models.Control, {
+        "control": {
+            "title": title,
+            "type": "Control",
+            "context": None,
+            "access_control_list": [{
+                "ac_role_id": id_,
+                "person": {
+                    "type": "Person",
+                    "id": person_id
+                }
+            }]
+        },
+    })
+    assert response.status_code == 201, \
+        "Control with acl not created successfully {}".format(response.status)
+
+    acl = response.json["control"]["access_control_list"]
+    assert len(acl) == 1, \
+        "Access control list did not get saved {}".format(acl)
+
+    assert acl[0]["id"] > 0, \
+        "Acces control list did not set an id"
+
+    assert acl[0]["ac_role_id"] == id_, \
+        "Access control list does not include the saved role id"
+
+    assert acl[0]["person"]["id"] == person_id, \
+        "Access control list does not include person id"
