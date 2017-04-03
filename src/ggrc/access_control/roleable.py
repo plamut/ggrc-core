@@ -34,6 +34,15 @@ class Roleable(object):
   def access_control_list(self):
     return self._access_control_list
 
+  def _remove_existing(self, existing, values):
+    """Helper function for removing existing items in acl"""
+    for value in values:
+      acr_id = value['ac_role_id']
+      person_id = value['person']['id']
+      if existing.ac_role_id == acr_id and existing.person_id == person_id:
+        return
+    self.access_control_list.remove(existing)
+
   def _set_value(self, value):
     """Helper function for setting value of acl"""
     for itm in self.access_control_list:
@@ -55,8 +64,10 @@ class Roleable(object):
       value: List of access control roles or dicts containing json
         representation of custom attribute values.
     """
-    if not values:
+    if values is None:
       return
+    for existing in self.access_control_list:
+      self._remove_existing(existing, values)
     for value in values:
       self._set_value(value)
 
