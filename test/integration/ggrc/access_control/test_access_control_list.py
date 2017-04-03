@@ -106,3 +106,17 @@ class TestAccessControlList(TestCase):
     acl = response.json['control']['access_control_list']
     assert len(acl) == 2, \
         "Access control list not correctly updated {}".format(acl)
+
+  def test_put_removing_roles(self):
+    """Test if PUTing an empty list removes object roles correct"""
+    response = self.api.get(all_models.Control, self.control.id)
+    assert response.status_code == 200, \
+        "Failed to fetch created control {}".format(response.status)
+    control = response.json['control']
+    control['access_control_list'] = []
+    response = self.api.put(self.control, {"control": control})
+    assert response.status_code == 200, \
+        "PUTing control failed {}".format(response.status)
+    acl = response.json['control']['access_control_list']
+    assert len(acl) == 0, \
+        "Access control list not empty {}".format(acl)
