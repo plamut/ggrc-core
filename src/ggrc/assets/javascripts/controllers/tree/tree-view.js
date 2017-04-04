@@ -283,6 +283,8 @@
         var allowed;
         // TODO: Currently Query API doesn't support CustomAttributable.
         var isCustomAttr = /CustomAttr/.test(this.options.model.shortName);
+        var isRoleable = /Roleable|AccessControlRole/.test(
+                            this.options.model.shortName);
 
         this.display_prefs = displayPrefs;
 
@@ -291,7 +293,9 @@
         this.options.attr('is_subtree',
           this.element && this.element.closest('.inner-tree').length > 0);
 
-        if (!this.options.attr('is_subtree') && !isCustomAttr) {
+        if (
+          !this.options.attr('is_subtree') && !isCustomAttr && !isRoleable
+        ) {
           this.page_loader = new GGRC.ListLoaders.TreePageLoader(
             this.options.model, this.options.parent_instance,
             this.options.mapping);

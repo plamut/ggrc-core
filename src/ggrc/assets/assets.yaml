@@ -439,6 +439,10 @@ dashboard-js-template-files:
   - custom_attribute_definitions/tree.mustache
   - custom_attribute_definitions/subtree.mustache
   - custom_attribute_definitions/tree_header.mustache
+  - access_control_roles/modal_content.mustache
+  - access_control_roles/tree.mustache
+  - access_control_roles/subtree.mustache
+  - access_control_roles/tree_header.mustache
   - dashboard/internav_list.mustache
   - dashboard/info/info.mustache
   - dashboard/info/get_started.mustache

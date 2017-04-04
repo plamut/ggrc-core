@@ -496,6 +496,14 @@
         });
       }, 'CustomAttributeDefinition')
     },
+    // used by the Custom Roles admin panel tab
+    Roleable: {
+      access_control_roles: Search(function (binding) {
+          return CMS.Models.AccessControlRole.findAll({
+            object_type: binding.instance.model_singular
+          });
+      }, 'AccessControlRole')
+    },
     Risk: {
       _mixins: ['directive_object']
     },

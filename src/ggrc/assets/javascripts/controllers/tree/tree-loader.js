@@ -106,10 +106,12 @@
         'TreeView', 'display', this.options.model.shortName);
       // TODO: Currently Query API doesn't support CustomAttributable.
       var isCustomAttr = /CustomAttr/.test(this.options.model.shortName);
+      var isRoleable = /Roleable|AccessControlRole/.test(
+                          this.options.model.shortName);
       var isTreeView = this instanceof CMS.Controllers.TreeView;
       var isSubTree = this.options.is_subtree;
       var loader;
-      if (!isTreeView || isCustomAttr) {
+      if (!isTreeView || isCustomAttr || isRoleable) {
         loader = this.fetch_list.bind(this);
       } else if (isSubTree) {
         loader = this.loadSubTree.bind(this);

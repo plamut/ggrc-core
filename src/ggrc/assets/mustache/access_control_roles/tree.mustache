@@ -1,0 +1,83 @@
+{{!
+    Copyright (C) 2017 Google Inc.
+    Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
+}}
+
+<li class="tree-item" data-model="true">
+  <div class="item-main" {{data 'model'}}>
+    <div class="item-wrap">
+      {{> '/static/mustache/base_objects/open_close.mustache'}}
+      <div class="select disabled">
+        <div class="item-data">
+          <div class="row-fluid">
+            <div class="span12">
+              <div class="item-data">
+                <div>
+                  <i class="fa fa-{{instance.root_object}} color"></i>
+                  {{instance.title_plural}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div><!-- item-data end -->
+      </div><!-- select end -->
+    </div><!-- item-wrap end -->
+  </div><!-- item-main end -->
+
+  <div class="tier-2-info item-content">
+    <div class="tier-2-info-content">
+      <div class="table-wrap">
+        <table class="table">
+          <colgroup>
+            <col style="width: 49%"/>
+            <col style="width: 17%"/>
+            <col style="width: 17%"/>
+            <col style="width: 17%"/>
+          </colgroup>
+          <thead>
+            <tr>
+              <th>Role name</th>
+              <th>Read</th>
+              <th>Update</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+          {{#child_options.0}}
+          <tbody class="tree-structure new-tree" {{data 'options'}}
+            {{ (el) -> el.cms_controllers_tree_view(el.data("options")) }}>
+          </tbody>
+          {{/child_options.0}}
+          <!-- Custom attribute definitions here -->
+          <tfoot class="add-item">
+            <tr>
+              <td colspan="4" class="tree-item tree-item-add">
+                <div class="row-fluid">
+                  <div class="span12">
+                    <a
+                      href="javascript://"
+                      data-toggle="modal-ajax-form"
+                      class="btn btn-small btn-draft"
+                      rel="tooltip"
+                      data-placement="right"
+                      data-object-title="{{instance.title_singular}}"
+                      data-object-singular="AccessControlRole"
+                      data-object-plural="access_control_roles"
+                      data-object-params='{
+                        "definition_type": "{{instance.table_singular}}",
+                        "modal_title": "Add Custom Role to type {{instance.title_singular}}"
+                      }'
+                      data-original-title="Add Custom Role">
+                      <i class="fa fa-plus-circle"
+                         data-test-id="button_add-86eaf948">
+                      </i>
+                    </a>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</li>
