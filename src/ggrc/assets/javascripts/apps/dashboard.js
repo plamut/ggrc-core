@@ -98,6 +98,27 @@
         footer_view: null,
         add_item_view: null
       }]
+    },
+    custom_roles: {
+      parent_instance: CMS.Models.Roleable,
+      model: CMS.Models.Roleable,
+      header_view:
+        GGRC.mustache_path + '/access_control_roles/tree_header.mustache',
+      show_view:
+        GGRC.mustache_path + '/access_control_roles/tree.mustache',
+      sortable: false,
+      list_loader: function () {
+        return CMS.Models.Roleable.findAll();
+      },
+      draw_children: true,
+      child_options: [{
+        model: CMS.Models.AccessControlRole,
+        mapping: 'access_control_roles',
+        show_view:
+          GGRC.mustache_path + '/access_control_roles/subtree.mustache',
+        footer_view: null,
+        add_item_view: null
+      }]
     }
   };
 
@@ -157,6 +178,21 @@
           '  data-no-pin="true"' +
           '></ul>',
         content_controller_options: adminListDescriptors.custom_attributes
+      },
+      custom_roles: {
+        widget_id: 'custom_roles',
+        widget_name: 'Custom Roles',
+        widget_icon: 'unlock',
+        content_controller: CMS.Controllers.TreeView,
+        content_controller_selector: 'ul',
+        content_controller_options: adminListDescriptors.custom_roles,
+        model: CMS.Models.Roleable,
+        widget_initial_content: [
+          '<ul',
+          '  class="tree-structure new-tree colored-list"',
+          '  data-no-pin="true"',
+          '></ul>'
+        ].join('\n')
       }
     }
   });
@@ -220,7 +256,9 @@
     $area.cms_controllers_dashboard({
       widget_descriptors: GGRC.WidgetList.get_widget_list_for('admin'),
       menu_tree_spec: GGRC.admin_menu_spec,
-      default_widgets: ['people', 'roles', 'events', 'custom_attributes']
+      default_widgets: [
+        'people', 'roles', 'events', 'custom_attributes', 'custom_roles'
+      ]
     });
     initWidgets();
   } else if (/^\/import|export/i.test(location)) {
