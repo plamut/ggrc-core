@@ -17,6 +17,7 @@
     destroy: 'DELETE /api/threats/{id}',
     mixins: ['ownable', 'contactable', 'unique_title', 'ca_update'],
     is_custom_attributable: true,
+    isRoleable: true,
     attributes: {
       context: 'CMS.Models.Context.stub',
       contact: 'CMS.Models.Person.stub',

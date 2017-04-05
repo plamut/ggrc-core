@@ -19,6 +19,7 @@
       'inScopeObjects'
     ],
     is_custom_attributable: true,
+    isRoleable: true,
     attributes: {
       related_sources: 'CMS.Models.Relationship.stubs',
       related_destinations: 'CMS.Models.Relationship.stubs',

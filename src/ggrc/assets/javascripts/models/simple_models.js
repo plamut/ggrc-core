@@ -124,6 +124,7 @@
     destroy: 'DELETE /api/objectives/{id}',
     mixins: ['ownable', 'contactable', 'unique_title', 'ca_update'],
     is_custom_attributable: true,
+    isRoleable: true,
     attributes: {
       context: 'CMS.Models.Context.stub',
       owners: 'CMS.Models.Person.stubs',
