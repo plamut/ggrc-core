@@ -17,6 +17,7 @@ can.Model.Cacheable("CMS.Models.OrgGroup", {
   mixins : ['ownable', 'contactable', 'unique_title', 'ca_update',
             'timeboxed'],
   is_custom_attributable: true,
+  isRoleable: true,
   attributes : {
       context: 'CMS.Models.Context.stub',
       owners: 'CMS.Models.Person.stubs',
@@ -108,6 +109,7 @@ can.Model.Cacheable("CMS.Models.Project", {
   destroy : "DELETE /api/projects/{id}",
   mixins : ['ownable', 'contactable', 'unique_title', 'ca_update', 'timeboxed'],
   is_custom_attributable: true,
+  isRoleable: true,
   attributes : {
       context: 'CMS.Models.Context.stub',
       owners: 'CMS.Models.Person.stubs',
@@ -184,6 +186,7 @@ can.Model.Cacheable("CMS.Models.Facility", {
   destroy : "DELETE /api/facilities/{id}",
   mixins : ['ownable', 'contactable', 'unique_title', 'ca_update', 'timeboxed'],
   is_custom_attributable: true,
+  isRoleable: true,
   attributes : {
       context: 'CMS.Models.Context.stub',
       owners: 'CMS.Models.Person.stubs',
@@ -275,6 +278,7 @@ can.Model.Cacheable("CMS.Models.Product", {
   destroy : "DELETE /api/products/{id}",
   mixins : ['ownable', 'contactable', 'unique_title', 'ca_update', 'timeboxed'],
   is_custom_attributable: true,
+  isRoleable: true,
   attributes : {
       context: 'CMS.Models.Context.stub',
       owners: 'CMS.Models.Person.stubs',
@@ -370,6 +374,7 @@ can.Model.Cacheable("CMS.Models.DataAsset", {
   destroy : "DELETE /api/data_assets/{id}",
   mixins : ['ownable', 'contactable', 'unique_title', 'ca_update', 'timeboxed'],
   is_custom_attributable: true,
+  isRoleable: true,
   attributes : {
       context: 'CMS.Models.Context.stub',
       owners: 'CMS.Models.Person.stubs',
@@ -461,6 +466,7 @@ can.Model.Cacheable("CMS.Models.AccessGroup", {
   destroy : "DELETE /api/access_groups/{id}",
   mixins : ['ownable', 'contactable', 'unique_title', 'ca_update'],
   is_custom_attributable: true,
+  isRoleable: true,
   attributes : {
     context : "CMS.Models.Context.stub",
     owners : "CMS.Models.Person.stubs",
@@ -553,6 +559,7 @@ can.Model.Cacheable("CMS.Models.AccessGroup", {
     mixins: ['ownable', 'contactable', 'unique_title', 'ca_update',
              'timeboxed'],
     is_custom_attributable: true,
+    isRoleable: true,
     attributes: {
       context: 'CMS.Models.Context.stub',
       owners: 'CMS.Models.Person.stubs',
@@ -632,6 +639,7 @@ can.Model.Cacheable("CMS.Models.Vendor", {
   destroy : "DELETE /api/vendors/{id}",
   mixins : ['ownable', 'contactable', 'unique_title', 'ca_update', 'timeboxed'],
   is_custom_attributable: true,
+  isRoleable: true,
   attributes : {
       context: 'CMS.Models.Context.stub',
       owners: 'CMS.Models.Person.stubs',

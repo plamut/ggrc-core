@@ -94,6 +94,7 @@ CMS.Models.Directive("CMS.Models.Standard", {
   , update : "PUT /api/standards/{id}"
   , destroy : "DELETE /api/standards/{id}"
   , is_custom_attributable: true
+  , isRoleable: true
   , attributes : {}
   , meta_kinds : [ "Standard" ]
   , cache : can.getObject("cache", CMS.Models.Directive, true),
@@ -123,6 +124,7 @@ CMS.Models.Directive("CMS.Models.Regulation", {
   , update : "PUT /api/regulations/{id}"
   , destroy : "DELETE /api/regulations/{id}"
   , is_custom_attributable: true
+  , isRoleable: true
   , attributes : {}
   , meta_kinds : [ "Regulation" ]
   , cache : can.getObject("cache", CMS.Models.Directive, true),
@@ -153,6 +155,7 @@ CMS.Models.Directive("CMS.Models.Policy", {
   , destroy : "DELETE /api/policies/{id}"
   , tree_view_options : {}
   , is_custom_attributable: true
+  , isRoleable: true
   , attributes : {}
   , meta_kinds : [  "Company Policy", "Org Group Policy", "Data Asset Policy", "Product Policy", "Contract-Related Policy", "Company Controls Policy" ]
   , cache : can.getObject("cache", CMS.Models.Directive, true),
@@ -194,6 +197,7 @@ CMS.Models.Directive("CMS.Models.Contract", {
   , update : "PUT /api/contracts/{id}"
   , destroy : "DELETE /api/contracts/{id}"
   , is_custom_attributable: true
+  , isRoleable: true
   , attributes : {
   }
   , meta_kinds : [ "Contract" ]

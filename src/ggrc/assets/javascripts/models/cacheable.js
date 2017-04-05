@@ -345,6 +345,14 @@
         }
         GGRC.custom_attributable_types.push(can.extend({}, this));
       }
+
+      // register this type as Roleable if applicable
+      if (this.isRoleable) {
+        if (!GGRC.roleableTypes) {
+          GGRC.roleableTypes = [];
+        }
+        GGRC.roleableTypes.push(can.extend({}, this));
+      }
     },
 
     resolve_deferred_bindings: function (obj) {

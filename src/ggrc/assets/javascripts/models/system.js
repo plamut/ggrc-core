@@ -107,6 +107,7 @@ CMS.Models.SystemOrProcess('CMS.Models.System', {
   mixins: ['ca_update'],
   cache: can.getObject('cache', CMS.Models.SystemOrProcess, true),
   is_custom_attributable: true,
+  isRoleable: true,
   attributes: {},
   defaults: {
     title: '',
@@ -151,6 +152,7 @@ CMS.Models.SystemOrProcess('CMS.Models.Process', {
   destroy: 'DELETE /api/processes/{id}',
   cache: can.getObject('cache', CMS.Models.SystemOrProcess, true),
   is_custom_attributable: true,
+  isRoleable: true,
   attributes: {},
   defaults: {
     title: '',
