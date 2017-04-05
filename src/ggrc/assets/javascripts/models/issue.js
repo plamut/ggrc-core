@@ -20,6 +20,7 @@
       'inScopeObjects'
     ],
     is_custom_attributable: true,
+    isRoleable: true,
     attributes: {
       context: 'CMS.Models.Context.stub'
     },

@@ -22,6 +22,7 @@ can.Model.Cacheable('CMS.Models.Section', {
   update: 'PUT /api/sections/{id}',
   destroy: 'DELETE /api/sections/{id}',
   is_custom_attributable: true,
+  isRoleable: true,
   mixins: ['ownable', 'contactable', 'unique_title', 'ca_update'],
   attributes: {
     context: 'CMS.Models.Context.stub',
@@ -72,6 +73,7 @@ can.Model.Cacheable('CMS.Models.Clause', {
   update: 'PUT /api/clauses/{id}',
   destroy: 'DELETE /api/clauses/{id}',
   is_custom_attributable: true,
+  isRoleable: true,
   mixins: ['ownable', 'contactable', 'unique_title', 'ca_update'],
   attributes: {
     context: 'CMS.Models.Context.stub',
