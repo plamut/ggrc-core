@@ -108,6 +108,7 @@ dashboard-js-files:
   - models/revision.js
   - models/save_queue.js
   - models/custom_attributes.js
+  - models/custom_roles.js
   - models/assessment.js
   - models/control.js
   - models/section.js
