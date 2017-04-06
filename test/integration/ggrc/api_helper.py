@@ -45,6 +45,7 @@ class Api(object):
           })
       }
       self.person_name, self.person_email = person.name, person.email
+      db.session.expunge(person)
     else:
       self.user_headers = {}
       self.person_name, self.person_email = None, None
