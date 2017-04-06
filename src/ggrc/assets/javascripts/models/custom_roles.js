@@ -44,4 +44,31 @@
     // Cacheable checks if selfLink is set when the findAll deferred is done
     selfLink: '/custom_roles_list'  // TODO: what path here?
   });
+
+  /**
+   * A model representing an AccessControl role deifnition.
+   *
+   * @class
+   */
+  can.Model.Cacheable('CMS.Models.AccessControlRole', {
+    root_object: 'access_control_role',
+    root_collection: 'access_control_roles',
+    category: 'access_control_roles',
+    findAll: 'GET /api/access_control_roles',
+    findOne: 'GET /api/access_control_roles/{id}',
+    create: 'POST /api/access_control_roles',
+    update: 'PUT /api/access_control_roles/{id}',
+    destroy: 'DELETE /api/access_control_roles/{id}',
+    mixins: [],
+    attributes: {},
+    links_to: {},
+    init: function () {
+      this.validateNonBlank('name');
+      this._super.apply(this, arguments);
+    }
+  }, {
+    init: function () {
+      this._super.apply(this, arguments);
+    }
+  });
 })(window.can, window.GGRC, window.CMS);
