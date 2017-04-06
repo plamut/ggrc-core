@@ -257,7 +257,7 @@ class CompletePermissionsProvider(object):
   def __init__(self, _):
     pass
 
-  def permissions_for(self, user):
+  def permissions_for(self, _):
     """Load user permissions and make sure they get loaded into session"""
     ret = UserPermissions()
     # force the permissions to be loaded into session, otherwise templates
@@ -283,6 +283,7 @@ class BasicUserPermissions(DefaultUserPermissions):
 
 
 class UserPermissions(DefaultUserPermissions):
+  """User permissions cached in the global session object"""
 
   @property
   def _request_permissions(self):
@@ -304,6 +305,7 @@ class UserPermissions(DefaultUserPermissions):
     return user.email if hasattr(user, 'email') else 'ANONYMOUS'
 
   def load_permissions(self):
+    """Load permissions for the currently logged in user"""
     user = get_current_user()
     email = self.get_email_for(user)
     self._request_permissions = {}
@@ -640,7 +642,7 @@ def load_context_relationships(permissions):
 
   write_objects = context_relationship_query(write_contexts)
   for res in write_objects:
-    id_, type_, role_name = res
+    id_, type_, _ = res
     actions = ["read", "view_object_page", "create", "update", "delete"]
     for action in actions:
       permissions.setdefault(action, {})\
@@ -684,6 +686,26 @@ def load_personal_context(user, permissions):
       .setdefault('__GGRC_ALL__', dict())\
       .setdefault('contexts', list())\
       .append(personal_context.id)
+
+
+def load_access_control_list(user, permissions):
+  """Load permissions from access_control_list"""
+  acl = all_models.AccessControlList
+  acr = all_models.AccessControlRole
+  access_control_list = db.session.query(
+      acl.object_type, acl.object_id, acr.read, acr.update, acr.delete
+  ).filter(and_(all_models.AccessControlList.person_id == user.id,
+                all_models.AccessControlList.ac_role_id == acr.id)).all()
+
+  for object_type, object_id, read, update, delete in access_control_list:
+    actions = (("read", read), ("update", update), ("delete", delete))
+    for action, allowed in actions:
+      if not allowed:
+        continue
+      permissions.setdefault(action, {})\
+          .setdefault(object_type, {})\
+          .setdefault('resources', list())\
+          .append(object_id)
 
 
 def load_backlog_workflows(permissions):
@@ -787,6 +809,9 @@ def load_permissions_for(user):
 
   with benchmark("load_permissions > load personal context"):
     load_personal_context(user, permissions)
+
+  with benchmark("load_permissions > load access control list"):
+    load_access_control_list(user, permissions)
 
   with benchmark("load_permissions > load backlog workflows"):
     load_backlog_workflows(permissions)
