@@ -3,163 +3,71 @@
     Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
 }}
 
-TODO: create modal content for custom role definitions
-
-<!--
-
-{{!div class="modal-body"}}
 {{#instance}}
 <form action="javascript://">
-  <input type="hidden" name="definition_type" value="{{definition_type}}">
+
+  <input type="hidden" name="object_type" value="{{parent_type}}">
+
   <div class="row-fluid">
-    <div class="span6 {{#instance.computed_errors.title}}field-failure{{/instance.computed_errors.title}}">
-      <label>Attribute title
+    <div class="span6 {{#instance.computed_errors.name}}field-failure{{/instance.computed_errors.name}}">
+      <label>Role name
         <span class="required">*</span>
-        <i class="fa fa-question-circle" rel="tooltip" title="Give new {{model.model_plural}} a name."></i>
+        <i
+          class="fa fa-question-circle"
+          rel="tooltip"
+          title="Set a name for the {{class.title_singular}}."></i>
       </label>
-      <input tabindex="1" class="input-block-level" placeholder="Enter Title" name="title" type="text" value="{{title}}" autofocus>
+      <input
+        type="text"
+        name="name"
+        value="{{name}}"
+        placeholder="Enter Name"
+        class="input-block-level"
+        tabindex="1"
+        autofocus>
     </div>
-    <div class="span4">
-      <label>
-        Attribute type
-        <span class="required">*</span>
-        <i class="fa fa-question-circle" rel="tooltip" title="Choose the type of attribute to create."></i>
-      </label>
-        <dropdown options-list="model.attributeTypes"
-                  name="instance.attribute_type"
-                  data-purpose="ca-type">
-        </dropdown>
-    </div>
+
     <div class="span2">
       <label>
-        Mandatory
-      </label>
-      <input tabindex="3" type="checkbox" class="input-block-level" placeholder="Enter Placeholder" name="mandatory" type="text"  {{#if mandatory}}checked="checked"{{/if}}>
-    </div>
-  </div>
-  {{#switch attribute_type}}
-  {{#case "Text"}}
-    <div class='row-fluid'>
-      <div class="span6">
-        <label>
-          Inline help
-          <i class="fa fa-question-circle" rel="tooltip"
-            title="Provide text to help users understand what this attribute is for."></i>
-        </label>
-        <input tabindex="4" class="input-block-level" placeholder="Enter Help Text" name="helptext" type="text" value="{{helptext}}">
-      </div>
-      <div class="span6">
-        <label>
-          Placeholder
-          <i class="fa fa-question-circle" rel="tooltip"
-            title="Provide text to show in the text field when the value is empty or not set. This should help users to understand what type of value to provide."></i>
-        </label>
-        <input tabindex="5" class="input-block-level" placeholder="Enter Placeholder" name="placeholder" type="text" value="{{placeholder}}">
-      </div>
-    </div>
-  {{/case}}
-  {{#case "Rich Text"}}
-    <div class='row-fluid'>
-      <div class="span6">
-        <label>
-          Inline help
-          <i class="fa fa-question-circle" rel="tooltip"
-            title="Provide text to help users understand what this attribute is for."></i>
-        </label>
-        <input tabindex="4" class="input-block-level" placeholder="Enter Help Text" name="helptext" type="text" value="{{helptext}}">
-      </div>
-      <div class="span6">
-        <label>
-          Placeholder
-          <i class="fa fa-question-circle" rel="tooltip"
-            title="Provide text to show in the text field when the value is empty or not set. This should help users to understand what type of value to provide."></i>
-        </label>
-        <input tabindex="5" class="input-block-level" placeholder="Enter Placeholder" name="placeholder" type="text" value="{{placeholder}}">
-      </div>
-    </div>
-  {{/case}}
-
-  {{#case "Dropdown"}}
-    <div class='row-fluid'>
-      <div
-        class="span12 {{#if instance.computed_errors.multi_choice_options}}field-failure{{/if}}">
-        <label>
-          Possible values (separated by comma ",")
-          <span class="required">*</span>
-          <i class="fa fa-question-circle" rel="tooltip"
-            title="Provide a list of values from which users will be able to choose."></i>
-        </label>
-
-        {{#instance.computed_errors.multi_choice_options}}
-           <label class="help-inline warning">
-               {{this}}
-           </label>
-         {{/instance.computed_errors.multi_choice_options}}
-
-        <input
-          tabindex="4"
-          class="input-block-level"
-          placeholder="Enter possible values"
-          name="multi_choice_options"
-          type="text"
-          value="{{multi_choice_options}}">
-      </div>
-    </div>
-    <div class='row-fluid'>
-      <div class="span6">
-        <label>
-          Inline help
-          <i class="fa fa-question-circle" rel="tooltip"
-            title="Provide text to help users understand what this attribute is for."></i>
-        </label>
-        <input tabindex="5" class="input-block-level" placeholder="Enter Help Text" name="helptext" type="text" value="{{helptext}}">
-      </div>
-    </div>
-  {{/case}}
-
-  {{#case "Checkbox"}}
-  <div class='row-fluid'>
-    <div class="span6">
-      <label>
-        Inline help
+        Read
         <i class="fa fa-question-circle" rel="tooltip"
-        title="Provide text to help users understand what this attribute is for."></i>
+          title="Check if this role allows Read permission on an object type."></i>
       </label>
-      <input tabindex="4" class="input-block-level" placeholder="Enter Help Text" name="helptext" type="text" value="{{helptext}}">
+      <input
+        type="checkbox"
+        name="read"
+        {{#if read}}checked="checked"{{/if}}
+        class="input-block-level"
+        tabindex="2">
     </div>
-  </div>
-  {{/case}}
-  {{#case "Date"}}
-  <div class='row-fluid'>
-    <div class="span6">
+
+    <div class="span2">
       <label>
-        Inline help
+        Edit
         <i class="fa fa-question-circle" rel="tooltip"
-        title="Provide text to help users understand what this attribute is for."></i>
+          title="Check if this role allows Edit permission on an object type."></i>
       </label>
-      <input tabindex="5" class="input-block-level" placeholder="Enter Help Text" name="helptext" type="text" value="{{helptext}}">
+      <input
+        type="checkbox"
+        name="update"
+        {{#if update}}checked="checked"{{/if}}
+        class="input-block-level"
+        tabindex="3">
     </div>
-  </div>
-  {{/case}}
-  {{#case "Map:Person"}}
-  <div class='row-fluid'>
-    <div class="span6">
+
+    <div class="span2">
       <label>
-        Inline help
+        Delete
         <i class="fa fa-question-circle" rel="tooltip"
-        title="Provide text to help users understand what this attribute is for."></i>
+          title="Check if this role allows Delete permission on an object type."></i>
       </label>
-      <input tabindex="5" class="input-block-level" placeholder="Enter Help Text" name="helptext" type="text" value="{{helptext}}">
+      <input
+        type="checkbox"
+        name="delete"
+        {{#if delete}}checked="checked"{{/if}}
+        class="input-block-level"
+        tabindex="4">
     </div>
   </div>
-  {{/case}}
-  {{#case "File upload"}}
-    <div class='row-fluid'>
-      File upload
-    </div>
-  {{/case}}
-  {{/switch}}
 </form>
 {{/instance}}
-
--->
