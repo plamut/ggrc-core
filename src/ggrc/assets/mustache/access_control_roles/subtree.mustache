@@ -3,16 +3,15 @@
     Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
 }}
 
-TODO: create subtree template for for custom role definitions
-
 <tr
   data-object-id="{{instance.id}}"
   data-object-type="{{instance.constructor.table_singular}}"
 >
   {{#instance}}
-  <td>{{title}}</td>
-  <td>{{attribute_type}}</td>
-  <td>{{#if mandatory}}Yes{{else}}No{{/mandatory}}</td>
+  <td>{{name}}</td>
+  <td>{{#if read}}Yes{{else}}No{{/if}}</td>
+  <td>{{#if update}}Yes{{else}}No{{/if}}</td>
+  <td>{{#if delete}}Yes{{else}}No{{/if}}</td>
   <td>
     <ul class="tree-action-list">
       <li>
