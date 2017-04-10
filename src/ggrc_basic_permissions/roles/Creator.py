@@ -187,6 +187,7 @@ owner_base = [
     "CustomAttributeValue",
 ]
 owner_read = owner_base + [
+    "AccessControlList",
     {
         "type": "Relationship",
         "terms": {
