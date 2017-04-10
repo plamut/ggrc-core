@@ -26,7 +26,7 @@ class TestAccessControlRBAC(TestCase):
     self.people = {}
     object_generator = ObjectGenerator()
 
-    for name in ["Creator", "Reader"]:
+    for name in ["Creator", "Reader", "Editor"]:
       _, user = object_generator.generate_person(
           data={"name": name}, user_role=name)
       self.people[name] = user
@@ -40,7 +40,7 @@ class TestAccessControlRBAC(TestCase):
         update=True,
         delete=True
     )
-    for name in ["Creator", "Reader"]:
+    for name in ["Creator", "Reader", "Editor"]:
       factories.AccessControlListFactory(
           object=self.control,
           ac_role_id=self.all_acr.id,
@@ -51,8 +51,9 @@ class TestAccessControlRBAC(TestCase):
     """Test if readers/creators can CRUD an object with all permissions"""
     control_id = self.control.id
     # role_id = self.all_acr.id
-    for name in ("Creator", "Reader"):
+    for name in ("Creator", "Reader", "Editor"):
       person = self.people.get(name)
+      role_id = self.all_acr.id
       db.session.add(person)
       self.api.set_user(person)
       response = self.api.get(all_models.Control, control_id)
@@ -60,5 +61,8 @@ class TestAccessControlRBAC(TestCase):
           "{} cannot GET object from acl. Received {}".format(
               name, response.status)
       acl = response.json["control"]["access_control_list"]
-      assert len(response.json["control"]["access_control_list"]) == 2, \
+      assert len(response.json["control"]["access_control_list"]) == 3, \
           "ACL in control does not include all people {}".format(acl)
+
+      assert acl[0].get("ac_role_id", None) == role_id, \
+          "ACL list does not include role id {}".format(acl)
