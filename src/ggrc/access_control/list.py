@@ -5,6 +5,7 @@
 
 from ggrc import db
 from ggrc.models import mixins
+from ggrc.models.reflection import PublishOnly
 
 
 class AccessControlList(mixins.Base, db.Model):
@@ -13,6 +14,7 @@ class AccessControlList(mixins.Base, db.Model):
 
   _publish_attrs = [
       "person",
+      PublishOnly("person_id"),
       "ac_role_id"
   ]
 
