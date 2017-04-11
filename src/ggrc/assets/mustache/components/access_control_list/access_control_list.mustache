@@ -1,0 +1,39 @@
+{{!
+  Copyright (C) 2017 Google Inc.
+  Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
+}}
+
+<div class="span6">
+
+  {{#rolesInfo}}
+    <div class="{{roleBlockClass}}">
+      <h6>
+        {{role.name}}
+        <i class="fa fa-plus-circle"
+           title="Grant Role {{role.name}}"
+           ($click)="grantRoleMode(role.id)"></i>
+      </h6>
+
+      {{#if_equals role.id grantingRoleId}}
+        <autocomplete
+          search-items-type="Person"
+          (item-selected)="grantRole(%event.selectedItem, %context.role.id)"
+          placeholder="Select person"
+        ></autocomplete>
+      {{/if}}
+
+      {{^roleAssignments}}
+        <span class="empty-message">None</span>
+      {{/roleAssignments}}
+
+      {{#roleAssignments}}
+        <person-info
+          person-id="person.id"
+          editable="true"
+          (person-remove)="revokeRole(%event.person, %context.ac_role_id)"
+          ></person-info>
+      {{/roleAssignments}}
+    </div>
+  {{/rolesInfo}}
+
+</div>
