@@ -21,6 +21,21 @@ def _acl_json(role_id, person_id):
   }
 
 
+def _acl_asserts(acl, id_, person_id):
+  """Run asserts on a given acl list"""
+  assert len(acl) == 1, \
+      "Access control list did not get saved {}".format(acl)
+
+  assert acl[0]["id"] > 0, \
+      "Acces control list did not set an id"
+
+  assert acl[0]["ac_role_id"] == id_, \
+      "Access control list does not include the saved role id"
+
+  assert acl[0]["person_id"] == person_id, \
+      "Access control list does not include person id {}".format(acl[0])
+
+
 class TestAccessControlList(TestCase):
   """TestAccessControlList"""
 
@@ -42,6 +57,23 @@ class TestAccessControlList(TestCase):
         ac_role_id=self.acr.id,
         person=self.person
     )
+
+  def _post_control(self, id_, person_id):
+    """Helper function for posting a control"""
+    title = random_str(prefix="Control - ")
+    response = self.api.post(all_models.Control, {
+        "control": {
+            "title": title,
+            "type": "Control",
+            "context": None,
+            "access_control_list": [
+                _acl_json(id_, person_id)
+            ]
+        },
+    })
+    assert response.status_code == 201, \
+        "Control with acl not created successfully {}".format(response.status)
+    return response
 
   def test_object_roles(self):
     """Test if roles are fetched with the object"""
@@ -65,32 +97,23 @@ class TestAccessControlList(TestCase):
   def test_post_object_roles(self):
     """Test if roles are stored correctly when POSTed with the object"""
     id_, person_id = self.acr.id, self.person.id
-    title = random_str(prefix="Control - ")
-    response = self.api.post(all_models.Control, {
-        "control": {
-            "title": title,
-            "type": "Control",
-            "context": None,
-            "access_control_list": [
-                _acl_json(id_, person_id)
-            ]
-        },
-    })
-    assert response.status_code == 201, \
-        "Control with acl not created successfully {}".format(response.status)
+    response = self._post_control(id_, person_id)
 
     acl = response.json["control"]["access_control_list"]
-    assert len(acl) == 1, \
-        "Access control list did not get saved {}".format(acl)
+    _acl_asserts(acl, id_, person_id)
 
-    assert acl[0]["id"] > 0, \
-        "Acces control list did not set an id"
+  def test_acl_revision_content(self):
+    """Test if the access control list is added to revisions"""
+    id_, person_id = self.acr.id, self.person.id
+    response = self._post_control(id_, person_id)
+    control_id = response.json["control"]["id"]
+    rev = all_models.Revision.query.filter(
+        all_models.Revision.resource_id == control_id,
+        all_models.Revision.resource_type == "Control"
+    ).first()
 
-    assert acl[0]["ac_role_id"] == id_, \
-        "Access control list does not include the saved role id"
-
-    assert acl[0]["person"]["id"] == person_id, \
-        "Access control list does not include person id"
+    acl = rev.content["access_control_list"]
+    _acl_asserts(acl, id_, person_id)
 
   def test_put_object_roles(self):
     """Test if PUTing object roles saves them correctly"""
