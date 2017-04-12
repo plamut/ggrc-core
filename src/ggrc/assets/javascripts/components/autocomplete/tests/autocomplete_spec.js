@@ -27,15 +27,17 @@ describe('GGRC.Components.autocomplete', function () {
   describe('item selected event handler', function () {
     var eventData;
     var eventObj;
+    var fakeViewModel;
     var handler;  // the event handler under test
     var $childInput;
     var $element;
 
-    beforeAll(function () {
-      handler = Component.prototype.events['autocomplete:select'];
-    });
-
     beforeEach(function () {
+      fakeViewModel = new can.Map({});
+      handler = Component.prototype.events['autocomplete:select'].bind({
+        viewModel: fakeViewModel
+      });
+
       eventData = {
         item: {id: 123, type: 'Foo'}
       };
@@ -62,6 +64,19 @@ describe('GGRC.Components.autocomplete', function () {
 
         expect($element.triggerHandler).toHaveBeenCalledWith({
           type: Component.prototype._EV_ITEM_SELECTED,
+          selectedItem: {id: 123, type: 'Foo'}
+        });
+      }
+    );
+
+    it('emits the item-selected event using the dispatch mechanism',
+      function () {
+        spyOn(fakeViewModel, 'dispatch');
+
+        handler($element, eventObj, eventData);
+
+        expect(fakeViewModel.dispatch).toHaveBeenCalledWith({
+          type: 'itemSelected',
           selectedItem: {id: 123, type: 'Foo'}
         });
       }
