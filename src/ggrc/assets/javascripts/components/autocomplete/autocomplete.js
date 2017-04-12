@@ -57,6 +57,14 @@
           type: component._EV_ITEM_SELECTED,
           selectedItem: data.item
         });
+
+        // keep the legacy event emitting mechanism above, but emit the event
+        // using the more modern dispatch mechanism, too
+        this.viewModel.dispatch({
+          type: 'itemSelected',
+          selectedItem: data.item
+        });
+
         // If the input still has focus after selecting an item, search results
         // do not appear unless user clicks out and back in the input (or
         // starts typing). Removing the focus spares one unnecessary click.
