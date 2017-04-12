@@ -103,6 +103,13 @@
           type: component._EV_REMOVE_CLICK,
           person: this.scope.personObj
         });
+
+        // keep the legacy event emitting mechanism above, but emit the event
+        // using the more modern dispatch mechanism, too
+        this.viewModel.dispatch({
+          type: 'personRemove',
+          person: this.scope.personObj
+        });
       }
     }
   };
