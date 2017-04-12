@@ -176,10 +176,6 @@ describe('GGRC.Components.personItem', function () {
     var handler;  // the event handler under test
     var componentInst;  // fake component instance
 
-    beforeAll(function () {
-      handler = Component.prototype.events['a.unmap click'];
-    });
-
     beforeEach(function () {
       componentInst = {
         element: {
@@ -187,8 +183,9 @@ describe('GGRC.Components.personItem', function () {
         },
         scope: new can.Map()
       };
+      componentInst.viewModel = componentInst.scope;
 
-      handler = handler.bind(componentInst);
+      handler = Component.prototype.events['a.unmap click'].bind(componentInst);
     });
 
     it('triggers the person-remove event with the person object as the ' +
@@ -203,6 +200,21 @@ describe('GGRC.Components.personItem', function () {
         call = componentInst.element.triggerHandler.calls.mostRecent();
         expect(call.args[0].type).toEqual(
           Component.prototype._EV_REMOVE_CLICK);
+        expect(call.args[0].person.attr()).toEqual({id: 123, name: 'John'});
+      }
+    );
+
+    it('emits the person-remove event using the dispatch mechanism',
+      function () {
+        var call;
+        componentInst.viewModel.attr('personObj', {id: 123, name: 'John'});
+        spyOn(componentInst.viewModel, 'dispatch');
+
+        handler();
+
+        expect(componentInst.viewModel.dispatch).toHaveBeenCalled();
+        call = componentInst.viewModel.dispatch.calls.mostRecent();
+        expect(call.args[0].type).toEqual('personRemove');
         expect(call.args[0].person.attr()).toEqual({id: 123, name: 'John'});
       }
     );
