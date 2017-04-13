@@ -173,6 +173,17 @@
 
         vm.attr('grantingRoleId', 0);
         vm._rebuildRolesInfo();
+      },
+
+      '{viewModel.instance.access_control_list} change':
+      function (context, ev, index, how, newVal, oldVal) {
+        if (how === 'set') {
+          // we are not interested in collection items' changes, all we care
+          // about is ading and removing role assignments
+          return;
+        }
+
+        this.viewModel._rebuildRolesInfo();
       }
     }
   });
