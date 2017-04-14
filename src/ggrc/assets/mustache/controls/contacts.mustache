@@ -5,7 +5,7 @@
 
 {{#instance}}
 <div class="row-fluid wrap-row">
-  <div data-test-id="title_manager_7a906d2e" class="span4">
+  <div data-test-id="title_manager_7a906d2e" class="span6">
     {{#if is_program}}
     <h6>Manager</h6>
     <p class="oneline">
@@ -47,7 +47,7 @@
     {{/if}}
     </p>
   </div>
-  <div class="span4">
+  <div class="span6">
     {{#using person=contact}}
       <div class="bottom-space">
         <h6>Primary Contact</h6>
@@ -98,7 +98,12 @@
       </div>
     {{/using}}
   </div>
-  <div class="span4">
+</div>
+
+<div class="row-fluid wrap-row">
+  <access-control-list instance="." autosave="true"></access-control-list>
+
+  <div class="span6">
     {{>'/static/mustache/controls/urls.mustache'}}
   </div>
 </div>

@@ -6,10 +6,10 @@
 <div class="span6">
 
   {{#rolesInfo}}
-    <div class="{{roleBlockClass}}">
+    <div class="{{roleBlockClass}} bottom-spacing role-block">
       <h6>
         {{role.name}}
-        <i class="fa fa-plus-circle"
+        <i class="fa fa-plus-circle add-role"
            title="Grant Role {{role.name}}"
            ($click)="grantRoleMode(role.id)"></i>
       </h6>
@@ -23,7 +23,9 @@
       {{/if}}
 
       {{^roleAssignments}}
-        <span class="empty-message">None</span>
+        <p>
+          <span class="empty-message">None</span>
+        </p>
       {{/roleAssignments}}
 
       {{#roleAssignments}}
