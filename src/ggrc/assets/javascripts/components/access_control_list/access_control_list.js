@@ -172,6 +172,7 @@
         var vm = this.viewModel;
 
         vm.attr('grantingRoleId', 0);
+        vm.attr('_rolesInfoFixed', false);
         vm._rebuildRolesInfo();
       },
 
@@ -184,6 +185,39 @@
         }
 
         this.viewModel._rebuildRolesInfo();
+      },
+
+      // FIXME: For some reson the rolesInfo object might get corrupted and
+      // needs to be manually checked for consistency and fixed if needed. Not
+      // an elegant approach, but it works.
+      '{viewModel.rolesInfo} change': function () {
+        var vm = this.viewModel;
+        var fixNeeded = false;
+
+        if (vm.attr('_rolesInfoFixed')) {
+          // It seems that once the roleInfo object is fixed, the issue does
+          // not occur anymore, thus fixing the object only once suffices.
+          return;
+        }
+
+        vm.attr('rolesInfo').forEach(function (item) {
+          var roleId = item.role.id;
+
+          if (!item.roleAssignments) {
+            return;
+          }
+
+          item.roleAssignments.forEach(function (entry) {
+            if (entry.ac_role_id !== roleId) {
+              fixNeeded = true;
+            }
+          });
+        });
+
+        if (fixNeeded) {
+          vm.attr('_rolesInfoFixed', true);
+          vm._rebuildRolesInfo();
+        }
       }
     }
   });
