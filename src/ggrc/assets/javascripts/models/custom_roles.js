@@ -61,6 +61,11 @@
     destroy: 'DELETE /api/access_control_roles/{id}',
     mixins: [],
     attributes: {},
+    defaults: {
+      read: true,
+      update: true,
+      delete: true
+    },
     links_to: {},
     init: function () {
       this.validateNonBlank('name');
