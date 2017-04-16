@@ -71,6 +71,10 @@
           return;
         }
 
+        if (!inst.access_control_list) {
+          inst.attr('access_control_list', []);
+        }
+
         roleEntry = {person: person, ac_role_id: roleId};
         inst.attr('access_control_list').push(roleEntry);
 
@@ -149,9 +153,9 @@
 
         roleAssignments = _.groupBy(instance.access_control_list, 'ac_role_id');
 
-        roles = _.filter(
-          GGRC.access_control_roles, {object_type: instance.type});
-
+        roles = _.filter(GGRC.access_control_roles, {
+          object_type: instance.class.model_singular
+        });
         rolesInfo = _.map(roles, function (role) {
           return {role: role, roleAssignments: roleAssignments[role.id]};
         });
