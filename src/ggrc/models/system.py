@@ -15,7 +15,7 @@ from ggrc.models.utils import validate_option
 from ggrc.models import track_object_state
 
 
-class SystemOrProcess(Roleable, track_object_state.HasObjectState, Timeboxed,
+class SystemOrProcess(track_object_state.HasObjectState, Timeboxed,
                       BusinessObject, db.Model):
   # Override model_inflector
   _table_plural = 'systems_or_processes'
@@ -81,7 +81,7 @@ class SystemOrProcess(Roleable, track_object_state.HasObjectState, Timeboxed,
     )
 
 
-class System(CustomAttributable, Personable,
+class System(CustomAttributable, Personable, Roleable,
              Relatable, Ownable, SystemOrProcess, Indexed):
   __mapper_args__ = {
       'polymorphic_identity': False
@@ -95,7 +95,7 @@ class System(CustomAttributable, Personable,
     return False
 
 
-class Process(CustomAttributable, Personable,
+class Process(CustomAttributable, Personable, Roleable,
               Relatable, Ownable, SystemOrProcess, Indexed):
   __mapper_args__ = {
       'polymorphic_identity': True

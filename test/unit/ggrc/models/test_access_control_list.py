@@ -16,7 +16,7 @@ class TestAccessControlList(unittest.TestCase):
       'Control', 'DataAsset', 'Directive', 'Facility', 'Issue', 'Market',
       'Objective', 'OrgGroup', 'Policy', 'Process', 'Product', 'Project',
       'Regulation', 'Risk', 'Section', 'Standard', 'System',
-      'SystemOrProcess', 'Threat', 'Vendor')
+      'System', 'Process', 'Threat', 'Vendor')
 
   @data(*ACL_OBJECTS)
   def test_access_control_roles(self, obj):  # noqa pylint: disable=no-self-use
