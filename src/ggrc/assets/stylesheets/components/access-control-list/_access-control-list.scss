@@ -4,7 +4,16 @@
  */
 
 access-control-list {
+  & > div:first-child {
+    margin-left: 0
+  }
   .role-block {
+    .modal-body & {
+      margin-left: 0;
+      display: inline-block;
+      float: none;
+      vertical-align: top;
+    }
     .add-role {
       cursor: pointer;
       margin-left: 0.3em;

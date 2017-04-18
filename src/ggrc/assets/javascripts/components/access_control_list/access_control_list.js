@@ -29,6 +29,13 @@
           type: 'boolean',
           value: false
         },
+
+        // the extra CSS class(es) to apply to the main container element
+        topWrapperClass: {
+          type: 'string',
+          value: 'span12'
+        },
+
         // the extra CSS class(es) to apply to each role list block
         roleBlockClass: {
           type: 'string',
