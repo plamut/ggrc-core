@@ -69,7 +69,7 @@
 
         var roleEntry = _.find(
           inst.attr('access_control_list'),
-          {person_id: person.id, ac_role_id: roleId}
+          {person: {id: person.id}, ac_role_id: roleId}
         );
 
         if (roleEntry) {
@@ -227,6 +227,7 @@
 
         if (fixNeeded) {
           vm.attr('_rolesInfoFixed', true);
+          console.warn('accessControlList: Need TO fix rolesInfo');
           vm._rebuildRolesInfo();
         }
       }
