@@ -9,17 +9,22 @@
     <div class="{{roleBlockClass}} bottom-spacing role-block">
       <h6>
         {{role.name}}
-        <i class="fa fa-plus-circle add-role"
-           title="Grant Role {{role.name}}"
-           ($click)="grantRoleMode(role.id)"></i>
+
+        {{#if canEdit}}
+          <i class="fa fa-plus-circle add-role"
+             title="Grant Role {{role.name}}"
+             ($click)="grantRoleMode(role.id)"></i>
+        {{/if}}
       </h6>
 
       {{#if_equals role.id grantingRoleId}}
+        {{#if canEdit}}
         <autocomplete
           search-items-type="Person"
           (item-selected)="grantRole(%event.selectedItem, %context.role.id)"
           placeholder="Select person"
         ></autocomplete>
+        {{/if}}
       {{/if}}
 
       {{^roleAssignments}}
@@ -31,7 +36,7 @@
       {{#roleAssignments}}
         <person-info
           person-id="person.id"
-          editable="true"
+          editable="{{canEdit}}"
           (person-remove)="revokeRole(%event.person, %context.ac_role_id)"
           ></person-info>
       {{/roleAssignments}}
