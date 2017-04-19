@@ -11,7 +11,11 @@ from ggrc import db
 
 
 class Roleable(object):
-  """Roleable"""
+  """Roleable Mixin
+
+  Mixin that adds access_control_list property to the parent object. Access
+  control list includes a list of AccessControlList objects.
+  """
 
   _update_raw = _include_links = _publish_attrs = [
       'access_control_list'

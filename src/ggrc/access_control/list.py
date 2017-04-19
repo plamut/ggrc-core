@@ -9,7 +9,11 @@ from ggrc.models.reflection import PublishOnly
 
 
 class AccessControlList(mixins.Base, db.Model):
-  """Access Control List"""
+  """Access Control List
+
+  Model is a mapping between a role a person and an object. It gives the
+  permission of the role to the person from that object.
+  """
   __tablename__ = 'access_control_list'
 
   _publish_attrs = [

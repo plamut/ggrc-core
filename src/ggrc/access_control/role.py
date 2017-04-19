@@ -9,7 +9,11 @@ from ggrc.fulltext.mixin import Indexed
 
 
 class AccessControlRole(Indexed, mixins.Base, db.Model):
-  """Access Control Role"""
+  """Access Control Role
+
+  Model holds all roles in the application. These roles can be added
+  by the users.
+  """
   __tablename__ = 'access_control_roles'
 
   name = db.Column(db.String, nullable=False)
