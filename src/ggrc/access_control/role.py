@@ -27,6 +27,9 @@ class AccessControlRole(Indexed, mixins.Base, db.Model):
   view_object_page = db.Column(db.Boolean, nullable=False, default=False)
   my_work = db.Column(db.Boolean, nullable=False, default=False)
 
+  access_control_list = db.relationship(
+      'AccessControlList', backref='ac_role', cascade='all, delete-orphan')
+
   @staticmethod
   def _extra_table_args(_):
     return (
