@@ -8,11 +8,15 @@
 from cgi import escape as html_escape
 from logging import getLogger
 
+import urllib
+from urlparse import urljoin
+
 from flask import current_app
 
 from ggrc import db
 from ggrc.models import NotificationConfig
 from ggrc.login import get_current_user
+from ggrc.utils import get_url_root
 from sqlalchemy.exc import SQLAlchemyError  # the base SqlAlchemy exception
 
 
@@ -72,3 +76,22 @@ def unsubscribe_from_notifications(email):
   response = current_app.make_response(
       u"<b>unsubscribed:</b> {}".format(email))
   return response
+
+
+def unsubscribe_url(email):
+  """Generate a user-specific URL for unsubscribing from notifications.
+
+  Args:
+    email (basestring): user's email address
+
+  Returns:
+    string: generated URL
+  """
+  if isinstance(email, unicode):
+    email = email.encode("utf-8")
+
+  url = urljoin(
+      get_url_root(),
+      "unsubscribe/" + urllib.quote_plus(email)
+  )
+  return url
