@@ -118,9 +118,16 @@
         GGRC.Utils.QueryAPI
           .batchRequests(query)
           .done(function (response) {
-            var type = Object.keys(response)[0];
-            var values = response[type].values;
-            dfd.resolve(values);
+            var keys;
+            var objType;
+
+            keys = Object.keys(response);
+            _.remove(keys, function (item) {
+              return item === 'selfLink';
+            });
+
+            objType = keys[0];
+            dfd.resolve(response[objType].values);
           })
           .fail(function () {
             dfd.resolve([]);
@@ -128,7 +135,7 @@
           .always(function () {
             this.attr('isUpdating' + can.capitalize(type), false);
           }.bind(this));
-        return dfd;
+        return dfd.promise();
       },
       loadSnapshots: function () {
         var query = this.getSnapshotQuery();
