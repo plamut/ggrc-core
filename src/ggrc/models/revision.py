@@ -180,6 +180,10 @@ class Revision(Base, db.Model):
       reference_url_list = []
       for key in ('url', 'reference_url'):
         link = self._content[key]
+        # link might exist, but can be an empty string - we treat those values
+        # as non-existing (empty) reference URLs
+        if not link:
+          continue
         reference_url_list.append({
             "display_name": link,
             "document_type": "REFERENCE_URL",
