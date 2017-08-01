@@ -260,6 +260,10 @@ class EvidenceFactory(DocumentFactory):
   document_type = models.Document.ATTACHMENT
 
 
+class ReferenceUrlFactory(DocumentFactory):
+  document_type = models.Document.REFERENCE_URL
+
+
 class ObjectiveFactory(TitledFactory):
 
   class Meta:
