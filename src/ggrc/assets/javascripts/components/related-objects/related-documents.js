@@ -158,8 +158,10 @@
 
         return this.saveDocument(document)
           .then(this.createRelationship.bind(this))
-          .then(function (result) {
-            self.fetchAndUpdate(self.instance);
+          .then(function () {
+            return self.instance.refresh();
+          })
+          .then(function () {
             self.instance.dispatch('refreshRelatedDocuments');
           })
           .fail(function (err) {
@@ -196,7 +198,9 @@
 
         return this.removeRelationship(relationship)
           .then(function () {
-            self.fetchAndUpdate(self.instance);
+            return self.instance.refresh();
+          })
+          .then(function () {
             self.instance.dispatch('refreshRelatedDocuments');
           })
           .fail(function (err) {
@@ -227,11 +231,6 @@
             document
           );
           self.attr('isLoading', false);
-        });
-      },
-      fetchAndUpdate: function (instance) {
-        instance.refresh().then(function (refreshed) {
-          refreshed.save();
         });
       }
     },
